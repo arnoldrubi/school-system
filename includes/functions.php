@@ -1,0 +1,327 @@
+<?php
+global $strday;
+global $student_number;
+global $query_counter;
+global $sidebar_context;
+//this is a function for redirecting pages
+	function redirect_to($new_location){
+		header("Location: " . $new_location);
+		exit;
+	}
+
+//global functions
+	function mysql_prep($string) {
+		global $connection;
+		
+		$escaped_string = mysqli_real_escape_string($connection, $string);
+		return $escaped_string;
+	}
+
+//function for converting string Day to numeric day
+	function order_day($day){
+		if ($day == "Monday") {
+			$numericday = 1;
+		}
+		elseif($day == "Tuesday"){
+			$numericday = 2;
+		}
+		elseif($day == "Wednesday"){
+			$numericday = 3;
+		}
+		elseif($day == "Thursday"){
+			$numericday = 4;
+		}
+		elseif($day == "Friday"){
+			$numericday = 5;
+		}
+		elseif($day == "Saturday"){
+			$numericday = 6;
+		}
+		elseif($day == "Sunday"){
+			$numericday = 7;
+		}
+	}
+
+//function to convert the number days to str days
+	function number_to_day($number){
+		if ($number == "1") {
+			$strday = "Monday";
+		}
+		elseif($number == "2"){
+			$strday = "Tuesday";
+		}
+		elseif($number == "3"){
+			$strday = "Wednesday";
+		}
+		elseif($number == "4"){
+			$strday = "Thursday";
+		}
+		elseif($number == "5"){
+			$strday = "Friday";
+		}
+		elseif($number == "6"){
+			$strday = "Saturday";
+		}
+		elseif($number == "7"){
+			$strday = "Sunday";
+		}
+
+		return $strday;
+	}
+
+//function to get the equivalent grade
+	function equivalent_grade($raw_computed_grade){
+		if ($raw_computed_grade >= 96) {
+	      $final_grade = 1.0;
+	    }
+	    else if ($raw_computed_grade >= 90 && $raw_computed_grade <= 95) {
+	      $final_grade = 1.25;
+	    }
+	    else if ($raw_computed_grade >= 86 && $raw_computed_grade <= 89) {
+	      $final_grade = 1.5;
+	    }
+	    else if ($raw_computed_grade >= 80 && $raw_computed_grade <= 85) {
+	      $final_grade = 1.75;
+	    }
+	    else if ($raw_computed_grade >= 76 && $raw_computed_grade <= 79) {
+	      $final_grade = 2;
+	    }
+	    else if ($raw_computed_grade >= 70 && $raw_computed_grade <= 75) {
+	      $final_grade = 2.25;
+	    }
+	    else if ($raw_computed_grade >= 66 && $raw_computed_grade <= 69) {
+	      $final_grade = 2.5;
+	    }
+	    else if ($raw_computed_grade >= 60 && $raw_computed_grade <= 65) {
+	      $final_grade = 2.75;
+	    }
+	    else if ($raw_computed_grade >= 50 && $raw_computed_grade <= 59) {
+	      $final_grade = 3;
+	    }
+	    else if ($raw_computed_grade <= 49) {
+	      $final_grade = 5;
+	    }
+	    else{
+	      $final_grade = 5;
+	    }
+	    return $final_grade;
+	}
+
+	function generate_student_number(string $sy,string $course,string $reg_id){
+		$sy = substr($sy,2,2);
+
+		if (strlen($reg_id) == 1) {
+		 $reg_id = "000".$reg_id;	
+		}
+		elseif (strlen($reg_id) == 2) {
+		 $reg_id = "00".$reg_id;
+		}
+		elseif (strlen($reg_id) == 3) {
+		 $reg_id = "0".$reg_id;
+		}
+
+		$student_number = $course.$sy."-".$reg_id;
+
+		return $student_number;
+
+	}
+	function query_for_current_students(string $table, string $course_id,string $year,string $term, string $section, string $sy){
+		$query_counter = "SELECT * FROM ".$table." WHERE course_id='".$course_id."' AND year='".$year."' AND term='".$term."' AND section='".$section."' AND school_yr='".$sy."'";
+		return $query_counter;
+		//this will be reused through the scheduling forms, delete enrollment form, and manual scheduling for irreg students
+	}
+	//bunch of functions for admin and authentication
+	function confirm_query($result_set) {
+		if (!$result_set) {
+			die("Database query failed.");
+			$error = error_reporting(E_ALL);
+			echo $error;
+		}
+	}
+	function find_admin_by_username($username) {
+		global $connection;
+
+		$safe_username = mysqli_real_escape_string($connection, $username);
+
+		$query  = "SELECT * ";
+		$query .= "FROM users ";
+		$query .= "WHERE username = '{$safe_username}' ";
+		$query .= "LIMIT 1";
+		$admin_set = mysqli_query($connection, $query);
+		confirm_query($admin_set);
+		if($admin = mysqli_fetch_assoc($admin_set)) {
+			return $admin;
+			echo "Username Exist";
+		} else {
+			return null;
+
+		}
+	}
+	function password_check($password, $existing_hash) {
+		// existing hash contains format and salt at start
+		$hash = crypt($password, $existing_hash);
+		if ($hash == $existing_hash) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	function attempt_login($username, $password) {
+		$admin = find_admin_by_username($username);
+		if($admin) {
+			// Found Admin, now check password
+			if (password_verify($password, $admin["password"])) {
+				// password matches
+				return $admin;
+			} else {
+				// password does not match
+				return false;
+			}
+		} else {
+			return false;
+		}
+	}
+	function logged_in(){
+		return isset($_SESSION["user_id"]);
+	}
+	function confirm_logged_in(){
+		if (!logged_in()) {
+			redirect_to("index.php");
+		}
+	}
+	function generate_salt($length) {
+		// Not 100% unique, not 100% random, but good enough for a salt
+		// MD5 returns 32 characters
+		$unique_random_string = md5(uniqid(mt_rand(), true));
+
+		// Valid characters for a salt are [a-zA-Z0-9./]
+		$base64_string = base64_encode($unique_random_string);
+
+		// But not '+' which is valid in base64 encoding
+		$modified_base64_string = str_replace('+', '.', $base64_string);
+
+		// Truncate string to the correct length
+		$salt = substr($modified_base64_string, 0, $length);
+
+		return $salt;
+	}
+	function password_encrypt($password) {
+		//password hashing function for security
+
+		$hash_format = "$2y$10$";	// Tells PHP to use Blowfish with a "cost" of 10
+		$salt_length = 22;			// Blowfish salts should be 22-characters or more
+		$salt = generate_salt($salt_length);
+		$format_and_salt = $hash_format . $salt;
+		$hash = crypt($password, $format_and_salt);
+		return $hash;
+	}
+
+
+//utility function that calls the general query run on the system to save space and refactor the codes
+	function return_current_sy($connection,$current_sy){
+		$query_return_current_sy = "SELECT active_sy FROM site_settings LIMIT 1";
+        $result_return_current_sy = mysqli_query($connection, $query_return_current_sy);
+        while($row_return_current_sy = mysqli_fetch_assoc($result_return_current_sy))
+        {
+          $current_sy = $row_return_current_sy['active_sy'];
+     	
+        }
+        return $current_sy;
+	}
+	function return_current_term($connection,$current_term){
+		$query_return_current_term = "SELECT active_term FROM site_settings LIMIT 1";
+        $result_return_current_term = mysqli_query($connection, $query_return_current_term);
+        while($row_return_current_term = mysqli_fetch_assoc($result_return_current_term))
+        {
+          $current_term = $row_return_current_term['active_term'];
+     	
+        }
+        return $current_term;
+	}
+
+//NEXT: Utility function to count the current enrollment of irreg students for the given course, year, term, SY, and section
+	function get_enrolled_regular_students($connection,$current_reg_student_enrolled,$course_id,$year,$term,$section,$school_yr){
+		$query_get_enrolled  = "SELECT COUNT(*) AS num FROM enrollment WHERE course_id='".$course_id."' AND year='".$year."' AND term ='".$term."' AND section='".$section."' AND school_yr='".$school_yr."'";
+       	$result_get_enrolled = mysqli_query($connection, $query_get_enrolled);
+        while($row_get_enrolled = mysqli_fetch_assoc($result_get_enrolled)){
+          $current_reg_student_enrolled = $row_get_enrolled['num'];
+         }
+        return $current_reg_student_enrolled;
+	}
+	function get_teacher_name($teacher_id, $teacher_name, $connection){
+		$query_teacher_name = "SELECT * FROM teachers WHERE teacher_id='".$teacher_id."' LIMIT 1";
+        $result_teacher_name = mysqli_query($connection, $query_teacher_name);
+        while($row_teacher_name = mysqli_fetch_assoc($result_teacher_name))
+        {
+          $teacher_name = $row_teacher_name['first_name']." ".$row_teacher_name['last_name'];
+        
+        }
+
+        return $teacher_name;
+    }
+ 	function get_section_name($sec_id, $section_name, $connection){
+		$query_section_name = "SELECT * FROM sections WHERE sec_id='".$sec_id."' LIMIT 1";
+        $result_section_name = mysqli_query($connection, $query_section_name);
+        while($row_section_name = mysqli_fetch_assoc($result_section_name))
+        {
+          $section_name = $row_section_name['sec_name'];
+        
+        }
+
+        return $section_name;
+    }
+ 	function get_subject_name($subject_id, $subject_name, $connection){
+		$query_subject_name = "SELECT * FROM subjects WHERE subject_id='".$subject_id."' LIMIT 1";
+        $result_subject_name = mysqli_query($connection, $query_subject_name);
+        while($row_subject_name = mysqli_fetch_assoc($result_subject_name))
+        {
+          $subject_name = $row_subject_name['subject_name'];
+        
+        }
+
+        return $subject_name;
+    }
+  	function get_subject_code($subject_id, $subject_code, $connection){
+		$query_subject_code = "SELECT * FROM subjects WHERE subject_id='".$subject_id."' LIMIT 1";
+        $result_subject_code = mysqli_query($connection, $query_subject_code);
+        while($row_subject_code = mysqli_fetch_assoc($result_subject_code))
+        {
+          $subject_code = $row_subject_code['subject_code'];
+        
+        }
+
+        return $subject_code;
+    }
+   	function get_subject_unit_count($subject_id, $unit, $connection){
+		$query_subject_unit = "SELECT * FROM subjects WHERE subject_id='".$subject_id."' LIMIT 1";
+        $result_subject_unit = mysqli_query($connection, $query_subject_unit);
+        while($row_subject_unit = mysqli_fetch_assoc($result_subject_unit))
+        {
+          $subject_unit = $row_subject_unit['units'];
+        
+        }
+
+        return $subject_unit;
+    }
+   	function get_course_code($course_id, $course_code, $connection){
+		$query_course_code = "SELECT * FROM courses WHERE course_id='".$course_id."' LIMIT 1";
+        $result_course_code = mysqli_query($connection, $query_course_code);
+        while($row_course_code = mysqli_fetch_assoc($result_course_code))
+        {
+          $course_code = $row_course_code['course_code'];
+        
+        }
+
+        return $course_code;
+    }
+    function get_student_name($stud_reg_id,$connection){
+    	$query_student_name = "SELECT * FROM students_reg WHERE stud_reg_id=".$stud_reg_id;
+    	$result_student_name = mysqli_query($connection, $query_student_name);
+    	while($row_student_name = mysqli_fetch_assoc($result_student_name))
+    	 {
+    	  $student_name = $row_student_name['last_name'].", ".$row_student_name['first_name'].", ".substr($row_student_name['middle_name'], 0,1.).".";
+    	 }
+    	 return $student_name;
+    }
+ ?>
+

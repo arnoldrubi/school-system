@@ -1,0 +1,81 @@
+
+<?php 
+require_once("includes/session.php");
+require_once("includes/functions.php");
+require_once("includes/db_connection.php");
+
+  // // we will use ajax for this one
+  // // get the subject id from #selected-subjects li
+  // // create a loop for the sql insert command
+  // // use the count of li elements under #selected-subjects as the max loop
+  // insert course id, subject id, year, and term
+  if (isset($_POST['submit'])) {
+
+    $data = $_POST['array_values'];
+    $arrVal = explode(";",$data);
+    $arrLength = count($arrVal);
+
+    $stud_reg_id = (int) $_POST["stud_reg_id"];
+    $course = (int) $_POST["course"];
+    $year = mysql_prep($_POST["year"]);
+    $term = mysql_prep($_POST["term"]);
+    $sy = mysql_prep($_POST["sy"]);
+
+    $query  = "SELECT * FROM student_grades WHERE stud_reg_id = '".$stud_reg_id."' AND course_id='".$course."' AND year = '".$year."' AND term = '".$term."' AND school_yr='".$sy."'";
+    $result = mysqli_query($connection, $query);
+
+    if (mysqli_num_rows($result)>0) {
+      echo "<script type='text/javascript'>";
+      echo "alert('Student has subjects assigned for this year, and term');";
+      echo "</script>";
+
+      $URL="irregular-manual-enrollment.php";
+      echo "<script>location.href='$URL'</script>";
+    }
+
+    else{
+
+      foreach ($arrVal as $subject_id) {
+
+      $query2   = "INSERT INTO irreg_manual_subject (stud_reg_id, subject_id, year, term, school_yr) VALUES ('{$stud_reg_id}', '{$subject_id}', '{$year}', '{$term}', '{$sy}')";
+      $result2 = mysqli_query($connection, $query2);
+
+      //get value of teacher id from existing records on the grades table
+
+      $query_get_teacher_id  =  "SELECT teacher_id FROM student_grades WHERE subject_id ='".$subject_id."' AND course_id ='".$course."' AND term ='".$term."' AND year ='".$year."' AND school_yr='".$sy."'";
+      $result_get_teacher_id = mysqli_query($connection, $query_get_teacher_id); 
+
+      if (mysqli_num_rows($result_get_teacher_id)>0) {
+        while($row_get_teacher_id = mysqli_fetch_assoc($result_get_teacher_id ))
+          {     
+            $teacher_id = $row_get_teacher_id['teacher_id'];
+            $query   = "INSERT INTO student_grades (stud_reg_id, course_id, subject_id, teacher_id, year, term, section, school_yr) VALUES ('{$stud_reg_id}', '{$course}', '{$subject_id}', '{$teacher_id}', '{$year}', '{$term}','N/A', '{$sy}')";
+          }
+      }
+
+      else{
+            $query   = "INSERT INTO student_grades (stud_reg_id, course_id, subject_id, year, term, section, school_yr, grade_posted) VALUES ('{$stud_reg_id}', '{$course}', '{$subject_id}', '{$year}', '{$term}','N/A', '{$sy}', 0)";
+              }
+
+      $result = mysqli_query($connection, $query);
+    
+
+      }
+    }
+
+      if ($result === TRUE) {
+        echo "<script type='text/javascript'>";
+        echo "alert('Create subject set successful!');";
+        echo "</script>";
+
+        $URL="irregular-manual-enrollment.php";
+        echo "<script>location.href='$URL'</script>";
+        } else {
+
+          echo "Error updating record: " . $connection->error;
+        }
+ }
+
+  if(isset($connection)){ mysqli_close($connection); }
+  //close database connection after an sql command
+  ?>
