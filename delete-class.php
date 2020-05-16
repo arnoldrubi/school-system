@@ -12,8 +12,11 @@
     redirect_to("view-teachers-and-rooms.php");
   }
 
-    $query  = "DELETE FROM classes WHERE class_id ='".$class_id."' LIMIT 11";
+    $query  = "DELETE FROM classes WHERE class_id ='".$class_id."' LIMIT 1";
     $result = mysqli_query($connection, $query);
+
+    $query_schedule  = "DELETE FROM schedule_block WHERE class_id ='".$class_id."'";
+    $result_schedule = mysqli_query($connection, $query_schedule);
 
   //close database connection after an sql command
 

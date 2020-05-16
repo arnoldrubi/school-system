@@ -5,17 +5,31 @@
 <?php include 'layout/header.php';?>
 
 <?php 
-	if (isset($_GET['course_id']) && isset($_GET['year']) && isset($_GET['term']) && isset($_GET['sy']) && $_GET['course_id'] !== "" && $_GET['year'] !== "" && $_GET['term'] !== "" && $_GET['sy'] !== "") {
-      $course_id = $_GET["course_id"];
-      $year = urldecode($_GET["year"]);
-      $term = urldecode($_GET["term"]);
-      $sy = urldecode($_GET["sy"]);
-      $section = urldecode($_GET["section"]);
+	if (isset($_GET['sec_id'])) {
+      $sec_id = $_GET["sec_id"];
     }
     else{
-      $URL="new-group-schedule.php";
-      echo "<script>location.href='$URL'</script>";
+      redirect_to("new-group-schedule.php");
     }
+
+    //get all available classes
+
+  $query_get_classes  = "SELECT * FROM classes WHERE sec_id='".$sec_id."'";
+  $result_get_classes = mysqli_query($connection, $query_get_classes);
+
+  $class_id = array();
+  while($row_get_classes = mysqli_fetch_assoc($result_get_classes)){
+    array_push($class_id, $row_get_classes['class_id']);
+  }
+
+  $query_get_section  = "SELECT * FROM sections WHERE sec_id='".$sec_id."'";
+  $result_get_section = mysqli_query($connection, $query_get_section);
+
+  while($row_get_section = mysqli_fetch_assoc($result_get_section)){
+    $course_id = $row_get_section['course_id'];
+    $year = $row_get_section['year'];
+    $section = $row_get_section['sec_name'];
+  } 
   ?>
 
 
@@ -31,6 +45,13 @@
 
   <?php
 
+        echo "<h2 class=\"text-center mb-0\">".get_course_code($course_id,"",$connection)."</h2>";
+        echo "<p class=\"text-center mb-0\">".$year.", ".return_current_term($connection,"").", Section: ".$section."</p>";
+        echo "<p class=\"text-center\">School Year: ".return_current_sy($connection,"")."</p>";
+        echo "<center>";
+        echo "<button id=\"preview-print\" class=\"btn btn-primary no-print\"><i class=\"fa fa-print\" aria-hidden=\"true\"></i></i></i> Print Schedule</button></center><br>";
+ 
+
         echo "<table style=\"font-size: 11px;\" id=\"schedule-table\" class=\"table table-striped table-bordered table-sm text-center\">";
         echo " <thead>";
         echo "  <tr>";
@@ -42,29 +63,18 @@
         echo "   <th>Saturday</th>";
         echo "   <th>Sunday</th>";   
         echo "  </tr></thead><tbody>";
+         
 
-      $course_id = $_GET["course_id"];
-      $year = urldecode($_GET["year"]);
-      $term = urldecode($_GET["term"]);
-      $sy = urldecode($_GET["sy"]);
+        
+        $class_set = implode(",", $class_id);
 
-        $query_get_course  = "SELECT * FROM courses WHERE course_id='".$course_id."'";
-        $result_get_course = mysqli_query($connection, $query_get_course);
+        $query  = "SELECT * FROM schedule_block WHERE class_id IN (".$class_set.") ORDER BY time_start ASC ";
+        $result = mysqli_query($connection, $query);
 
-        while($row_get_course = mysqli_fetch_assoc($result_get_course)){
-        	$course_code = $row_get_course['course_code'];
-        	$course_desc = $row_get_course['course_desc'];
+        if (mysqli_num_rows($result) < 1) {
+         die ("<tr><td><div class=\"alert alert-danger\" role=\"alert\">No schedule created. <a href=\"create-schedule-for-class.php?sec_id=".$sec_id."\" class=\"btn btn-success btn-sm\">Add New Schedule</a></div></td></tr>");
         }
 
-      	echo "<h2 class=\"text-center mb-0\">".$course_desc." (".$course_code.")</h2>";
-      	echo "<p class=\"text-center mb-0\">".$year.", ".$term.", Section: ".$section."</p>";
-        echo "<p class=\"text-center\">School Year: ".$sy."</p>";
- 	      echo "<center>";
-        echo "<button id=\"preview-print\" class=\"btn btn-primary no-print\"><i class=\"fa fa-print\" aria-hidden=\"true\"></i></i></i> Print Schedule</button></center><br>";
-        
-
-        $query  = "SELECT * FROM schedule_block WHERE course_id='".$course_id."' AND year='".$year."' AND term='".$term."' AND school_yr='".$sy."' ORDER BY time_start ASC ";
-        $result = mysqli_query($connection, $query);
 
         while($row = mysqli_fetch_assoc($result)){
 
@@ -172,7 +182,7 @@
         			}
 
            	echo "</tr>";
-        }
+      }
 
         echo "</tbody></table>"; 
 

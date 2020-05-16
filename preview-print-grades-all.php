@@ -10,7 +10,7 @@
     $term = $_GET["term"];
     $year = $_GET["year"];
     $course_id = $_GET["course_id"];
-    $section = $_GET["section"];
+    $sec_id = $_GET["section"];
     $teacher_id = $_GET["teacher_id"];
   }
   else{
@@ -46,7 +46,7 @@
       echo "<p>".get_subject_code($subject_id,"",$connection)." (".get_subject_name($subject_id,"",$connection).")</p>";
       echo "<p>Teacher: ".get_teacher_name($teacher_id,"",$connection)."</p>";
       echo "<p>".get_course_code($course_id,"",$connection).",".$year.", ".$term."</p>";
-      echo "<p>Section:".$section."</p>";
+      echo "<p>Section:".get_section_name($sec_id,"",$connection)."</p>";
 
     ?>
   </div>
@@ -60,7 +60,7 @@
         echo "<table style=\"font-size: 11px;\" id=\"datatable\" class=\"table table-striped table-bordered table-sm text-center\">";
         echo " <thead>";
         echo "  <tr>";
-        echo "   <th>Student ID</th>";
+        echo "   <th>Student Number</th>";
         echo "   <th>Name</th>";
         echo "   <th>Prelim</th>";
         echo "   <th>Midterm</th>";
@@ -71,7 +71,7 @@
         echo "  </tr></thead><tbody>";
 
 
-        $query = "SELECT student_grades.stud_reg_id, student_grades.prelim, student_grades.midterm, student_grades.semis, student_grades.finals, student_grades.final_grade,student_grades.remarks, students_reg.first_name, students_reg.middle_name, students_reg.last_name FROM student_grades INNER JOIN students_reg ON student_grades.stud_reg_id = students_reg.stud_reg_id WHERE student_grades.subject_id ='".$subject_id."' AND student_grades.section ='".$section."'";
+        $query = "SELECT student_grades.stud_reg_id, student_grades.prelim, student_grades.midterm, student_grades.semis, student_grades.finals, student_grades.final_grade,student_grades.remarks, students_reg.first_name, students_reg.middle_name, students_reg.last_name FROM student_grades INNER JOIN students_reg ON student_grades.stud_reg_id = students_reg.stud_reg_id WHERE student_grades.subject_id ='".$subject_id."' AND student_grades.sec_id ='".$sec_id."' AND student_grades.grade_posted=1";
 
         $result = mysqli_query($connection, $query);
 
@@ -79,7 +79,7 @@
       while($row = mysqli_fetch_assoc($result))
         {
         echo "<tr>";
-          echo "<td width=\"12.5%\">".$row['stud_reg_id']."</td>";
+          echo "<td width=\"12.5%\">".get_student_number($row['stud_reg_id'],$connection)."</td>";
           echo "<td width=\"12.5%\">".$row['last_name'].", ".$row['first_name'].", ".substr($row['middle_name'], 0,1).".</td>";
           echo "<td width=\"12.5%\">".$row['prelim']."</td>";
           echo "<td width=\"12.5%\">".$row['midterm']."</td>";

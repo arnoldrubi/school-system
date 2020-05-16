@@ -35,27 +35,41 @@ require_once("includes/db_connection.php");
 
     else{
 
-      foreach ($arrVal as $subject_id) {
+
+      foreach ($arrVal as $class_id) {
+
+
+      //insert irreg student schedule based on class_id
+
+      $query_class_info = "SELECT * FROM classes WHERE class_id='".$class_id."'";
+      $result_class_info = mysqli_query($connection, $query_class_info);
+
+      while($row_class_info = mysqli_fetch_assoc($result_class_info))
+      {
+        $subject_id = $row_class_info['subject_id'];
+        $teacher_id = $row_class_info['teacher_id'];
+        $current_students = $row_class_info['students_enrolled'];
+      }
+
+      //insert irreg student and record his/her schedule
+      $query3   = "INSERT INTO irreg_manual_sched (stud_reg_id, schedule_id, year, term, school_yr) VALUES ('{$stud_reg_id}', '{$class_id}', '{$year}', '{$term}', '{$sy}')";
+      $result3 = mysqli_query($connection, $query3);
+
+      //update all selected schedule block's current students 
+      $current_students = $current_students + 1;
+
+      $query_update_current_students  = "UPDATE classes SET students_enrolled = '{$current_students}' WHERE class_id='".$class_id."' LIMIT 1";
+      $result_update_current_students = mysqli_query($connection, $query_update_current_students);
+
+      //insert irreg student and record his/her subjects/classes
+      $query3  = "INSERT INTO irreg_manual_sched (stud_reg_id, class_id, year, term, school_yr) VALUES ('{$stud_reg_id}', '{$class_id}', '{$year}', '{$term}', '{$sy}')";
+      $result3 = mysqli_query($connection, $query3);
 
       $query2   = "INSERT INTO irreg_manual_subject (stud_reg_id, subject_id, year, term, school_yr) VALUES ('{$stud_reg_id}', '{$subject_id}', '{$year}', '{$term}', '{$sy}')";
       $result2 = mysqli_query($connection, $query2);
 
-      //get value of teacher id from existing records on the grades table
-
-      $query_get_teacher_id  =  "SELECT teacher_id FROM student_grades WHERE subject_id ='".$subject_id."' AND course_id ='".$course."' AND term ='".$term."' AND year ='".$year."' AND school_yr='".$sy."'";
-      $result_get_teacher_id = mysqli_query($connection, $query_get_teacher_id); 
-
-      if (mysqli_num_rows($result_get_teacher_id)>0) {
-        while($row_get_teacher_id = mysqli_fetch_assoc($result_get_teacher_id ))
-          {     
-            $teacher_id = $row_get_teacher_id['teacher_id'];
-            $query   = "INSERT INTO student_grades (stud_reg_id, course_id, subject_id, teacher_id, year, term, section, school_yr) VALUES ('{$stud_reg_id}', '{$course}', '{$subject_id}', '{$teacher_id}', '{$year}', '{$term}','N/A', '{$sy}')";
-          }
-      }
-
-      else{
-            $query   = "INSERT INTO student_grades (stud_reg_id, course_id, subject_id, year, term, section, school_yr, grade_posted) VALUES ('{$stud_reg_id}', '{$course}', '{$subject_id}', '{$year}', '{$term}','N/A', '{$sy}', 0)";
-              }
+      //insert irreg student to the grading tables
+      $query   = "INSERT INTO student_grades (stud_reg_id, course_id, subject_id, teacher_id, year, term, sec_id, school_yr,grade_posted) VALUES ('{$stud_reg_id}', '{$course}', '{$subject_id}', '{$teacher_id}', '{$year}', '{$term}','0', '{$sy}', '0')";      
 
       $result = mysqli_query($connection, $query);
     

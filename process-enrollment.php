@@ -193,12 +193,14 @@
   if (isset($_POST['submit'])) {
 
   $course = mysql_prep($_POST["course"]);
-  $section = mysql_prep($_POST["section"]);
+  $sec_id = $_POST["section"];
   $sy = mysql_prep($_POST["school-year"]);
   $term = mysql_prep($_POST["term"]);
   $regirreg = (int) ($_POST["regirreg"]);
   $remarks = mysql_prep($_POST["remarks"]);
   $year = mysql_prep($_POST["year"]);
+
+
 
   $query  = "SELECT * FROM enrollment WHERE stud_reg_id = '".$stud_reg_id."' AND term ='".$term."' AND school_yr ='".$sy."'";
   $result = mysqli_query($connection, $query);
@@ -218,54 +220,53 @@
         echo "<script type='text/javascript'>";
         echo "alert('Student is irregular. Manual subject assignment is needed to complete the enrollment!');";
         echo "</script>";
-        $section = "N/A";
     }
     else{
 
-      $query  = "SELECT subject_id FROM course_subjects WHERE course_id ='".$course."' AND term ='".$term."' AND year ='".$year."' AND section='".$section."'";
+    //validation: Enrollment will not proceed if there subjects w/o classes for the chosen course, and year
+    $classes_subjects = array();
+    $query_check_classes  = "SELECT * FROM classes WHERE sec_id='".$sec_id."'";
+    $result_check_classes = mysqli_query($connection, $query_check_classes);
+
+    while($row_check_classes = mysqli_fetch_assoc($result_check_classes))
+    {
+      array_push($classes_subjects, $row_check_classes['subject_id']);
+    }
+
+    $subjects_from_course = array();
+    $query  = "SELECT * FROM course_subjects WHERE course_id='".$course."' AND year='".$year."' AND term='".return_current_term($connection,"")."' AND school_yr='".return_current_sy($connection,"")."'";
+    $result = mysqli_query($connection, $query);
+
+    while($row = mysqli_fetch_assoc($result))
+      {
+        array_push($subjects_from_course, $row['subject_id']);
+      }
+
+    $missing_subjects = array_diff($subjects_from_course, $classes_subjects);
+
+    if (sizeof($missing_subjects) > 0) {
+     $redirect_class = "classes.php?sec_id=".urlencode($sec_id);
+     die("<div class=\"alert alert-danger\" role=\"alert\">Class for this course and year is incomplete! Go to the <a href=\"".$redirect_class."\">Classes Page to Create</a></div>");
+    }
+    
+
+    //End validation
+
+      $query  = "SELECT * FROM classes WHERE sec_id ='".$sec_id."'";
       $result = mysqli_query($connection, $query);
 
       while($row = mysqli_fetch_assoc($result))
         {
-          $subject_id = (int) $row['subject_id'];
+          $subject_id = $row['subject_id'];
+          $teacher_id = $row['teacher_id'];
+          $class_id = $row['class_id'];
 
-          //get value of teacher id from existing records on the grades table
-
-          $query_get_teacher_id  =  "SELECT teacher_id FROM student_grades WHERE subject_id ='".$subject_id."' AND course_id ='".$course."' AND term ='".$term."' AND year ='".$year."' AND section ='".$section."' AND school_yr='".$sy."'";
-          $result_get_teacher_id = mysqli_query($connection, $query_get_teacher_id); 
-
-          if (mysqli_num_rows($result_get_teacher_id)) {
-            while($row_get_teacher_id = mysqli_fetch_assoc($result_get_teacher_id ))
-              {     
-                $teacher_id = $row_get_teacher_id['teacher_id'];
-              }
-
-            $query2  = "INSERT INTO student_grades (stud_reg_id, subject_id, teacher_id, course_id, year, term, section, school_yr, grade_posted) VALUES ('{$reg_id_enroll}', '{$subject_id}', '{$teacher_id}', '{$course}', '{$year}', '{$term}','{$section}', '{$sy}', '0');";
-
-          }
-
-          else{
-            
-            $query2  = "INSERT INTO student_grades (stud_reg_id, subject_id, course_id, year, term, section, school_yr, grade_posted) VALUES ('{$reg_id_enroll}', '{$subject_id}', '{$course}', '{$year}', '{$term}','{$section}', '{$sy}', '0');";
-          }
-
-          print_r($query2);
-
+          $query2  = "INSERT INTO student_grades (stud_reg_id, subject_id, teacher_id, course_id, year, term, sec_id, school_yr, grade_posted) VALUES ('{$reg_id_enroll}', '{$subject_id}', '{$teacher_id}', '{$course}', '{$year}', '{$term}','{$sec_id}', '{$sy}', '0');";
           $result2 = mysqli_query($connection, $query2);
-
-          //another query for inserting the grades of the student, will loop around all subject for that year, sy, term, and course
-
-          $query3  = "SELECT * FROM student_grades WHERE subject_id='".$row['subject_id']."'";
-          $result3 = mysqli_query($connection, $query3);
-          $students_enrolled = mysqli_num_rows($result3);
-
-          if ($students_enrolled > 0) {
-          $query4  = "UPDATE schedule_block  SET students_enrolled = '{$students_enrolled}' WHERE course_id ='".$course."' AND term ='".$term."' AND year ='".$year."' AND subject_id='".$row['subject_id']."'";
-          $result4 = mysqli_query($connection, $query4);
-          }
-
+         
         }
-    }
+
+      }
       //NEXT MANAGE CONFLICT IN STUDENT NUMBER FOR MULTIPLE ENROLLMENT
   
         $query3  = "SELECT course_code FROM courses WHERE course_id='".$course."' LIMIT 1";
@@ -277,27 +278,66 @@
             $course_code = $row3['course_code'];
         }    
 
-       $new_student_number = generate_student_number($sy,$course_code,strval($stud_reg_id));
+      //Generate student number
+      $new_student_number = generate_student_number($sy,$course_code,strval($stud_reg_id));
 
-      $query  = "INSERT INTO enrollment (stud_reg_id, student_number, course_id, year, section, school_yr, term, irregular, remarks) VALUES ('{$reg_id_enroll}', '{$new_student_number}', '{$course}', '{$year}', '{$section}', '{$sy}', '{$term}', '{$regirreg}', '{$remarks}')";
-      //query for enrolling the student
 
+      if ($regirreg == "1") {
+      $query  = "INSERT INTO enrollment (stud_reg_id, student_number, course_id, year, sec_id, school_yr, term, irregular, remarks) VALUES ('{$reg_id_enroll}', '{$new_student_number}', '{$course}', '{$year}', '0', '{$sy}', '{$term}', '{$regirreg}', '{$remarks}')";
+      //query for enrolling the regular student
       $result = mysqli_query($connection, $query);
       $query_get_last_id   = mysqli_insert_id($connection);
+      }else{
+
+      $query  = "INSERT INTO enrollment (stud_reg_id, student_number, course_id, year, sec_id, school_yr, term, irregular, remarks) VALUES ('{$reg_id_enroll}', '{$new_student_number}', '{$course}', '{$year}', '{$sec_id}', '{$sy}', '{$term}', '{$regirreg}', '{$remarks}')";
+      //query for enrolling the regular student
+      $result = mysqli_query($connection, $query);
+      $query_get_last_id   = mysqli_insert_id($connection);
+
+      //start updating current students for classes under the section enrolled
+
+      $query_get_class_ids = "SELECT * from classes WHERE sec_id='".$sec_id."'";
+      $result_get_class_ids = mysqli_query($connection, $query_get_class_ids);
+
+      $class_ids = array();
+      while($row_get_class_ids = mysqli_fetch_assoc($result_get_class_ids))
+      {
+        array_push($class_ids, $row_get_class_ids['class_id']);
+      }
+
+     for ($i=0; $i < sizeof($class_ids); $i++) { 
+        
+        $query_get_irreg_count  = "SELECT COUNT(*) AS num FROM irreg_manual_sched WHERE class_id='".$class_ids[$i]."'";
+        $result_get_enrolled = mysqli_query($connection, $query_get_irreg_count);
+        while($row_get_enrolled = mysqli_fetch_assoc($result_get_enrolled)){
+           $irreg_count = $row_get_enrolled['num'];
+         }
+
+        $sec_id = get_section_name_by_class($class_ids[$i],"",$connection);
+        $count_regular_student = get_enrolled_regular_students($sec_id,"",$connection);
+
+        $current_students_total = $irreg_count + $count_regular_student;
+
+        $query4  = "UPDATE classes SET students_enrolled = '{$current_students_total}' WHERE class_id ='".$class_ids[$i]."'";
+        $result4 = mysqli_query($connection, $query4);
+        }
+      //End updating current students enrolled for each classes under this section
+
+    }
+
       if ($result === TRUE) {
           if ($regirreg == "1") {
           $URL="irregular-manual-enrollment.php";
           echo "<script>location.href='$URL'</script>";
             }
           else{
-            $redirect_url = "enrollment-successful.php?success=1&student_id=".urlencode($query_get_last_id)."&term=".urlencode($term)."&sy=".urlencode($sy);
+            $redirect_url = "enrollment-successful.php?success=1&stud_reg_id=".urlencode($stud_reg_id)."&term=".urlencode($term)."&sy=".urlencode($sy)."&irregular=".urlencode($regirreg);
             redirect_to($redirect_url);
           }
         
       } else {
         echo "Error updating record: " . $connection->error;
         }
-
     }
   }
       ?>
@@ -342,8 +382,8 @@ load_section(course,year);
 
   $('#exampleRadios2').click(function(){
     $("#section").attr("disabled", true);
-    $("#section").append($("<option>", {value:"N/A", text:"N/A"}));
-    $("#section").val("N/A");
+    $("#section").append($("<option>", {value:"0", text:"N/A"}));
+    $("#section").val("0");
   })
   $('#exampleRadios1').click(function(){
     $("#section").attr("disabled", false);

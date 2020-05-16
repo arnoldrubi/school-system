@@ -8,26 +8,31 @@
     if ($sidebar_context == "scheduling") {
       echo "<li class=\"nav-item dropdown\">";
       echo "  <a class=\"nav-link dropdown-toggle\" href=\"#\" id=\"pagesDropdown\" role=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">";
+      echo "   <i class=\"fa fa-users\" aria-hidden=\"true\"></i>";
+      echo "   <span>Class Management</span></a>";
+        
+      echo " <div class=\"dropdown-menu\" aria-labelledby=\"pagesDropdown\">";
+      echo "    <a class=\"dropdown-item\" href=\"manage-sections.php\">Sections</a>";
+      echo "    <a class=\"dropdown-item\" href=\"classes.php\">Classes</a></div></li>";
+
+      echo "<li class=\"nav-item dropdown\">";
+      echo "  <a class=\"nav-link dropdown-toggle\" href=\"#\" id=\"pagesDropdown\" role=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">";
       echo "   <i class=\"fa fa-calendar-o\" aria-hidden=\"true\"></i>";
       echo "   <span>Block Scheduling</span></a>";
         
       echo " <div class=\"dropdown-menu\" aria-labelledby=\"pagesDropdown\">";
-      echo "    <a class=\"dropdown-item\" href=\"new-group-schedule.php\">Add New</a>";
-      echo "    <a class=\"dropdown-item\" href=\"view-schedule.php\">View All</a>";
-      echo "    <a class=\"dropdown-item\" href=\"print-group-schedule.php\">Print Schedule</a></div></li>";
+      echo "    <a class=\"dropdown-item\" href=\"new-group-schedule.php\">View All</a>";
     }
 
     if ($sidebar_context == "teachers_rooms") {
       echo "<li class=\"nav-item dropdown\">";
       echo "  <a class=\"nav-link dropdown-toggle\" href=\"#\" id=\"pagesDropdown\" role=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">";
       echo "   <i class=\"fa fa-building-o\" aria-hidden=\"true\"></i>";
-      echo "    <span>Rooms & Sections</span></a>";
+      echo "    <span>Rooms</span></a>";
        
       echo " <div class=\"dropdown-menu\" aria-labelledby=\"pagesDropdown\">";
       echo "    <a class=\"dropdown-item\" href=\"new-room.php\">Add New Room</a>";
       echo "    <a class=\"dropdown-item\" href=\"view-room.php\">View All Rooms</a>";
-      echo "    <a class=\"dropdown-item\" href=\"manage-sections.php\">Section Management</a>";
-      echo "    <a class=\"dropdown-item\" href=\"classes.php\">Classes</a></div></li>";
       echo "<li class=\"nav-item dropdown\">";
       echo "  <a class=\"nav-link dropdown-toggle\" href=\"#\" id=\"pagesDropdown\" role=\"button\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">";
       echo "    <i class=\"fa fa-address-card-o\" aria-hidden=\"true\"></i><span>Teachers</span></a>";

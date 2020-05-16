@@ -3,7 +3,18 @@
 <?php require_once("includes/db_connection.php"); ?>
 
 <?php include 'layout/header.php';?>
+<?php
 
+  if (isset($_GET['class_id'])) {
+    $class_id = $_GET["class_id"]; //Refactor this validation later
+  }
+  else{
+    $class_id = NULL;
+  }
+  if ($class_id == NULL) {
+    redirect_to("classes.php");
+  }
+?>
 
   <title>Manage Schedule</title>
   </head>
@@ -28,7 +39,39 @@
          View All Schedule
         </li>
       </ol>
-      <h1>View All Schedule</h1>
+      <?php
+          $query_section  = "SELECT * FROM classes WHERE class_id='".$class_id."'";
+          $result_section = mysqli_query($connection, $query_section);
+
+          while($row_section = mysqli_fetch_assoc($result_section))
+            {
+              $sec_name = get_section_name($row_section['sec_id'],"",$connection);
+              $sec_year = get_section_year($row_section['sec_id'],"",$connection);
+              $subject_name = get_subject_name($row_section['subject_id'],"",$connection);
+              $subject_code = get_subject_code($row_section['subject_id'],"",$connection);
+              $sec_id = $row_section['sec_id'];
+
+              $query_course  = "SELECT * FROM sections WHERE sec_id='".$row_section['sec_id']."'";
+              $result_course = mysqli_query($connection, $query_course);
+              while($row_course = mysqli_fetch_assoc($result_course))
+                {
+                  $course = get_course_code($row_course['course_id'],"",$connection);
+                }
+              
+            }
+      ?>
+      <div class="row">
+        <div class="col-md-8">
+          <h4><i class="fa fa-bell" aria-hidden="true"></i> All Schedule for <?php echo $subject_name." (".$subject_code."), ".$course." ".$sec_year." ".$sec_name; ?></h4>
+        </div>
+        <div class="col-md-4">
+          <div class="button-flt-right">
+            <?php
+              echo "<a href=\"new-schedule.php?class_id=".urlencode($class_id)."\" class=\"btn btn-success btn-sm\">Add New Schedule</a><br>";
+            ?>
+          </div>
+        </div>  
+      </div>
       <hr>
       <div class="table-responsive" id="dataTable_wrapper">
       <?php
@@ -47,14 +90,12 @@
         echo "   <th class=\"skip-filter\">Day</th>";        
         echo "   <th class=\"skip-filter\">Time Start</th>";
         echo "   <th class=\"skip-filter\">Time End</th>";
-        echo "   <th class=\"skip-filter\">Current Students</th>";
-        echo "   <th class=\"skip-filter\">Max Students</th>";
-        echo "   <th class=\"skip-filter\">&nbsp;</th>";   
+        echo "   <th class=\"skip-filter\">Options</th>";   
         echo "  </tr></thead><tbody>";
         
         
 
-        $query  = "SELECT * FROM schedule_block ORDER BY day ASC, time_start ASC";
+        $query  = "SELECT * FROM schedule_block WHERE class_id='".$class_id."' ORDER BY day ASC, time_start ASC";
         $result = mysqli_query($connection, $query);
 
       while($row = mysqli_fetch_assoc($result))
@@ -62,36 +103,17 @@
           $day = number_to_day($row['day']);
           $teacher_name = get_teacher_name($row['teacher_id'],"",$connection);
           echo "<tr>";
-
-          //query that gets the name of the subject using the subject ID from the schedule_block table
-          $query2  = "SELECT * FROM subjects WHERE subject_id='".$row['subject_id']."' LIMIT 1";
-          $result2 = mysqli_query($connection, $query2);
-            while($row2 = mysqli_fetch_assoc($result2)){
-              echo "<td>".$row2['subject_code']."</td>"; 
-              echo "<td>".$row2['subject_name']."</td>"; 
-            }
-
-          //query that gets the name of the course using the course ID from the schedule_block table
-          $query3  = "SELECT course_code FROM courses WHERE course_id='".$row['course_id']."' LIMIT 1";
-          $result3 = mysqli_query($connection, $query3);
-          if (mysqli_num_rows($result3) < 1) {
-             echo "<td>&nbsp;</td>";
-          }
-          else{
-            while($row3 = mysqli_fetch_assoc($result3)){
-              echo "<td>".$row3['course_code']."</td>"; 
-            }
-          }
+          echo "<td>".get_subject_code($row['subject_id'],"",$connection)."</td>"; 
+          echo "<td>".get_subject_name($row['subject_id'],"",$connection)."</td>"; 
+          echo "<td>".get_course_code($row['course_id'],"",$connection)."</td>";
           echo "<td>".$row['year']."</td>";
           echo "<td>".$row['term']."</td>";
-          echo "<td>".$row['section']."</td>";
+          echo "<td>".$sec_name."</td>";
           echo "<td>".$row['room']."</td>";
           echo "<td>".$teacher_name."</td>";
           echo "<td>".$day."</td>";
           echo "<td>".date("g:i A", strtotime($row['time_start']))."</td>";
           echo "<td>".date("g:i A", strtotime($row['time_end']))."</td>";
-          echo "<td>".$row['students_enrolled']."</td>";
-          echo "<td>".$row['student_limit']."</td>";
           echo "<td><a href=\"edit-schedule.php?schedule_id=".$row['schedule_id']."\"".">Edit Schedule</a> | ";
           echo "<a href=\"javascript:confirmDelete('delete-schedule.php?schedule_id=".$row['schedule_id']."')\"> Delete Schedule</a></td>";
           //echo "<a href=\"delete-schedule.php?schedule_id=".$row['schedule_id']."\""." onclick=\"confirm('Are you sure?')\"> Delete Schedule</a></td>";
@@ -103,7 +125,10 @@
 
 
       <center>
-             <button id="preview-print" class="btn btn-primary hidden-print"><i class="fa fa-table" aria-hidden="true"></i></i> Preview Summary</button>
+          <?php
+            echo "<a href=\"create-schedule-for-class.php?sec_id=".urlencode($sec_id)."\" class=\"btn btn-success btn-sm\">Go Back to Class Scheduling</a>&nbsp";
+            echo "<a href=\"new-group-schedule.php\" class=\"btn btn-success btn-sm\">Select Another Section</a>";             
+          ?>
       </center>
     </div>
     </div>

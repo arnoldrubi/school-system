@@ -11,17 +11,11 @@
   <?php include 'layout/admin-nav.php';?>
 
   <?php 
-    if (isset($_GET['course_id']) && isset($_GET['year']) && isset($_GET['term']) && isset($_GET['sy']) && $_GET['course_id'] !== "" && $_GET['year'] !== "" && $_GET['term'] !== "" && $_GET['sy'] !== "") {
-      $course_id = $_GET["course_id"];
-      $year = urldecode($_GET["year"]);
-      $term = urldecode($_GET["term"]);
-      $section = urldecode($_GET["section"]);
-      $sy = urldecode($_GET["sy"]);
-
+    if (isset($_GET['class_id'])) {
+      $class_id = $_GET["class_id"];
     }
     else{
-      $URL="new-group-schedule.php";
-      echo "<script>location.href='$URL'</script>";
+      redirect_to("classes.php");
     }
   ?>
 
@@ -53,20 +47,29 @@
         echo "<div class=\"form-group row\">";
         echo "<label class=\"col-md-2 col-form-label\" for=\"Course\">Course</label>";
         
-        //this block will load the course name from the database
-        $query  = "SELECT * FROM courses WHERE course_id='".$course_id."' LIMIT 1";
-        $result = mysqli_query($connection, $query);
+       $query  = "SELECT classes.class_id,classes.sec_id, classes.subject_id, classes.teacher_id, classes.students_enrolled, classes.student_limit, sections.sec_name, sections.year, sections.course_id FROM classes INNER JOIN sections ON classes.sec_id=sections.sec_id WHERE classes.class_id='".$class_id."' LIMIT 1";
+       $result = mysqli_query($connection, $query);
+
+       while($row = mysqli_fetch_assoc($result))
+        {
+          $sec_id = $row['sec_id'];
+          $course_id = $row['course_id'];
+          $subject_id = $row['subject_id'];
+          $teacher_id = $row['teacher_id'];
+          $year = $row['year'];
+          $current_limit = $row['student_limit'];
+        }
 
         echo "<div class=\"col-md-4\">";
-          while($row = mysqli_fetch_assoc($result)){
-            echo  "<input id=\"course-name\" name=\"course_id\" disabled type=\"text\" value=\"".$row['course_code']."\"  class=\"form-control\" required=\"\">";
-          }
-          echo "";
+            echo  "<select readonly id=\"course-name\" name=\"course_id\" disabled type=\"text\"  class=\"form-control\" required=\"\">";
+            echo  "<option readonly  value=\"".$course_id."\" >".get_course_code($course_id,"",$connection)."</option>";
+            echo "</select>";
       ?>
           </div>
          <label class="col-md-2 col-form-label" for="School Year">School Year</label>
             <?php
               echo "<div class=\"col-md-4\">";
+              $sy = return_current_sy($connection,"");
               echo  "<input id=\"sy\" name=\"sy\" disabled type=\"text\" value=\"".$sy."\"  class=\"form-control\" required=\"\">";
             ?>
          </div>
@@ -81,6 +84,7 @@
          <label class="col-md-2 col-form-label" for="Year">Term</label>
             <?php
               echo "<div class=\"col-md-4\">";
+              $term = return_current_term($connection,"");
               echo  "<input id=\"term\" name=\"term\" disabled type=\"text\" value=\"".$term."\"  class=\"form-control\" required=\"\">";
             ?>
          </div>
@@ -92,34 +96,7 @@
         <div class="col-md-4">
          <select id="subject" class="form-control" name="subject">
            <?php
-           //this block will load the subject name from the database
-              $query  = "SELECT * FROM course_subjects WHERE course_id='".$course_id."' AND year='".$year."' AND term='".$term."'";
-              $result = mysqli_query($connection, $query);
-
-            //check if there are still subjects assigned to the selected course, year, and term
-            if (mysqli_num_rows($result) <= 0) {
-              echo "<script type='text/javascript'>";
-              echo "alert('No assigned subjects for this course, year, and term exists!');";
-              echo "</script>";
-
-              $URL="manage-course-subjects.php";
-              echo "<script>location.href='$URL'</script>";
-            }
-
-              while($row = mysqli_fetch_assoc($result))
-                {
-                  $subject_id = $row['subject_id'];
-
-                  $query2  = "SELECT * FROM subjects WHERE subject_id='".$subject_id."'";
-                  $result2 = mysqli_query($connection, $query2);
-
-                  while($row2 = mysqli_fetch_assoc($result2)){
-
-                  $subject_code = $row2['subject_code']." - ".$row2['subject_name'];
-                  }
-
-                  echo  "<option value=\"".$subject_id."\">".$subject_code."</option>";
-                }
+            echo  "<option readonly value=\"".$subject_id."\">".get_subject_code($subject_id,"",$connection)."</option>";
           ?>
 
          </select>
@@ -146,25 +123,17 @@
        <div class="col-md-4">
          <select name="teacher" class="form-control" required>
            <?php
-           //this block will load the teacher name from the database
-              $query  = "SELECT * FROM teachers";
-              $result = mysqli_query($connection, $query);
-
-
-              while($row = mysqli_fetch_assoc($result))
-                {
-                  echo  "<option value=\"".$row['teacher_id']."\">".$row['first_name']." ".$row['last_name']."</option>";
-                }
+            echo  "<option readonly value=\"".$teacher_id."\">".get_teacher_name($teacher_id,"",$connection)."</option>";
           ?>
          </select>
        </div>
       <label class="col-md-2 col-form-label" for="subject-code">Max Students</label>  
         <div class="col-md-1">
-          <input id="max-students" min="1" max="99" type="number" name="max_students" class="form-control" required placeholder="1">
+          <input id="max-students" readonly min="1" max="99" <?php echo "value=\"".$current_limit."\""; ?> type="number" name="max_students" class="form-control" required placeholder="1">
         </div>
       <label class="col-md-1 col-form-label" for="subject-code">Section</label>  
         <div class="col-md-1">
-          <input id="section" type="text" name="section" class="form-control" <?php echo "value=\"".$section."\""; ?> required placeholder="1" readonly="">
+          <input id="section" type="text" name="section" class="form-control" <?php echo "value=\"".get_section_name($sec_id,"",$connection)."\""; ?> required placeholder="1" readonly="">
         </div>
       </div>
       <h2>Input Time and Day</h2>
@@ -200,7 +169,7 @@
       <div class="row">
         <div class="col-md-12 d-flex justify-content-center">
             <input type="submit" name="submit" value="Create Schedule" class="btn btn-primary" />&nbsp;
-            <a class="btn btn-secondary"href="view-schedule.php">Cancel</a>
+            <a class="btn btn-secondary"href="new-group-schedule.php">Cancel</a>
         </div>
       </div>
     </form>
@@ -218,38 +187,14 @@
           $day = mysql_prep($_POST['day']);
           $max_students = (int) $_POST["max_students"];
 
-          //validation to make sure that the teacher selected for repeat schedules are the same
-
-          $query_check_teacher = "SELECT teacher_id FROM student_grades WHERE subject_id='".$subject_id."' AND course_id='".$course_id."' AND year='".$year."' AND term='".$term."' AND school_yr='".$sy."' AND section='".$section."' LIMIT 1";
-          $result_check_teacher = mysqli_query($connection, $query_check_teacher);
-
-            while($row_check_teacher = mysqli_fetch_assoc($result_check_teacher))
-            {
-              $teacher_name = get_teacher_name($row_check_teacher['teacher_id'],"",$connection);
-            
-            if ($row_check_teacher['teacher_id'] !== $teacher && $row_check_teacher['teacher_id'] !== NULL) {
-              die ("<div class=\"alert alert-danger\" role=\"alert\">".$teacher_name." is already assigned for ".get_subject_name($subject_id,"",$connection)."</div>");
-              }              
-          }
 
           //series of validations to make sure all forms have values
-          if (!isset($subject_id) || !isset($teacher) || !isset($room) || !isset($time_start) || !isset($time_end) || !isset($day) || !isset($max_students) || $subject_id == null || $teacher == null || $room == null || $time_start == null || $time_end == null || $day == null || $max_students == null) {
+          if (!isset($subject_id) || !isset($teacher) || !isset($room) || !isset($time_start) || !isset($time_end) || !isset($day) || $subject_id == null || $teacher == null || $room == null || $time_start == null || $time_end == null || $day == null) {
            die ("<div class=\"alert alert-danger\" role=\"alert\">One or more fields are empty.</div>");
           }
           else{
 
-          //query and codes for getting the current students enrolled for this course, term, year and school year
-          $query_for_enrolled_students = query_for_current_students("enrollment",$course_id, $year, $term, $section, $sy)."AND irregular=0";
-          $result_enrolled_students = mysqli_query($connection, $query_for_enrolled_students);
-          $students_enrolled = mysqli_num_rows($result_enrolled_students);
-          // Free result set
-          mysqli_free_result($result_enrolled_students);
-
-            if ($students_enrolled>$max_students) {
-              die ("<div class=\"alert alert-danger\" role=\"alert\">Currently enrolled students are greater than max students. <br> Current Students: ".$students_enrolled."</div>");
-            }
-
-          $query_counter = "SELECT * FROM schedule_block WHERE course_id='".$course_id."' AND year='".$year."' AND term='".$term."' AND school_yr='".$sy."'";
+          $query_counter = "SELECT * FROM schedule_block WHERE class_id='".$class_id."' AND year='".$year."' AND term='".$term."' AND school_yr='".$sy."'";
           $result_counter = mysqli_query($connection, $query_counter);
 
           $query  = "SELECT * FROM schedule_block WHERE CAST('".$time_start."' AS time) BETWEEN time_start AND time_end AND room='".$room."' AND day='".$day."'";
@@ -259,10 +204,7 @@
           $result2 = mysqli_query($connection, $query2);
 
           if (mysqli_num_rows($result) >= 1 OR mysqli_num_rows($result2) >=1) { // logical check for conflicts in time, room, and day
-
-           echo "<div class=\"alert alert-warning\" role=\"alert\">";
-           echo "Conflict in schedule! The time, room and day for this schedule is already taken.";
-           echo "</div>";
+           die ("<div class=\"alert alert-danger\" role=\"alert\">Conflict in schedule! The time, room and day for this schedule is already taken</div>");
         }
           $query3  = "SELECT * FROM schedule_block WHERE CAST('".$time_start."' AS time) BETWEEN time_start AND time_end AND teacher_id='".$teacher."' AND day='".$day."'";
           $result3 = mysqli_query($connection, $query3);
@@ -275,31 +217,24 @@
            echo "<div class=\"alert alert-warning\" role=\"alert\">";
            echo "Conflict in schedule! This teacher is already assigned to the set time range.";
            echo "</div>";
-        }
+          }
         else{
 
-
-            $query  = "INSERT INTO schedule_block (subject_id, room, teacher_id, time_start, time_end, day, course_id ,year, term, section, school_yr,students_enrolled, student_limit) VALUES ('{$subject_id}', '{$room}', '{$teacher}', '{$time_start}', '{$time_end}', '{$day}', '{$course_id}', '{$year}', '{$term}', '{$section}', '{$sy}',$students_enrolled , '{$max_students}')";
+            $query  = "INSERT INTO schedule_block (subject_id, room, teacher_id, time_start, time_end, day, course_id ,year, term, class_id, school_yr) VALUES ('{$subject_id}', '{$room}', '{$teacher}', '{$time_start}', '{$time_end}', '{$day}', '{$course_id}', '{$year}', '{$term}', '{$class_id}', '{$sy}')";
             $result = mysqli_query($connection, $query);
-
-
-            //update the teacher assigned to the selected subject and section on the students grade table
-
-            $query_update_teacher  = "UPDATE student_grades SET teacher_id = '{$teacher}' WHERE subject_id='".$subject_id."' AND course_id='".$course_id."' AND year='".$year."' AND term='".$term."' AND section='".$section."'";
-            $result_update_teacher = mysqli_query($connection, $query_update_teacher);
 
             if ($result === TRUE) {
               echo "<script type='text/javascript'>";
               echo "alert('Schedule successfully created!');";
               echo "</script>";
 
-              $URL="view-schedule.php";
+              $URL="view-schedule.php?class_id=".$class_id;
               echo "<script>location.href='$URL'</script>";
             } else {
               echo "Error updating record: " . $connection->error;
             }
           }
-         }
+         }//end else field empty
         }
 
         if(isset($connection)){ mysqli_close($connection); }

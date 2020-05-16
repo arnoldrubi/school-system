@@ -9,29 +9,46 @@
       $year = urldecode($_GET["year"]);
       $term = urldecode($_GET["term"]);
       $sy = urldecode($_GET["sy"]);
-      $section = urldecode($_GET["section"]);
+      $sec_id = urldecode($_GET["sec_id"]);
+      $irregular = urldecode($_GET["irregular"]);
     }
   else{
     redirect_to("view-enrolled-students.php");
   }
 
-
-    $query_current_students = query_for_current_students("schedule_block", $course_id, $year, $term, $section, $sy);
-    $result_update_current_students = mysqli_query($connection, $query_current_students);
-
-    while($row_current_students = mysqli_fetch_assoc($result_update_current_students))
-    {
-
-      $students_enrolled = $row_current_students['students_enrolled'] - 1;
-
-      $query_update_students_enrolled  = "UPDATE schedule_block SET students_enrolled = '{$students_enrolled}' WHERE schedule_id='".$row_current_students['schedule_id']."' LIMIT 1";
-      $result_update_students_enrolled = mysqli_query($connection, $query_update_students_enrolled);
-    }
-
     $query  = "DELETE FROM enrollment WHERE student_id =".$student_id." LIMIT 1";
     $result = mysqli_query($connection, $query);
 
-    $query2  = "DELETE FROM student_grades WHERE stud_reg_id =".$student_reg_id." AND course_id =".$course_id." AND year ='".$year."' AND term='".$term."' AND school_yr='".$sy."' AND section='".$section."'";
+      //start updating current students for classes under the section enrolled
+
+      $query_get_class_ids = "SELECT * from classes WHERE sec_id='".$sec_id."'";
+      $result_get_class_ids = mysqli_query($connection, $query_get_class_ids);
+
+      $class_ids = array();
+      while($row_get_class_ids = mysqli_fetch_assoc($result_get_class_ids))
+      {
+        array_push($class_ids, $row_get_class_ids['class_id']);
+      }
+
+     for ($i=0; $i < sizeof($class_ids); $i++) { 
+        
+        $query_get_irreg_count  = "SELECT COUNT(*) AS num FROM irreg_manual_sched WHERE class_id='".$class_ids[$i]."'";
+        $result_get_enrolled = mysqli_query($connection, $query_get_irreg_count);
+        while($row_get_enrolled = mysqli_fetch_assoc($result_get_enrolled)){
+           $irreg_count = $row_get_enrolled['num'];
+         }
+
+        $sec_id = get_section_name_by_class($class_ids[$i],"",$connection);
+        $count_regular_student = get_enrolled_regular_students($sec_id,"",$connection);
+
+        $current_students_total = $irreg_count + $count_regular_student;
+
+        $query4  = "UPDATE classes SET students_enrolled = '{$current_students_total}' WHERE class_id ='".$class_ids[$i]."'";;   
+        $result4 = mysqli_query($connection, $query4);
+        }
+      //End updating current students enrolled for each classes under this section
+
+    $query2  = "DELETE FROM student_grades WHERE stud_reg_id =".$student_reg_id." AND course_id =".$course_id." AND year ='".$year."' AND term='".$term."' AND school_yr='".$sy."' AND sec_id='".$sec_id."'";
     $result2 = mysqli_query($connection, $query2);
 
   if ($result === TRUE) {

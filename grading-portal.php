@@ -86,7 +86,7 @@
         
         
 
-        $query  = "SELECT DISTINCT course_id,subject_id, year, term, section, teacher_id FROM student_grades";
+        $query  = "SELECT DISTINCT course_id,subject_id, year, term, sec_id, teacher_id FROM student_grades";
         $result = mysqli_query($connection, $query);
 
       while($row = mysqli_fetch_assoc($result))
@@ -106,11 +106,11 @@
         echo "<td>".$row['year']."</td>"; 
         echo "<td>".$row['term']."</td>"; 
 
-        if ($row['section'] == "N/A") {
+        if ($row['sec_id'] == "0") {
            echo "<td>N/A (Irregular Students)</td>"; 
         }
         else{
-        echo "<td>".$row['section']."</td>"; 
+        echo "<td>".get_section_name($row['sec_id'],"",$connection)."</td>"; 
         }
         if ($row['teacher_id'] == "") {
         echo "<td><small>No teacher assigned. Used the scheduling menu to assign a teacher to this subject.</small></td>"; 
@@ -118,7 +118,7 @@
         else{
         echo "<td>".get_teacher_name($row['teacher_id'],"",$connection)."</td>"; 
        }
-        echo "<td><a href=\"encode-grades.php?subject_id=".$subject_id."&term=".urlencode($row['term'])."&course_id=".urlencode($row['course_id'])."&year=".urlencode($row['year'])."&section=".urlencode($row['section'])."&teacher_id=".urlencode($row['teacher_id'])."\">Encode Grades</a></td>";
+        echo "<td><a href=\"encode-grades.php?subject_id=".$subject_id."&term=".urlencode($row['term'])."&course_id=".urlencode($row['course_id'])."&year=".urlencode($row['year'])."&section=".urlencode($row['sec_id'])."&teacher_id=".urlencode($row['teacher_id'])."\">Encode Grades</a></td>";
         echo "</tr>";
         }
 

@@ -15,7 +15,7 @@
   <div id="wrapper">
 
   <?php
-  $sidebar_context = "teachers_rooms";
+  $sidebar_context = "scheduling";
 
   include 'layout/admin-sidebar.php';?>
 

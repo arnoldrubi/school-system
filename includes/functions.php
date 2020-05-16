@@ -240,8 +240,8 @@ global $sidebar_context;
 	}
 
 //NEXT: Utility function to count the current enrollment of irreg students for the given course, year, term, SY, and section
-	function get_enrolled_regular_students($connection,$current_reg_student_enrolled,$course_id,$year,$term,$section,$school_yr){
-		$query_get_enrolled  = "SELECT COUNT(*) AS num FROM enrollment WHERE course_id='".$course_id."' AND year='".$year."' AND term ='".$term."' AND section='".$section."' AND school_yr='".$school_yr."'";
+	function get_enrolled_regular_students($sec_id,$current_reg_student_enrolled,$connection){
+		$query_get_enrolled  = "SELECT COUNT(*) AS num FROM enrollment WHERE sec_id='".$sec_id."'";
        	$result_get_enrolled = mysqli_query($connection, $query_get_enrolled);
         while($row_get_enrolled = mysqli_fetch_assoc($result_get_enrolled)){
           $current_reg_student_enrolled = $row_get_enrolled['num'];
@@ -269,6 +269,29 @@ global $sidebar_context;
         }
 
         return $section_name;
+    }
+
+  	function get_section_name_by_class($class_id, $section_id, $connection){
+		$query_section_name_by_class = "SELECT * FROM classes WHERE class_id='".$class_id."' LIMIT 1";
+        $result_section_name_by_class = mysqli_query($connection, $query_section_name_by_class);
+        while($row_section_name_by_class = mysqli_fetch_assoc($result_section_name_by_class))
+        {
+          $section_id = $row_section_name_by_class['sec_id'];
+        
+        }
+
+        return $section_id;
+    }
+ 	function get_section_year($sec_id, $section_year, $connection){
+		$query_section_year = "SELECT * FROM sections WHERE sec_id='".$sec_id."' LIMIT 1";
+        $result_section_year = mysqli_query($connection, $query_section_year);
+        while($row_section_year = mysqli_fetch_assoc($result_section_year))
+        {
+          $section_year = $row_section_year['year'];
+        
+        }
+
+        return $section_year;
     }
  	function get_subject_name($subject_id, $subject_name, $connection){
 		$query_subject_name = "SELECT * FROM subjects WHERE subject_id='".$subject_id."' LIMIT 1";
@@ -322,6 +345,24 @@ global $sidebar_context;
     	  $student_name = $row_student_name['last_name'].", ".$row_student_name['first_name'].", ".substr($row_student_name['middle_name'], 0,1.).".";
     	 }
     	 return $student_name;
+    }
+     function get_student_number($stud_reg_id,$connection){
+    	$query_student_number = "SELECT * FROM enrollment WHERE stud_reg_id='".$stud_reg_id."' LIMIT 1";
+    	$result_student_number = mysqli_query($connection, $query_student_number);
+    	while($row_student_number = mysqli_fetch_assoc($result_student_number))
+    	 {
+    	  $student_number = $row_student_number['student_number'];
+    	 }
+    	 return $student_number;
+    }
+    function get_student_reg_id($student_number,$connection){
+    	$query_student_reg_id = "SELECT * FROM enrollment WHERE student_number='".$student_number."' LIMIT 1";
+    	$result_student_reg_id = mysqli_query($connection, $query_student_reg_id);
+    	while($row_student_reg_id = mysqli_fetch_assoc($result_student_reg_id))
+    	 {
+    	  $student_reg_id = $row_student_reg_id['stud_reg_id'];
+    	 }
+    	 return $student_reg_id;
     }
  ?>
 

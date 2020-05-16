@@ -55,7 +55,7 @@
         
         
 
-        $query  = "SELECT enrollment.stud_reg_id,enrollment.student_id, enrollment.student_number, enrollment.course_id, enrollment.year, enrollment.section, enrollment.school_yr, enrollment.term, enrollment.irregular, students_reg.last_name, students_reg.first_name, students_reg.middle_name FROM enrollment INNER JOIN students_reg ON enrollment.stud_reg_id=students_reg.stud_reg_id ORDER BY last_name ASC";
+        $query  = "SELECT enrollment.stud_reg_id,enrollment.student_id, enrollment.student_number, enrollment.course_id, enrollment.year, enrollment.sec_id, enrollment.school_yr, enrollment.term, enrollment.irregular, students_reg.last_name, students_reg.first_name, students_reg.middle_name FROM enrollment INNER JOIN students_reg ON enrollment.stud_reg_id=students_reg.stud_reg_id ORDER BY last_name ASC";
         $result = mysqli_query($connection, $query);
 
       while($row = mysqli_fetch_assoc($result))
@@ -81,10 +81,11 @@
         $year = $row['year'];
         $sy = $row['school_yr'];
         $term = $row['term'];
-        $section = $row['section'];
+        $section = get_section_name($row['sec_id'],"",$connection);
+        $sec_id = $row['sec_id'];
 
         echo "<td>".$year."</td>"; 
-        echo "<td>".$row['section']."</td>"; 
+        echo "<td>".$section."</td>"; 
         echo "<td>".$sy."</td>";      
         echo "<td>".$term."</td>";
         if ($row['irregular'] == 1) {
@@ -95,9 +96,9 @@
         }
         echo "<td>".$regirreg."</td>";
         echo "<td style=\"text-align:center\">";
-        echo "<a title=\"Delete Enrollment Info\" href=\"javascript:confirmDelete('delete-student-enrollment.php?student_id=".$student_id."&student_reg_id=".$stud_reg_id."&course_id=".$new_course_id."&sy=".urlencode($sy)."&term=".urlencode($term)."&year=".$year."&section=".urlencode($section)."')\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a></td>";
+        echo "<a title=\"Delete Enrollment Info\" href=\"javascript:confirmDelete('delete-student-enrollment.php?student_id=".$student_id."&student_reg_id=".$stud_reg_id."&course_id=".$new_course_id."&sy=".urlencode($sy)."&term=".urlencode($term)."&year=".$year."&sec_id=".urlencode($sec_id)."&irregular=".urlencode($row['irregular'])."')\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a></td>";
         echo "<td style=\"text-align:center\">";
-        echo "<a title=\"Print Enrollment Form\" target=\"_blank\" href=\"print-enrollment-form.php?student_id=".urlencode($student_id)."\"><i class=\"fa fa-print\" aria-hidden=\"true\"></i></a></td>";
+        echo "<a title=\"Print Enrollment Form\" target=\"_blank\" href=\"print-enrollment-form.php?student_reg_id=".urlencode($stud_reg_id)."&irregular=".urlencode($row['irregular'])."\"><i class=\"fa fa-print\" aria-hidden=\"true\"></i></a></td>";
         echo "</tr>";
         }
 

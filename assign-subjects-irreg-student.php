@@ -121,12 +121,14 @@
         echo "  <tr>";
         echo "   <th>Subject Name</th>";
         echo "   <th>Subject Code</th>";
+        echo "   <th>Teacher</th>";
+        echo "   <th>Section</th>";
         echo "   <th>Units</th>";
         echo "   <th>&nbsp;</th>";   
         echo "  </tr></thead><tbody>";    
         
 
-        $query3 = "SELECT * FROM subjects";
+        $query3 = "SELECT DISTINCT class_id, subject_id, teacher_id, sec_id FROM classes";
         $result3 = mysqli_query($connection, $query3);
 
         if (mysqli_num_rows($result3)< 1) {
@@ -140,10 +142,12 @@
             {
 
               echo "<tr>";
-              echo "<td>".$row3['subject_name']."</td>";
-              echo "<td>".$row3['subject_code']."</td>";
-              echo "<td>".$row3['units']."</td>";
-              echo "<td class=\"subject-wrap\"><a class=\"".$row3['subject_code']."\" id=\"".$row3['subject_id']."\""." href=\"#\">Add Subject</a> </td>";
+              echo "<td>".get_subject_name($row3['subject_id'],"",$connection)."</td>";
+              echo "<td>".get_subject_code($row3['subject_id'],"",$connection)."</td>";
+              echo "<td>".get_teacher_name($row3['teacher_id'],"",$connection)."</td>";
+              echo "<td>".get_section_name($row3['sec_id'],"",$connection)."</td>";             
+              echo "<td>".get_subject_unit_count($row3['subject_id'],"",$connection)."</td>";
+              echo "<td class=\"subject-wrap\"><a class=\"".get_subject_code($row3['subject_id'],"",$connection)."\" id=\"".$row3['class_id']."\""." href=\"#\">Add Subject</a> </td>";
               echo "</tr>";
               } 
 

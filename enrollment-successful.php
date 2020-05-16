@@ -1,13 +1,14 @@
 <?php include 'layout/header.php';?>
 <?php require_once("includes/db_connection.php"); ?>
 <?php 
-  if (isset($_GET["success"]) && isset($_GET["student_id"]) ) {
+  if (isset($_GET["success"]) && isset($_GET["stud_reg_id"]) ) {
     $success = $_GET["success"];
-    $student_id = urldecode($_GET["student_id"]);
+    $stud_reg_id = urldecode($_GET["stud_reg_id"]);
     $term = urldecode($_GET["term"]);
     $sy = urlencode($_GET["sy"]);
+    $irregular = urlencode($_GET["irregular"]);
   }
-  if (!isset($_GET["success"]) || !isset($_GET["student_id"]) || $_GET["student_id"] == "" || $_GET["success"] == "") {
+  if (!isset($_GET["success"]) || !isset($_GET["stud_reg_id"]) || $_GET["stud_reg_id"] == "" || $_GET["success"] == "") {
     redirect_to("students.php");
   }
 
@@ -45,16 +46,16 @@
     <h1>Enrollment Successful</h1>
     <hr>
     <?php
-      $query_student_id = "SELECT * FROM enrollment WHERE student_id=".$student_id;
-      $result_student_id = mysqli_query($connection, $query_student_id);
-       while($row_student_id = mysqli_fetch_assoc($result_student_id))
+      $query_stud_reg_id = "SELECT * FROM enrollment WHERE stud_reg_id=".$stud_reg_id;
+      $result_stud_reg_id = mysqli_query($connection, $query_stud_reg_id);
+       while($row_stud_reg_id = mysqli_fetch_assoc($result_stud_reg_id))
        {
-        $student_name = get_student_name($row_student_id["stud_reg_id"],$connection);
-        $course_id = $row_student_id['course_id'];
-        $school_yr = $row_student_id['school_yr'];
-        $section = $row_student_id['section'];
-        $year = $row_student_id['year'];
-        $term = $row_student_id['term'];
+        $student_name = get_student_name($row_stud_reg_id["stud_reg_id"],$connection);
+        $course_id = $row_stud_reg_id['course_id'];
+        $school_yr = $row_stud_reg_id['school_yr'];
+        $section = $row_stud_reg_id['sec_id'];
+        $year = $row_stud_reg_id['year'];
+        $term = $row_stud_reg_id['term'];
        }
     ?>
     <div id="success-box" class="text-center">
@@ -65,7 +66,7 @@
           <div class="card-body">
             <i class="fa fa-file" aria-hidden="true"></i>
             <h5 class="card-title">Print Enrollment Form for<br> <?php echo $student_name; ?></h5>
-            <a target="_blank" href="<?php echo "print-enrollment-form.php?student_id=".urlencode($student_id); ?>"class="card-link">Preview</a>
+            <a target="_blank" href="<?php echo "print-enrollment-form.php?student_reg_id=".urlencode($stud_reg_id)."&irregular=".urlencode($irregular); ?>"class="card-link">Preview</a>
           </div>
         </div>
       </div>
@@ -73,7 +74,7 @@
         <div class="card text-center mx-auto" style="width: 25rem;">
           <div class="card-body">
             <i class="fa fa-file-text-o" aria-hidden="true"></i>
-            <h5 class="card-title">Print Schedule for<br><?php echo get_course_code($course_id,"",$connection).", ".$section; ?></h5>
+            <h5 class="card-title">Print Schedule for<br><?php echo get_course_code($course_id,"",$connection).", ".get_section_name($section,"",$connection); ?></h5>
             <?php echo "<a target=\"_blank\" class=\"card-link\" href=\"preview-print-schedule.php?course_id=".$course_id."&year=".urlencode($year)."&term=".urlencode($term)."&section=".urlencode($section)."&sy=".urlencode($school_yr)."\">" ?>Preview</a>
           </div>
         </div>

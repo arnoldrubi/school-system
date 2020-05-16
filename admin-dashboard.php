@@ -73,10 +73,10 @@
                 <div class="card-body-icon">
                   <i class="fa fa-fw fa-calendar"></i>
                 </div>
-                <div class="mr-5">Schedule Management</div>
+                <div class="mr-5">Classes and Schedule Management</div>
               </div>
-              <a class="card-footer text-white clearfix small z-1" href="view-schedule.php">
-                <span class="float-left">Go to Schedule Management</span>
+              <a class="card-footer text-white clearfix small z-1" href="new-group-schedule.php">
+                <span class="float-left">Go to Classes and Schedule Management</span>
                 <span class="float-right">
                   <i class="fa fa-angle-right"></i>
                 </span>

@@ -24,14 +24,11 @@
         <li class="breadcrumb-item">
           <a href="admin-dashboard.php">Dashboard</a>
         </li>
-        <li class="breadcrumb-item">
-          <a href="view-schedule.php">View All Schedule</a>
-        </li>
         <li class="breadcrumb-item active">
-         Group Scheduling
+          Sections and Classes
         </li>
       </ol>
-      <h1>Group Scheduling Dashboard</h1>
+      <h1>Sections and Classes</h1>
 
       <?php
 
@@ -71,7 +68,7 @@
             echo "<td>".$school_yr."</td>";
             $enrolled_students = get_enrolled_regular_students($row['sec_id'],"",$connection);
             echo "<td>".$enrolled_students."</td>";
-            echo "<td class=\"option-grp\"><a class=\"btn btn-success btn-sm\" href=\"create-schedule-for-class.php?sec_id=".urlencode($row['sec_id'])."\">Build Schedule</a> <a class=\"btn btn-warning btn-sm\" target=\"_blank\" href=\"preview-print-schedule.php?sec_id=".urlencode($row['sec_id'])."\">Print Schedule</a>";
+            echo "<td class=\"option-grp\"><a class=\"btn btn-success btn-sm\" href=\"classes.php?sec_id=".urlencode($row['sec_id'])."\">Create Classes</a>";
             echo "</tr>";
         }
 

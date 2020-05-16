@@ -9,9 +9,31 @@
 
   <?php include 'layout/admin-nav.php';?>
 
+  <?php 
+    if (isset($_GET['sec_id'])) {
+      $sec_id = $_GET["sec_id"];
+      $sec_name = get_section_name($sec_id,"",$connection);
+      $year = get_section_year($sec_id,"",$connection);
+
+      $query  = "SELECT * FROM sections WHERE sec_id='".$sec_id."'";
+      $result = mysqli_query($connection, $query);
+
+      while($row = mysqli_fetch_assoc($result))
+      {
+        $course_id = $row['course_id'];
+      }
+
+    }
+    else{
+      redirect_to("sections-and-classes.php");
+    }
+  ?>
+
   <div id="wrapper">
 
-  <?php include 'layout/admin-sidebar.php';?>
+  <?php
+  $sidebar_context = "scheduling";
+  include 'layout/admin-sidebar.php';?>
 
     <div id="content-wrapper" class="col-md">
       <ol class="breadcrumb">
@@ -37,16 +59,8 @@
           <div class="col-sm-10">
             <select id="course" class="form-control" name="course">
               <?php
-              //this block will load the course name from the database
-              $query  = "SELECT * FROM courses WHERE course_deleted = 0";
-              $result = mysqli_query($connection, $query);
-
-
-              while($row = mysqli_fetch_assoc($result))
-                {
-                  $course_code = $row['course_code'];
-                  echo  "<option value=\"".$row['course_id']."\">".$course_code."</option>";
-                }
+                $course_code = get_course_code($course_id,"",$connection);
+                echo  "<option value=\"".$course_id."\">".$course_code."</option>";
               ?>
             </select>
           </div>
@@ -55,10 +69,9 @@
           <label class="col-sm-2 col-form-label control-label" for="Year">Year:</label>
           <div class="col-sm-10">
             <select id="select-yr" class="form-control" name="year">
-              <option value="1st Year">1st Year</option>
-              <option value="2nd Year">2nd Year</option>
-              <option value="3rd Year">3rd Year</option>
-              <option value="4th Year">4th Year</option>  
+              <?php 
+                 echo  "<option value=\"".$year."\">".$year."</option>";
+              ?>
             </select>
           </div>
         </div>
@@ -88,6 +101,9 @@
           <label class="col-sm-2 col-form-label control-label" for="Section">Section:</label>
           <div class="col-sm-10">
             <select id="section" class="form-control" name="section">
+              <?php 
+                echo  "<option value=\"".$sec_id."\">".$sec_name."</option>";
+              ?>
             </select>
           </div>
         </div>
@@ -129,16 +145,7 @@
         </div>
       </form>
 
-     </div>
-    </div>
-
-  </div>
-  <!-- /#wrapper -->
-
-  <!-- Scroll to Top Button-->
-  <a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
-  </a>
+    
 
     <?php
 
@@ -159,18 +166,22 @@
             die ("<div class=\"alert alert-danger\" role=\"alert\">Error: One or more fields are empty.</div>");
           }
           else{
-            $query   = "INSERT INTO classes (sec_id, subject_id, teacher_id, students_enrolled, student_limit) VALUES ('{$section}', '{$subject}', '{$teacher}', '{$current_students}',$max_students_enrolled)";
-            $result = mysqli_query($connection, $query);
 
-            if ($result === TRUE) {
-            echo "<script type='text/javascript'>";
-            echo "alert('New class added!');";
-            echo "</script>";
+            $query_check= "SELECT * FROM classes WHERE sec_id='".$section."' AND subject_id='".$subject."'";
+            $result_check = mysqli_query($connection, $query_check);
 
-            $URL="classes.php";
-            echo "<script>location.href='$URL'</script>";
-            } else {
-            echo "Error updating record: " . $connection->error;
+            if (mysqli_num_rows($result_check) > 0) {
+                echo "<div class=\"alert alert-danger\" role=\"alert\">Error: Class for this subject has already been created.</div>";
+            }
+            else{
+              $query   = "INSERT INTO classes (sec_id, subject_id, teacher_id, students_enrolled, student_limit) VALUES ('{$section}', '{$subject}', '{$teacher}', '{$current_students}',$max_students_enrolled)";
+              $result = mysqli_query($connection, $query);
+
+              if ($result === TRUE) {
+              redirect_to("classes.php?sec_id=".urlencode($sec_id));
+              } else {
+              echo "Error updating record: " . $connection->error;
+              }
             }
           }
          }
@@ -179,6 +190,17 @@
   //close database connection after an sql command
   ?>
 
+       </div>
+    </div>
+  </div>
+  <!-- /#wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+
      </div>
     </div>
   </div>
@@ -186,17 +208,17 @@
 
 <script type="text/javascript">
 
-function load_section(course,year){
-  //run ajax
-  $.post("load-available-section.php",{
-    course: course,
-    year: year
-  },function(data,status){
-    $("#section").html(data);
+// function load_section(course,year){
+//   //run ajax
+//   $.post("load-available-section.php",{
+//     course: course,
+//     year: year
+//   },function(data,status){
+//     $("#section").html(data);
 
-  });
+//   });
 
-}
+// }
 
 function load_subject(course,year,school_yr,term){
   //run ajax
@@ -219,7 +241,7 @@ var year = $("#select-yr").val();
 var term = $("#term").val();
 var school_yr = $("#school_yr").val();
 
-load_section(course,year);
+// load_section(course,year);
 load_subject(course,year,school_yr,term);
 
     $("#course").change(function(){

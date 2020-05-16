@@ -96,6 +96,8 @@ footer.sticky-footer{
 /*custom classes to overide and custom position*/
 .button-flt-right{
     float: right;
+    display: block;
+    clear: both;
 }
 form.form-horizontal .col-form-label {
     text-align: right;

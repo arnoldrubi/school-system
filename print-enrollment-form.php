@@ -3,14 +3,15 @@
  require_once("includes/functions.php");
  require_once("includes/db_connection.php");
 
-  if (isset($_GET["student_id"]) ) {
-    $student_id = urldecode($_GET["student_id"]);
+  if (isset($_GET["student_reg_id"]) ) {
+    $student_reg_id = urldecode($_GET["student_reg_id"]);
+    $irregular_student = urldecode($_GET["irregular"]);
   }
-  if (!isset($_GET["student_id"]) || $_GET["student_id"] == "") {
+  if (!isset($_GET["student_reg_id"]) || $_GET["student_reg_id"] == "") {
     redirect_to("students.php");
   }
 
-      $query_student_reg_id = "SELECT * FROM enrollment WHERE student_id=".$student_id;
+      $query_student_reg_id = "SELECT * FROM enrollment WHERE stud_reg_id='".$student_reg_id."'";
       $result_student_reg_id = mysqli_query($connection, $query_student_reg_id);
 
       while($row_student_reg_id = mysqli_fetch_assoc($result_student_reg_id))
@@ -120,8 +121,14 @@
 
 							<?php
 								$unit_count = 0;
+							if ($irregular_student == 1) {
+
+							 	$query = "SELECT * FROM irreg_manual_subject WHERE stud_reg_id='".$student_reg_id."'";
+							}
+							else{
 								$query = "SELECT * FROM course_subjects WHERE course_id='".$course_id."' AND term='".$term."' AND year='".$year."' AND school_yr='".$school_yr."'";
-						        $result = mysqli_query($connection, $query);
+						        }
+								$result = mysqli_query($connection, $query);
 						        while($row = mysqli_fetch_assoc($result))
 						        {
 						        echo "<tr>";			        
@@ -131,8 +138,8 @@
 								echo "</tr>";
 
 								$unit_count = $unit_count + get_subject_unit_count($row['subject_id'],"",$connection);
-						        }
 
+						     }
 
 							?>
 						</tbody>

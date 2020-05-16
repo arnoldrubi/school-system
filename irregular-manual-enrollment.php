@@ -44,7 +44,6 @@
         echo "   <th>Last Name</th>";
         echo "   <th>Course</th>";
         echo "   <th>Year</th>";
-        echo "   <th>Section</th>";
         echo "   <th>S.Y.</th>";
         echo "   <th>Semester</th>"; 
         echo "   <th>&nbsp;</th>"; 
@@ -86,7 +85,6 @@
         $term = $row['term'];
 
         echo "<td>".$year."</td>"; 
-        echo "<td>".$row['section']."</td>"; 
         echo "<td>".$sy."</td>";      
         echo "<td>".$term."</td>";
 
@@ -98,9 +96,9 @@
         $result_check = mysqli_query($connection, $query_check);
 
         if (mysqli_num_rows($result_check)>0) {
-           echo " | <a href=\"assign-schedule-irreg-student.php?regid=".$stud_reg_id."&student_num=".$student_number."&course=".$new_course_id."&year=".urlencode($year)."&sy=".urlencode($sy)."&term=".urlencode($term)." \">Assign Schedule</a><br>";
-           echo " <a href=\"javascript:confirmDelete('delete-irreg-subjects.php?stud_reg_id=".$stud_reg_id."&student_num=".$student_number."&course=".$new_course_id."&year=".urlencode($year)."&sy=".urlencode($sy)."&term=".urlencode($term)."')\">Delete All</a> | ";
-           echo "<a href=\"delete-irreg-schedule.php?stud_reg_id=".$stud_reg_id."&student_num=".$student_number."&course=".$new_course_id."&year=".urlencode($year)."&sy=".urlencode($sy)."&term=".urlencode($term)." \">Delete Schedule Only</a>";
+           echo " | <a href=\"assign-schedule-irreg-student.php?regid=".$stud_reg_id."&student_num=".$student_number."&course=".$new_course_id."&year=".urlencode($year)."&sy=".urlencode($sy)."&term=".urlencode($term)." \">View Schedule</a><br>";
+           echo " <a href=\"javascript:confirmDelete('delete-irreg-subjects.php?stud_reg_id=".$stud_reg_id."&student_num=".$student_number."&course=".$new_course_id."&year=".urlencode($year)."&sy=".urlencode($sy)."&term=".urlencode($term)."')\">Delete All</a> ";
+           // echo "<a href=\"delete-irreg-schedule.php?stud_reg_id=".$stud_reg_id."&student_num=".$student_number."&course=".$new_course_id."&year=".urlencode($year)."&sy=".urlencode($sy)."&term=".urlencode($term)." \">Delete Schedule Only</a>";
 
         }
 

@@ -76,7 +76,8 @@
         echo "<table id=\"example\" class=\"table table-striped table-bordered dataTable\">";
         echo " <thead>";
         echo "  <tr>";
-        echo "   <th>Student ID</th>";
+        echo "   <th>Student Reg. ID</th>";
+        echo "   <th>Student Number</th>";
         echo "   <th>Name</th>";
         echo "   <th>Prelim</th>";
         echo "   <th>Midterm</th>";
@@ -89,7 +90,7 @@
         
         $remarks_value = 0;
 
-        $query = "SELECT student_grades.stud_reg_id, student_grades.prelim, student_grades.midterm, student_grades.semis, student_grades.finals, student_grades.final_grade,student_grades.remarks, student_grades.grade_posted,students_reg.first_name, students_reg.middle_name, students_reg.last_name FROM student_grades INNER JOIN students_reg ON student_grades.stud_reg_id = students_reg.stud_reg_id WHERE student_grades.subject_id ='".$subject_id."' AND student_grades.section ='".$section."'";
+        $query = "SELECT student_grades.stud_reg_id, student_grades.prelim, student_grades.midterm, student_grades.semis, student_grades.finals, student_grades.final_grade,student_grades.remarks, student_grades.grade_posted,students_reg.first_name, students_reg.middle_name, students_reg.last_name FROM student_grades INNER JOIN students_reg ON student_grades.stud_reg_id = students_reg.stud_reg_id WHERE student_grades.subject_id ='".$subject_id."' AND student_grades.sec_id ='".$section."' ORDER BY students_reg.last_name";
         
         $result = mysqli_query($connection, $query);
 
@@ -104,13 +105,14 @@
           }
         echo "<tr>";
           echo "<td><input class=\"student-id-box\" type=\"number\" name=\"stud_reg_id[]\" min=\"1\" style=\"display: none\" max=\"100\" value=\"".$row['stud_reg_id']."\"><input class=\"student-id-box\" type=\"number\" disabled name=\"stud_id[]\" min=\"0\" max=\"5\" value=\"".$row['stud_reg_id']."\"></td>";
+          echo "<td><input class=\"student-id-box\" type=\"text\" disabled name=\"stud_id[]\" value=\"".get_student_number($row['stud_reg_id'],$connection)."\"></td>";
           echo "<td>".$row['last_name'].", ".$row['first_name'].", ".substr($row['middle_name'], 0,1).".</td>";
-          echo "<td><input class=\"grade-box\" step=\".01\" type=\"number\" maxlength =\"3\" name=\"prelim[]\" min=\"0\" max=\"5\" ".$lock_grade." value=\"".$row['prelim']."\"></td>";
-          echo "<td><input class=\"grade-box\" step=\".01\" type=\"number\" maxlength =\"3\" name=\"midterm[]\" min=\"0\" max=\"5\" ".$lock_grade." value=\"".$row['midterm']."\"></td>";
-          echo "<td><input class=\"grade-box\" step=\".01\" type=\"number\" maxlength =\"3\" name=\"semis[]\" min=\"0\" max=\"5\" ".$lock_grade." value=\"".$row['semis']."\"></td>";
-          echo "<td><input class=\"grade-box\" step=\".01\" type=\"number\" maxlength =\"3\" name=\"finals[]\" min=\"0\" max=\"5\" ".$lock_grade." value=\"".$row['finals']."\"></td>";
+          echo "<td><input class=\"grade-box\" step=\".25\" type=\"number\" maxlength =\"3\" name=\"prelim[]\" min=\"1\" max=\"5\" ".$lock_grade." value=\"".$row['prelim']."\"></td>";
+          echo "<td><input class=\"grade-box\" step=\".25\" type=\"number\" maxlength =\"3\" name=\"midterm[]\" min=\"1\" max=\"5\" ".$lock_grade." value=\"".$row['midterm']."\"></td>";
+          echo "<td><input class=\"grade-box\" step=\".25\" type=\"number\" maxlength =\"3\" name=\"semis[]\" min=\"1\" max=\"5\" ".$lock_grade." value=\"".$row['semis']."\"></td>";
+          echo "<td><input class=\"grade-box\" step=\".25\" type=\"number\" maxlength =\"3\" name=\"finals[]\" min=\"1\" max=\"5\" ".$lock_grade." value=\"".$row['finals']."\"></td>";
 
-          echo "<td><input class=\"final-computed-grade\" step=\".01\" maxlength =\"3\" type=\"number\" name=\"final_grade[]\"  min=\"0.00\" max=\"5.00\" readonly value=\"".$row['final_grade']."\"></td>";
+          echo "<td><input class=\"final-computed-grade\" step=\".25\" maxlength =\"3\" type=\"number\" name=\"final_grade[]\"  min=\"0.00\" max=\"5.00\" readonly value=\"".$row['final_grade']."\"></td>";
 
           echo "<td>";
           echo  "<input class=\"remarks form-control\" name=\"remarks[]\" value=\"".$row['remarks']."\" readonly />";
@@ -135,7 +137,7 @@
 
         $grades_set_lock = 0;
 
-        $query_check = "SELECT grade_posted FROM student_grades WHERE subject_id ='".$subject_id."' AND section ='".$section."' AND teacher_id = '".$teacher_id."' LIMIT 1";
+        $query_check = "SELECT grade_posted FROM student_grades WHERE subject_id ='".$subject_id."' AND sec_id ='".$section."' AND teacher_id = '".$teacher_id."' LIMIT 1";
         $result_check = mysqli_query($connection, $query_check);
         while($row_check = mysqli_fetch_assoc($result_check))
         {
@@ -197,9 +199,16 @@
         echo "   <th class=\"skip-filter\">Time End</th>";
         echo "  </tr></thead><tbody>";
         
+        $query_get_class  = "SELECT * FROM classes WHERE subject_id='".$subject_id."' AND sec_id='".$section."'";
+        $result_get_class = mysqli_query($connection, $query_get_class);
+
+      while($row_result_get_class = mysqli_fetch_assoc($result_get_class))
+        {
+          $class_id = $row_result_get_class['class_id'];
+        }
         
 
-        $query  = "SELECT * FROM schedule_block WHERE subject_id='".$subject_id."' AND course_id='".$course_id."' AND year ='".$year."' AND term='".$term."' AND section ='".$section."' AND teacher_id='".$teacher_id."' ORDER BY day ASC, time_start ASC";
+        $query  = "SELECT * FROM schedule_block WHERE subject_id='".$subject_id."' AND class_id='".$class_id."' AND year ='".$year."' AND term='".$term."' AND teacher_id='".$teacher_id."' ORDER BY day ASC, time_start ASC";
         $result = mysqli_query($connection, $query);
 
       while($row = mysqli_fetch_assoc($result))
@@ -229,7 +238,15 @@
           }
           echo "<td>".$row['year']."</td>";
           echo "<td>".$row['term']."</td>";
-          echo "<td>".$row['section']."</td>";
+
+          $query_get_section  = "SELECT * FROM classes WHERE class_id='".$class_id."'";
+          $result_get_section = mysqli_query($connection, $query_get_section);
+
+        while($row_result_get_section = mysqli_fetch_assoc($result_get_section))
+          {
+            $section_display = $row_result_get_section['sec_id'];
+          }
+          echo "<td>".get_section_name($section_display,"",$connection)."</td>";
           echo "<td>".$row['room']."</td>";
           echo "<td>".$teacher_name."</td>";
           echo "<td>".$day."</td>";

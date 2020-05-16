@@ -28,7 +28,7 @@
       </ol>
       <h1>Certificate of Grades Request</h1>
       <hr>
-     <form action="" method="post" enctype="multipart/form-data">
+     <form action="cert-of-grades.php" method="post">
       <h2>Requester's Information</h2>
       <div class="form-group row">
         <label class="col-md-2 col-form-label" for="LastName">Last Name</label>  
@@ -62,25 +62,25 @@
         <input id="PhoneNum" name="student_number"  placeholder="Example: 2019-BSCRIM001"  class="form-control">
         </div>
 
-        <label class="col-md-1 col-form-label" for="Course">Course</label>  
+<!--         <label class="col-md-1 col-form-label" for="Course">Course</label>  
         <div class="col-md-2">
         <input id="Course" name="course" placeholder="Example: BSCRIM" class="form-control">
         </div>
-
+ -->
         <label class="col-md-2 col-form-label" for="Graduated">Did you graduate from your course?</label>  
         <div class="col-md-2">
           <div class="custom-control custom-radio">
-            <input type="radio" id="customRadio1" name="graduated" value="1" class="custom-control-input">
+            <input type="radio" id="customRadio1" required name="graduated" value="1" class="custom-control-input">
             <label class="custom-control-label" for="customRadio1">Yes</label>
           </div>
           <div class="custom-control custom-radio">
-            <input type="radio" id="customRadio2" name="graduated" value="0" class="custom-control-input">
+            <input type="radio" id="customRadio2" required name="graduated" value="0" class="custom-control-input">
             <label class="custom-control-label" for="customRadio2">No</label>
           </div>
         </div>
       </div>
 
-      <div class="form-group row">
+<!--       <div class="form-group row">
         <label class="col-md-2 col-form-label" for="School Year">School Year Began</label>  
         <div class="col-md-2">
         <input id="PhoneNum" name="sy"  placeholder="2019-2020"  class="form-control">
@@ -95,7 +95,7 @@
         </div>
 
       </div>
-
+ -->
       <div class="row">
         <div class="col-md-12 d-flex justify-content-center">
         <input type="submit" name="submit" value="Process Request" class="btn btn-primary" />&nbsp;
@@ -103,14 +103,6 @@
         </div>
       </div>
     </form>
-    <?php
-
-      if (isset($_POST['submit'])) {
-
-
-
-      }
-  ?>
   </div>
  </div> 
   <!-- /#wrapper -->

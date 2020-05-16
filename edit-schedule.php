@@ -65,16 +65,23 @@
           $year = $row['year'];
           $term = $row['term'];
           $sy = $row['school_yr'];
-          $student_limit = $row['student_limit'];
-          $students_enrolled = $row['students_enrolled'];
-          $section = $row['section'];
+          $class_id = $row['class_id'];
+          $teacher_id = $row['teacher_id'];
+          $teacher = get_teacher_name($row['teacher_id'],"",$connection);
         }
-        $query  = "SELECT course_code FROM courses WHERE course_id='".$current_course_id."'";
-        $result = mysqli_query($connection, $query);
-        while($row = mysqli_fetch_assoc($result))
-          {
-          $course_code = $row['course_code'];
+          $course_code = get_course_code($current_course_id,"",$connection);
+
+        $query_class_info  = "SELECT * FROM classes WHERE class_id = ".$class_id;
+        $result_class_info = mysqli_query($connection, $query_class_info);
+
+        while($row_class_info = mysqli_fetch_assoc($result_class_info))
+        {
+          $max_students = $row_class_info['student_limit'];
+          $sec_id = $row_class_info['sec_id'];
+
+          $section = get_section_name($sec_id,"",$connection);
         }
+
       ?>
 
       <div class="form-group row">
@@ -110,19 +117,7 @@
           echo "<label class=\"col-md-2 col-form-label\" for=\"Subject\">Subject</label> ";
           echo "<div class=\"col-md-4\">";
           echo "<select class=\"form-control\" required name=\"subject\">";
-
-          $query  = "SELECT * FROM subjects";
-          $result = mysqli_query($connection, $query);
-
-          while($row = mysqli_fetch_assoc($result))
-            {
-              if ($current_subject_id == $row['subject_id']) {
-                echo  "<option value=".$row['subject_id']." required selected=\"selected\">".$row['subject_code']."</option>";
-              }else{
-                echo  "<option value=".$row['subject_id']." required>".$row['subject_code']."</option>";
-             }
-            }
-
+          echo  "<option value=".$current_subject_id." required selected=\"selected\">".get_subject_code($current_subject_id,"",$connection)."</option>";
          echo "</select></div>";
 
          echo "<label class=\"col-md-2 col-form-label\" for=\"Room\">Room</label>";
@@ -159,33 +154,14 @@
         <div class="col-md-4">
          <select class="form-control" name="teacher" required>
            <?php
-            $query2  = "SELECT teacher FROM schedule_block WHERE schedule_id = ".$schedule_id;
-            $result2 = mysqli_query($connection, $query2);
+              echo  "<option value=\"".$teacher_id."\"". "selected=\"selected\">".$teacher."</option>";
 
-            while($row = mysqli_fetch_assoc($result2))
-              {
-                $current_teacher = $row['teacher'];
-              }
-           //this block will load the teacher name from the database
-              $query  = "SELECT * FROM teachers";
-              $result = mysqli_query($connection, $query);
-
-
-              while($row = mysqli_fetch_assoc($result))
-                {
-                  $teacher_full_name = $row['first_name']." ".$row['last_name'];
-                  if ($current_teacher == $teacher_full_name) {
-                    echo  "<option value=\"".$row['teacher_id']."\"". "selected=\"selected\">".$teacher_full_name."</option>";
-                  }else{
-                    echo  "<option value=\"".$row['teacher_id']."\">".$teacher_full_name."</option>";
-                  }
-                }
           ?>
          </select>
         </div>
         <label class="col-md-2 col-form-label" for="max-students">Max Students</label>  
           <div class="col-md-1">
-            <input class="form-control" id="max-students" required min="1" max="99" type="number" value="<?php echo $student_limit; ?>" name="max_students" placeholder="1">
+            <input class="form-control" id="max-students" required min="1" max="99" type="number" readonly="" value="<?php echo $max_students ?>" name="max_students" placeholder="1">
           </div>
         <label class="col-md-1 col-form-label" for="subject-code">Section</label>  
         <div class="col-md-1">
@@ -248,7 +224,7 @@
               //Simple looping to get the correct day as selected when editing the text
               $weekdays = array('1', '2', '3', '4', '5', '6', '7');
 
-              for ($i=0; $i < 6 ; $i++) { 
+              for ($i=0; $i < 7 ; $i++) { 
                 if ($day == $weekdays[$i]) {
                   echo "<option value=\"".$weekdays[$i]."\" selected=\"selected\">".number_to_day($weekdays[$i])."</option>";
                 }else{
@@ -303,17 +279,10 @@
              echo "<div class=\"alert alert-warning\" role=\"alert\">";
              echo "Conflict in schedule! The time, room and day for this schedule is already taken.";
              echo "</div>";
-          }else{
+          }
 
-            if ($max_students < $students_enrolled) {
-            echo "<script type='text/javascript'>";
-            echo "alert('Student limit is less than the currently enrolled students in this subject and schedule')";
-            echo "</script>"; 
 
-            }
-
-            else{
-              $query  = "UPDATE schedule_block SET subject_id = '{$subject_id}', room = '{$room}', teacher_id = '{$teacher}', time_start = '{$time_start}', time_end = '{$time_end}', day = '{$day}', student_limit = '{$max_students}' WHERE schedule_id='".$schedule_id."' LIMIT 1";
+              $query  = "UPDATE schedule_block SET subject_id = '{$subject_id}', room = '{$room}', teacher_id = '{$teacher}', time_start = '{$time_start}', time_end = '{$time_end}', day = '{$day}' WHERE schedule_id='".$schedule_id."' LIMIT 1";
               $result = mysqli_query($connection, $query);
 
               //another query to overwrite the teacher_id if there are other existing schedules
@@ -334,8 +303,6 @@
               } else {
                 echo "Error updating record: " . $connection->error;
               }
-            }
-          }
         }
           if(isset($connection)){ mysqli_close($connection); }
           //close database connection after an sql command
