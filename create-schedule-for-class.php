@@ -7,6 +7,8 @@
 
   if (isset($_GET['sec_id'])) {
     $sec_id = $_GET["sec_id"]; //Refactor this validation later
+    $term = $_GET["term"];
+    $school_yr = $_GET["school_yr"];  
   }
   else{
     $sec_id = NULL;
@@ -89,7 +91,7 @@
         
         
 
-        $query  = "SELECT classes.class_id,classes.sec_id, classes.subject_id, classes.teacher_id, classes.students_enrolled, classes.student_limit, sections.sec_name, sections.year, sections.course_id FROM classes INNER JOIN sections ON classes.sec_id=sections.sec_id WHERE classes.sec_id=".$sec_id;
+        $query  = "SELECT classes.class_id,classes.sec_id, classes.subject_id, classes.teacher_id, classes.students_enrolled, classes.student_limit, sections.sec_name, sections.year, sections.course_id FROM classes INNER JOIN sections ON classes.sec_id=sections.sec_id WHERE classes.sec_id=".$sec_id." AND classes.term='".$term."' AND classes.school_yr='".$school_yr."'";
         $result = mysqli_query($connection, $query);
 
       while($row = mysqli_fetch_assoc($result))

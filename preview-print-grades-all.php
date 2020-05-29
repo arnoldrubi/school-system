@@ -35,7 +35,7 @@
 	footer{display: none !important;}
 </style>
 
-  <title>Preview Schedule</title>
+  <title>Preview Grades</title>
   </head>
 
   <body>
@@ -71,7 +71,7 @@
         echo "  </tr></thead><tbody>";
 
 
-        $query = "SELECT student_grades.stud_reg_id, student_grades.prelim, student_grades.midterm, student_grades.semis, student_grades.finals, student_grades.final_grade,student_grades.remarks, students_reg.first_name, students_reg.middle_name, students_reg.last_name FROM student_grades INNER JOIN students_reg ON student_grades.stud_reg_id = students_reg.stud_reg_id WHERE student_grades.subject_id ='".$subject_id."' AND student_grades.sec_id ='".$sec_id."' AND student_grades.grade_posted=1";
+        $query = "SELECT student_grades.stud_reg_id, student_grades.prelim, student_grades.midterm, student_grades.semis, student_grades.finals, student_grades.final_grade,student_grades.remarks, students_reg.first_name, students_reg.middle_name, students_reg.last_name FROM student_grades INNER JOIN students_reg ON student_grades.stud_reg_id = students_reg.stud_reg_id WHERE student_grades.subject_id ='".$subject_id."' AND student_grades.sec_id ='".$sec_id."' AND student_grades.grade_posted=1 ORDER BY students_reg.last_name";
 
         $result = mysqli_query($connection, $query);
 

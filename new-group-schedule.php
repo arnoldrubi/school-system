@@ -69,9 +69,9 @@
             echo "<td>".$term."</td>";
             echo "<td>".$row['year']."</td>";
             echo "<td>".$school_yr."</td>";
-            $enrolled_students = get_enrolled_regular_students($row['sec_id'],"",$connection);
+            $enrolled_students = get_enrolled_regular_students($row['sec_id'],$term,$school_yr,"",$connection);
             echo "<td>".$enrolled_students."</td>";
-            echo "<td class=\"option-grp\"><a class=\"btn btn-success btn-sm\" href=\"create-schedule-for-class.php?sec_id=".urlencode($row['sec_id'])."\">Build Schedule</a> <a class=\"btn btn-warning btn-sm\" target=\"_blank\" href=\"preview-print-schedule.php?sec_id=".urlencode($row['sec_id'])."\">Print Schedule</a>";
+            echo "<td class=\"option-grp\"><a class=\"btn btn-success btn-sm\" href=\"create-schedule-for-class.php?sec_id=".urlencode($row['sec_id'])."&term=".urlencode($term)."&school_yr=".$school_yr."\">Build Schedule</a> <a class=\"btn btn-warning btn-sm\" target=\"_blank\" href=\"preview-print-schedule.php?sec_id=".urlencode($row['sec_id'])."&term=".urlencode($term)."&school_yr=".$school_yr."\">Print Schedule</a>";
             echo "</tr>";
         }
 

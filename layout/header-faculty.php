@@ -5,10 +5,6 @@ require_once("includes/session.php");
   $username = $_SESSION["username"];
   $role =  $_SESSION["role"];
   confirm_logged_in();
-
-  if ($role == "faculty") {
-    redirect_to("logout.php");
-  }
 ?>
 
 <!doctype html>

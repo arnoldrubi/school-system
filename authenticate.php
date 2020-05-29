@@ -43,7 +43,14 @@ if (isset($_POST['submit'])) {
     $_SESSION["role"] = $found_admin["role"];
     $_SESSION["email"] = $found_admin["email"];
     $_SESSION["message"] = "";
-    redirect_to("admin-dashboard.php");
+    $_SESSION["teacher_id"] =  $found_admin["teacher_id"];
+
+    if ($_SESSION["role"] == "faculty") {
+      redirect_to("faculty-dashboard.php");
+    }
+    else{
+      redirect_to("admin-dashboard.php");
+      }
     }
     else{
     $_SESSION["message"] = "Username/password not found";

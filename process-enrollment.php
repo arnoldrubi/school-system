@@ -175,6 +175,9 @@
           ?>
         </select>
       </div>
+     <div id="class-limit" class="col-md-12">
+       
+     </div>
     </div>
     <div class="form-group row">
       <label class="col-md-2 col-form-label" for="Course">Remarks</label>
@@ -223,9 +226,18 @@
     }
     else{
 
+    //Validation, to make sure the proper section is selected
+     if ($sec_id == 0) {
+      echo "<script>alert('Please select a section!');";
+      $URL="process-enrollment.php?stud_reg_id=".$stud_reg_id;
+      echo "location.href='$URL';";
+      echo "document.getElementById('section').focus()</script>";
+    }
+    //End Validation
+
     //validation: Enrollment will not proceed if there subjects w/o classes for the chosen course, and year
     $classes_subjects = array();
-    $query_check_classes  = "SELECT * FROM classes WHERE sec_id='".$sec_id."'";
+    $query_check_classes  = "SELECT * FROM classes WHERE sec_id='".$sec_id."' AND term='".$term."' AND school_yr='". $sy."'";
     $result_check_classes = mysqli_query($connection, $query_check_classes);
 
     while($row_check_classes = mysqli_fetch_assoc($result_check_classes))
@@ -248,11 +260,8 @@
      $redirect_class = "classes.php?sec_id=".urlencode($sec_id);
      die("<div class=\"alert alert-danger\" role=\"alert\">Class for this course and year is incomplete! Go to the <a href=\"".$redirect_class."\">Classes Page to Create</a></div>");
     }
-    
-
     //End validation
-
-      $query  = "SELECT * FROM classes WHERE sec_id ='".$sec_id."'";
+      $query  = "SELECT * FROM classes WHERE sec_id ='".$sec_id."' AND term='".$term."' AND school_yr='". $sy."'";
       $result = mysqli_query($connection, $query);
 
       while($row = mysqli_fetch_assoc($result))
@@ -296,7 +305,7 @@
 
       //start updating current students for classes under the section enrolled
 
-      $query_get_class_ids = "SELECT * from classes WHERE sec_id='".$sec_id."'";
+      $query_get_class_ids = "SELECT * from classes WHERE sec_id='".$sec_id."' AND term='".$term."' AND school_yr='".$sy."'";
       $result_get_class_ids = mysqli_query($connection, $query_get_class_ids);
 
       $class_ids = array();
@@ -314,11 +323,13 @@
          }
 
         $sec_id = get_section_name_by_class($class_ids[$i],"",$connection);
-        $count_regular_student = get_enrolled_regular_students($sec_id,"",$connection);
+        $count_regular_student = get_enrolled_regular_students($sec_id,$term,$sy,"",$connection);
 
         $current_students_total = $irreg_count + $count_regular_student;
 
         $query4  = "UPDATE classes SET students_enrolled = '{$current_students_total}' WHERE class_id ='".$class_ids[$i]."'";
+        print_r($query4);
+        echo "<br>";
         $result4 = mysqli_query($connection, $query4);
         }
       //End updating current students enrolled for each classes under this section
@@ -370,15 +381,25 @@ function load_section(course,year){
     year: year
   },function(data,status){
     $("#section").html(data);
-
   });
 }
-
+function check_classes_limit(sec_id){
+  var section_id = sec_id;
+  //run ajax
+  $.post("check_class_limit.php",{
+    section_id: section_id
+  },function(data,status){
+    $("#class-limit").html(data);
+  });
+}
 $(document).ready(function() {
 
 var course = $("#course").val();
 var year = $("#select-yr").val();
 load_section(course,year);
+var section_id = $("#section").val();
+
+// check_classes_limit($("#section").val());
 
   $('#exampleRadios2').click(function(){
     $("#section").attr("disabled", true);
@@ -420,6 +441,9 @@ load_section(course,year);
       var course = $("#course").val();
       var year = $("#select-yr").val();
       load_section(course,year);
+    });
+    $("#section").change(function(){
+      check_classes_limit($("#section").val());
     });
 });
 

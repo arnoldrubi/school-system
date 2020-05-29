@@ -1,7 +1,7 @@
 <?php include 'layout/header.php';?>
 <?php require_once("includes/db_connection.php"); ?>
 
-  <title>Register New Student</title>
+  <title>Request for Certificate of Grades</title>
   </head>
 
   <body>
@@ -59,14 +59,9 @@
       <div class="form-group row">
         <label class="col-md-2 col-form-label" for="Student Number">Student Number</label>  
         <div class="col-md-2">
-        <input id="PhoneNum" name="student_number"  placeholder="Example: 2019-BSCRIM001"  class="form-control">
+        <input id="student-number" value="" name="student_number"  placeholder="Example: 2019-BSCRIM001"  required  class="form-control">
         </div>
 
-<!--         <label class="col-md-1 col-form-label" for="Course">Course</label>  
-        <div class="col-md-2">
-        <input id="Course" name="course" placeholder="Example: BSCRIM" class="form-control">
-        </div>
- -->
         <label class="col-md-2 col-form-label" for="Graduated">Did you graduate from your course?</label>  
         <div class="col-md-2">
           <div class="custom-control custom-radio">
@@ -80,29 +75,37 @@
         </div>
       </div>
 
-<!--       <div class="form-group row">
-        <label class="col-md-2 col-form-label" for="School Year">School Year Began</label>  
-        <div class="col-md-2">
-        <input id="PhoneNum" name="sy"  placeholder="2019-2020"  class="form-control">
-        </div>
-
-        <label class="col-md-1 col-form-label" for="term">Term Began</label>  
-        <div class="col-md-2">
-          <select class="form-control" id="term" name="term">
-            <option value="1st Semester">1st Semester</option>
-            <option value="2nd Semester">2nd Semester</option>
-          </select>
-        </div>
-
-      </div>
- -->
       <div class="row">
         <div class="col-md-12 d-flex justify-content-center">
         <input type="submit" name="submit" value="Process Request" class="btn btn-primary" />&nbsp;
         <a class="btn btn-secondary" href="registrar-services.php">Cancel</a>
         </div>
       </div>
+
     </form>
+      <div class="form-group row">
+        <div class="col-md-12">
+          <p>Can't remember the Student Number? <br>
+          <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#student-info" aria-expanded="false" aria-controls="student-info">
+            Try searching using his/her name. 
+          </button>
+          </p>
+        </div>
+     </div>
+      <div class="form-group row collapse" id="student-info">
+        <label class="col-md-2 col-form-label" for="Student_LastName">Input Student's Last Name</label>  
+        <div class="col-md-10">
+        <input id="StudentLastName" name="student_lastname" type="text" placeholder="Input Student's Last Name" class="form-control">
+        </div>
+        <label class="col-md-12 col-form-label" for="FirstName">OR </label>  
+        <label class="col-md-2 col-form-label" for="FirstName">Input Student's First Name</label>  
+        <div class="col-md-10">
+        <input id="StudentFirstName" name="student_firstname" type="text" placeholder="Input Student's First Name" class="form-control">
+        </div>
+        <div class="col-md-12" id="student-list">
+            
+        </div>
+      </div>
   </div>
  </div> 
   <!-- /#wrapper -->
@@ -115,3 +118,25 @@
 <?php include 'layout/footer.php';?>
 
 
+  <script>
+  $(document).ready(function() {
+    $("#StudentLastName").keyup(function(){
+      var StudentLastName = $("#StudentLastName").val();
+      //run ajax
+      $.post("scan_student_name.php",
+        {StudentLastName: StudentLastName}
+        ,function(data,status){
+        $("#student-list").html(data);
+      });
+    });
+    $("#StudentFirstName").keyup(function(){
+      var StudentFirstName = $("#StudentFirstName").val();
+      //run ajax
+      $.post("scan_student_name.php",{
+        StudentFirstName: StudentFirstName
+      },function(data,status){
+        $("#student-list").html(data);
+      });
+    });
+  });
+  </script>

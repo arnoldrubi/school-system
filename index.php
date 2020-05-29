@@ -69,9 +69,9 @@ require_once("includes/functions.php");
             unset ($_SESSION["message"]);
             echo "</div>";
           }
-          if (isset($_SESSION["user_id"])) {
-            redirect_to("admin-dashboard.php");
-          }
+          // if (isset($_SESSION["user_id"])) {
+          //   redirect_to("admin-dashboard.php");
+          // }
           ?>
         </div>
     </div>

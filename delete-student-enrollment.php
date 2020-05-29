@@ -39,7 +39,7 @@
          }
 
         $sec_id = get_section_name_by_class($class_ids[$i],"",$connection);
-        $count_regular_student = get_enrolled_regular_students($sec_id,"",$connection);
+        $count_regular_student = get_enrolled_regular_students($sec_id,$term,$sy,"",$connection);
 
         $current_students_total = $irreg_count + $count_regular_student;
 

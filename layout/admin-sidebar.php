@@ -1,7 +1,13 @@
 <?php
     echo "<ul class=\"sidebar navbar-nav\">";
     echo "<li class=\"nav-item active\">";
+
+    if ($_SESSION["role"] == "administrator" || $_SESSION["role"] == "registrar") {
     echo "<a class=\"nav-link\" href=\"admin-dashboard.php\">";
+    }
+    elseif ($_SESSION["role"] == "faculty") {
+    echo "<a class=\"nav-link\" href=\"faculty-dashboard.php\">";
+    }
     echo "<i class=\fa fa-tachometer\" aria-hidden=\"true\"></i>";
     echo "<span>Dashboard</span></a></li><hr>";
 

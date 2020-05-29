@@ -2,7 +2,7 @@
 <?php require_once("includes/functions.php"); ?>
 <?php require_once("includes/db_connection.php"); ?>
 
-<?php include 'layout/header.php';?>
+<?php include 'layout/header-faculty.php';?>
 
 
   <title>Grading Portal</title>
@@ -29,31 +29,6 @@
       </ol>
       <h1>View Available Subjects</h1>
 
- <button class="btn btn-secondary" data-toggle="collapse" data-target="#advance-search">View Grades from Previous Term and School Year</button>
-      <div id="advance-search" class="collapse">
-          <div class="form-group row">
-            <label class="col-md-2 col-form-label" for="Course">Select Term, and School Year:</label>
-            <div class="col-md-3">
-              <select class="form-control" id="sy-and-term" name="sy_and_term">
-                <?php
-
-                  echo "<option value=\"0\">Please select</option>";
-
-                  $query_distinct_term_sy = "SELECT DISTINCT term, school_yr FROM student_grades ORDER BY school_yr, term" ;
-                  $result_distinct_term_sy = mysqli_query($connection, $query_distinct_term_sy);
-
-                  while($row_distinct_term_sy = mysqli_fetch_assoc($result_distinct_term_sy)){
-                    $term_and_sy = $row_distinct_term_sy["term"].", ".$row_distinct_term_sy["school_yr"];
-
-                    echo "<option value=\"".$term_and_sy."\">".$term_and_sy."</option>";
-                  }
-
-                ?>
-              </select>
-            </div>            
-         </div>
-      </div>
-
       <div class="table-responsive" id="dataTable_wrapper">
       <?php
 
@@ -70,9 +45,9 @@
         echo "   <th class=\"skip-filter\">&nbsp;</th>";   
         echo "  </tr></thead><tbody>";
         
-        
+        $teacher_id = $_SESSION["teacher_id"];
 
-        $query  = "SELECT DISTINCT course_id,subject_id, year, term, sec_id, teacher_id FROM student_grades WHERE term='".return_current_term($connection,"")."' AND school_yr='".return_current_sy($connection,"")."'";
+        $query  = "SELECT DISTINCT course_id,subject_id, year, term, sec_id, teacher_id FROM student_grades WHERE term='".return_current_term($connection,"")."' AND school_yr='".return_current_sy($connection,"")."' AND teacher_id =".$teacher_id;
         $result = mysqli_query($connection, $query);
 
       while($row = mysqli_fetch_assoc($result))
@@ -104,7 +79,7 @@
         else{
         echo "<td>".get_teacher_name($row['teacher_id'],"",$connection)."</td>"; 
        }
-        echo "<td><a href=\"encode-grades.php?subject_id=".$subject_id."&term=".urlencode($row['term'])."&school_yr=".urlencode(return_current_sy($connection,""))."&course_id=".urlencode($row['course_id'])."&year=".urlencode($row['year'])."&section=".urlencode($row['sec_id'])."&teacher_id=".urlencode($row['teacher_id'])."\">Encode Grades</a></td>";
+        echo "<td><a href=\"faculty-encode-grades.php?subject_id=".$subject_id."&term=".urlencode($row['term'])."&school_yr=".urlencode(return_current_sy($connection,""))."&course_id=".urlencode($row['course_id'])."&year=".urlencode($row['year'])."&section=".urlencode($row['sec_id'])."&teacher_id=".urlencode($row['teacher_id'])."\">Encode Grades</a></td>";
         echo "</tr>";
         }
 
@@ -143,17 +118,7 @@ $(document).ready(function(){
       $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
     });
   });
-
-    $("#sy-and-term").change(function(){
-      var sy_and_term = $("#sy-and-term").val();
-      //run ajax
-      $.post("load_available_subject_for_grades.php",
-        {sy_and_term: sy_and_term}
-        ,function(data,status){
-        $("#dataTable_wrapper").html(data);
-      });
-    });
-
 });
 
 </script>
+

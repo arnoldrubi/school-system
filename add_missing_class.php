@@ -166,7 +166,7 @@
           $sec_name = get_section_name($section,"",$connection);
 
           $max_students_enrolled = (int)$_POST["max_students"];
-          $current_students = get_enrolled_regular_students($sec_id,"",$connection);
+          $current_students = get_enrolled_regular_students($sec_id,$term,$school_yr,"",$connection);
 
           if (!isset($course_id) || !isset($section) || !isset($subject) || !isset($teacher)) {
             die ("<div class=\"alert alert-danger\" role=\"alert\">Error: One or more fields are empty.</div>");
@@ -180,11 +180,11 @@
                 echo "<div class=\"alert alert-danger\" role=\"alert\">Error: Class for this subject has already been created.</div>";
             }
             else{
-              $query   = "INSERT INTO classes (sec_id, subject_id, teacher_id, students_enrolled, student_limit) VALUES ('{$section}', '{$subject}', '{$teacher}', '{$current_students}',$max_students_enrolled)";
+              $query   = "INSERT INTO classes (sec_id, subject_id, teacher_id, students_enrolled, student_limit, term, school_yr) VALUES ('{$section}', '{$subject}', '{$teacher}', '{$current_students}','{$max_students_enrolled}', '{$term}', '{$school_yr}')";
               $result = mysqli_query($connection, $query);
 
               if ($result === TRUE) {
-              redirect_to("classes.php?sec_id=".urlencode($sec_id));
+              redirect_to("classes.php?sec_id=".urlencode($sec_id)."&term=".urlencode($term)."&school_yr=".urlencode($school_yr));
               } else {
               echo "Error updating record: " . $connection->error;
               }

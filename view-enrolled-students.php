@@ -31,8 +31,33 @@
           View Enrolled Students
         </li>
       </ol>
-      <h1>View Enrolled Students</h1>
+      <h1>View Enrolled Students <?php echo "For ".return_current_term($connection,"").", ".return_current_sy($connection,""); ?></h1>
       <hr>
+
+       <button class="btn btn-secondary" data-toggle="collapse" data-target="#advance-search">View Enrollment from Previous Term and School Year</button>
+        <div id="advance-search" class="collapse">
+            <div class="form-group row">
+              <label class="col-md-2 col-form-label" for="Course">Select Term, and School Year:</label>
+              <div class="col-md-3">
+                <select class="form-control" id="sy-and-term" name="sy_and_term">
+                  <?php
+
+                    echo "<option value=\"0\">Please select</option>";
+
+                    $query_distinct_term_sy = "SELECT DISTINCT term, school_yr FROM student_grades ORDER BY school_yr, term" ;
+                    $result_distinct_term_sy = mysqli_query($connection, $query_distinct_term_sy);
+
+                    while($row_distinct_term_sy = mysqli_fetch_assoc($result_distinct_term_sy)){
+                      $term_and_sy = $row_distinct_term_sy["term"].", ".$row_distinct_term_sy["school_yr"];
+
+                      echo "<option value=\"".$term_and_sy."\">".$term_and_sy."</option>";
+                    }
+
+                  ?>
+                </select>
+              </div>            
+           </div>
+        </div>
       <div class="table-responsive" id="dataTable_wrapper">
       <?php
 
@@ -55,7 +80,7 @@
         
         
 
-        $query  = "SELECT enrollment.stud_reg_id,enrollment.student_id, enrollment.student_number, enrollment.course_id, enrollment.year, enrollment.sec_id, enrollment.school_yr, enrollment.term, enrollment.irregular, students_reg.last_name, students_reg.first_name, students_reg.middle_name FROM enrollment INNER JOIN students_reg ON enrollment.stud_reg_id=students_reg.stud_reg_id ORDER BY last_name ASC";
+        $query  = "SELECT enrollment.stud_reg_id,enrollment.student_id, enrollment.student_number, enrollment.course_id, enrollment.year, enrollment.sec_id, enrollment.school_yr, enrollment.term, enrollment.irregular, students_reg.last_name, students_reg.first_name, students_reg.middle_name FROM enrollment INNER JOIN students_reg ON enrollment.stud_reg_id=students_reg.stud_reg_id WHERE enrollment.term='".return_current_term($connection,"")."' AND school_yr='".return_current_sy($connection,"")."' ORDER BY last_name ASC";
         $result = mysqli_query($connection, $query);
 
       while($row = mysqli_fetch_assoc($result))
@@ -135,6 +160,17 @@
 $(document).ready(function(){
 
   $('#dataTable').ddTableFilter();
+
+  $("#sy-and-term").change(function(){
+    var sy_and_term = $("#sy-and-term").val();
+    //run ajax
+    $.post("load_available_students_enrolled",
+      {sy_and_term: sy_and_term}
+      ,function(data,status){
+      $("#dataTable_wrapper").html(data);
+    });
+  });
+
 
 });
 </script>

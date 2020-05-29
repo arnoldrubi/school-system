@@ -12,7 +12,17 @@
         $site_logo = $row['site_logo'];
       }
       ?>
-    <img class="site-logo" src="uploads/<?php echo  $site_logo." " ?>"><a class="navbar-brand mr-1" href="admin-dashboard.php"><?php echo  $school_name." " ?><br><small>Academic Information Management System (AIMS)</small></a>
+    <img class="site-logo" src="uploads/<?php echo  $site_logo." " ?>">
+
+      <?php
+
+        if ($_SESSION["role"] == "administrator" || $_SESSION["role"] == "registrar") {
+        echo "<a class=\"navbar-brand mr-1\" href=\"admin-dashboard.php\">";
+        }
+        elseif ($_SESSION["role"] == "faculty") {
+        echo "<a class=\"navbar-brand mr-1\" href=\"faculty-dashboard.php\">";
+        }
+        echo  $school_name." " ?><br><small>Academic Information Management System (AIMS)</small></a>
 
 <!--     <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
       <i class="fa fa-bars"></i>
@@ -48,10 +58,13 @@
             <i class="fa fa-user-circle fa-fw"></i>
           </a>
           <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-            <a class="dropdown-item" href="user-account.php">My Account</a>
             <?php 
-              if ($_SESSION["role"] == "administrator") {
+              if ($_SESSION["role"] == "administrator" || $_SESSION["role"] == "registrar") {
+               echo "<a class=\"dropdown-item\" href=\"user-account.php\">My Account</a>";
                echo "<a class=\"dropdown-item\" href=\"view-users.php\">Manage Users</a>";
+              }
+              elseif ($_SESSION["role"] == "faculty") {
+               echo "<a class=\"dropdown-item\" href=\"faculty-account.php\">My Account</a>";
               }
               
             ?>

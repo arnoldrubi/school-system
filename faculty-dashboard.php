@@ -1,4 +1,4 @@
-<?php include 'layout/header.php';?>
+<?php include 'layout/header-faculty.php';?>
 <?php require_once("includes/db_connection.php"); ?>
 
   <title>Manage Schedule</title>

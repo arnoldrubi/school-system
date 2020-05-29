@@ -240,8 +240,8 @@ global $sidebar_context;
 	}
 
 //NEXT: Utility function to count the current enrollment of irreg students for the given course, year, term, SY, and section
-	function get_enrolled_regular_students($sec_id,$current_reg_student_enrolled,$connection){
-		$query_get_enrolled  = "SELECT COUNT(*) AS num FROM enrollment WHERE sec_id='".$sec_id."'";
+	function get_enrolled_regular_students($sec_id,$term,$sy,$current_reg_student_enrolled,$connection){
+		$query_get_enrolled  = "SELECT COUNT(*) AS num FROM enrollment WHERE sec_id='".$sec_id."' AND school_yr='".$sy."' AND term='".$term."'";
        	$result_get_enrolled = mysqli_query($connection, $query_get_enrolled);
         while($row_get_enrolled = mysqli_fetch_assoc($result_get_enrolled)){
           $current_reg_student_enrolled = $row_get_enrolled['num'];

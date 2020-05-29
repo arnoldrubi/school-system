@@ -2,7 +2,7 @@
 <?php require_once("includes/functions.php"); ?>
 <?php require_once("includes/db_connection.php"); ?>
 
-<?php include 'layout/header.php';?>
+<?php include 'layout/header-faculty.php';?>
 
 <?php 
   if (isset($_GET['subject_id'])) {
@@ -18,7 +18,7 @@
      $subject_id = NULL;
   }
   if ($subject_id == NULL) {
-    redirect_to("admin-dashboard.php");
+    redirect_to("faculty-dashboard.php");
   }
 
   $query = "SELECT * FROM subjects WHERE subject_id ='".$subject_id."'";
@@ -49,10 +49,10 @@
     <div id="content-wrapper" class="col-md">
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
-          <a href="admin-dashboard.php">Dashboard</a>
+          <a href="faculty-dashboard.php">Dashboard</a>
         </li>
         <li class="breadcrumb-item">
-          <a href="grading-portal.php">Grading Portal</a>
+          <a href="faculty-portal.php">Grading Portal</a>
         </li>
         <li class="breadcrumb-item active">
          Process Grades
@@ -65,10 +65,10 @@
       <?php
       if (isset($_GET["grade_saved"])) {
         $url_grade_save = $_GET["grade_saved"];
-        $form_url = "process-grades.php?subject_id=".$subject_id."&term=".urlencode($term)."&school_yr=".urlencode($school_yr)."&course_id=".urlencode($course_id)."&year=".urlencode($year)."&section=".urlencode($section)."&teacher_id=".urlencode($teacher_id)."&grade_saved=".$url_grade_save;
+        $form_url = "faculty-process-grades.php?subject_id=".$subject_id."&term=".urlencode($term)."&school_yr=".urlencode($school_yr)."&course_id=".urlencode($course_id)."&year=".urlencode($year)."&section=".urlencode($section)."&teacher_id=".urlencode($teacher_id)."&grade_saved=".$url_grade_save;
       }
       else{
-      $form_url = "process-grades.php?subject_id=".$subject_id."&term=".urlencode($term)."&school_yr=".urlencode($school_yr)."&course_id=".urlencode($course_id)."&year=".urlencode($year)."&section=".urlencode($section)."&teacher_id=".urlencode($teacher_id);
+      $form_url = "faculty-process-grades.php?subject_id=".$subject_id."&term=".urlencode($term)."&school_yr=".urlencode($school_yr)."&course_id=".urlencode($course_id)."&year=".urlencode($year)."&section=".urlencode($section)."&teacher_id=".urlencode($teacher_id);
       }
       ?>
       <form action="<?php echo $form_url;?>" method="post">
@@ -151,10 +151,10 @@
           echo "<input type=\"submit\" name=\"post\" value=\"Post Grades\" class=\"btn btn-success\" />";
           }
           elseif ($grade_saved == 2) {
-          echo "<input type=\"submit\" name=\"edit\" value=\"Edit Grades\" class=\"btn btn-warning\" />";      
+          echo "<div class=\"alert alert-warning\" role=\"alert\">Grades are now posted. Please contact the registrar if you wish to edit.</div>";      
           }
           elseif ($grades_set_lock > 0) {
-          echo "<input type=\"submit\" name=\"edit\" value=\"Edit Grades\" class=\"btn btn-warning\" />";      
+          echo "<div class=\"alert alert-warning\" role=\"alert\">Grades are now posted. Please contact the registrar if you wish to edit.</div>"; 
           }
           else{
             echo "<input type=\"submit\" name=\"submit\" value=\"Save Grades\" class=\"btn btn-primary\" />";
@@ -162,7 +162,7 @@
         }
         else{
           if ($grades_set_lock == 1) {
-            echo "<input type=\"submit\" name=\"edit\" value=\"Edit Grades\" class=\"btn btn-warning\" />";      
+          echo "<div class=\"alert alert-warning\" role=\"alert\">Grades are now posted. Please contact the registrar if you wish to edit.</div>";     
           }
           else{
            echo "<input type=\"submit\" name=\"submit\" value=\"Save Grades\" class=\"btn btn-primary\" />";

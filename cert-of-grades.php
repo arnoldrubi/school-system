@@ -1,25 +1,12 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Certificate of Grades</title>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<?php require_once("includes/session.php"); ?>
+<?php require_once("includes/functions.php"); ?>
+<?php require_once("includes/db_connection.php"); ?>
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <!-- Google Fonts Roboto and Open Sans -->
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans|Roboto&display=swap" rel="stylesheet">
-    <!-- Custom CSS to overide default CSS -->
-    <link rel="stylesheet" type="text/css" href="/static/custom.css">
-
-</head>
-<body>
+<?php include 'layout/header.php';?>
 
 
 
-<?php require_once("includes/db_connection.php");
-require_once("includes/functions.php");
+<?php
 
   $query = "SELECT * FROM site_settings";
 
@@ -32,38 +19,45 @@ require_once("includes/functions.php");
          $phone_number = $row['phone_number'];
         }
 
-if (isset($_POST["submit"])) {
-    $student_number = mysql_prep($_POST["student_number"]);
-    $graduated = $_POST["graduated"];
-}
-//Set the status of the student
-$student_graduate = "";
+//Validation, making sure all required fields are entered
 
-if ($graduated == 1) {
-	$student_graduate = "Graduate";
+if (!isset($graduated) && !isset($student_number) && !isset($_POST["submit"])) {
+	redirect_to("request-certificate-of-grades.php");
 }
 else{
-	$student_graduate = "Student";
+	if (isset($_POST["submit"])) {
+	    $student_number = mysql_prep($_POST["student_number"]);
+	    $graduated = $_POST["graduated"];
+	    //Requester's name
+		$requesters_name =  $_POST["firstname"]." ".substr($_POST["middlename"], 0, 1).". ".$_POST["lastname"]." ".$_POST["nameext"];
+
+
+		//Set the status of the student
+		$student_graduate = "";
+
+		if ($graduated == 1) {
+			$student_graduate = "Graduate";
+		}
+		else{
+			$student_graduate = "Student";
+		}
+
+	    $query   = "SELECT * FROM enrollment WHERE student_number='".$student_number."' LIMIT 1";
+	    $result = mysqli_query($connection, $query);
+
+	   while($row = mysqli_fetch_assoc($result))
+	        {    
+	         $stud_reg_id = $row['stud_reg_id'];
+	        }
+
+	   $query_student_name = "SELECT * FROM students_reg WHERE stud_reg_id=".$stud_reg_id;
+	   $result_student_name = mysqli_query($connection, $query_student_name);
+	   while($row_student_name = mysqli_fetch_assoc($result_student_name))
+	    {
+	     $student_name = $row_student_name['last_name'].", ".$row_student_name['first_name'].", ".substr($row_student_name['middle_name'], 0,1.).".";
+	    }
+	}
 }
-//END
-echo $student_number."<br>";
-echo get_student_reg_id($student_number,$connection)."<br>";
-
-    $query   = "SELECT * FROM enrollment WHERE student_number='".$student_number."' LIMIT 1";
-    $result = mysqli_query($connection, $query);
-
-   while($row = mysqli_fetch_assoc($result))
-        {    
-         $stud_reg_id = $row['stud_reg_id'];
-        }
-
-   $query_student_name = "SELECT * FROM students_reg WHERE stud_reg_id=".$stud_reg_id;
-   $result_student_name = mysqli_query($connection, $query_student_name);
-   while($row_student_name = mysqli_fetch_assoc($result_student_name))
-    {
-     $student_name = $row_student_name['last_name'].", ".$row_student_name['first_name'].", ".substr($row_student_name['middle_name'], 0,1.).".";
-    }
-
 ?>
 
 <div class="container">
@@ -85,24 +79,39 @@ echo get_student_reg_id($student_number,$connection)."<br>";
 			</div>
 			<div class="row">
 				<div class="col-md-12">
-					<h2 class="text-center text-primary">Certification Of Grades</h2>
-					<p class="text-left">TO WHOM IT MAY CONCERN:</p>
-					<p>This is to certify that based on the records on file, <strong><?php echo $student_name; ?></strong>, a <?php echo $student_graduate; ?>, took the following subjects and obtained the grades set opposite it, for First Semester, Data: First SY up to First Semester,  Data: Last SY.</p>
-					<div class="table-grades-container">
-						<h5>Data: Semester and School Year</h5>
-						<table class="table table-bordered table-hover table-sm">
-							<thead>
-								<tr>
-									<th>Subject Code</th>
-									<th>Subject Description</th>
-									<th>Grade</th>
-									<th>Unit</th>
-								</tr>
-							</thead>
-							<tbody>
-							<!-- NEXT: Group Data Set by School Year and Semester, Separate table per SY and Term -->
-							<?php 
-								$query_student_grades = "SELECT * FROM student_grades WHERE stud_reg_id ='".$stud_reg_id."' ORDER BY school_yr AND term";
+							<?php
+
+							$query_distinct_term_sy_first = "SELECT DISTINCT term, school_yr FROM student_grades WHERE stud_reg_id ='".$stud_reg_id."' ORDER BY school_yr, term LIMIT 1" ;
+							$result_distinct_term_sy_first = mysqli_query($connection, $query_distinct_term_sy_first);
+
+							while($row_distinct_term_sy_first = mysqli_fetch_assoc($result_distinct_term_sy_first)){
+								$first_term_and_sy = $row_distinct_term_sy_first["term"]." ".$row_distinct_term_sy_first["school_yr"];
+							}
+
+							$query_distinct_term_sy_last = "SELECT DISTINCT term, school_yr FROM student_grades WHERE stud_reg_id ='".$stud_reg_id."' ORDER BY school_yr, term DESC LIMIT 1" ;
+							$result_distinct_term_sy_last = mysqli_query($connection, $query_distinct_term_sy_last);
+
+							while($row_distinct_term_sy_last = mysqli_fetch_assoc($result_distinct_term_sy_last)){
+								$last_term_and_sy = $row_distinct_term_sy_last["term"]." ".$row_distinct_term_sy_last["school_yr"];
+							} 
+
+							echo "<h2 class=\"text-center text-primary\">Certification Of Grades</h2>";
+							echo "<p class=\"text-left\">TO WHOM IT MAY CONCERN:</p>";
+							echo "<p>This is to certify that based on the records on file, <strong>".$student_name."</strong>, a ". $student_graduate.", took the following subjects and obtained the grades set opposite it, for ".$first_term_and_sy.", up to ".$last_term_and_sy." .</p>";
+							echo "<div class=\"table-grades-container\">";
+
+							$query_distinct_term_sy = "SELECT DISTINCT term, school_yr FROM student_grades WHERE stud_reg_id ='".$stud_reg_id."' ORDER BY school_yr, term" ;
+							$result_distinct_term_sy = mysqli_query($connection, $query_distinct_term_sy);
+
+							while($row_distinct_term_sy = mysqli_fetch_assoc($result_distinct_term_sy)){
+
+								$term = $row_distinct_term_sy["term"];
+								$school_yr = $row_distinct_term_sy["school_yr"];
+
+								echo "<h5>".$term.", ".$school_yr."</h5>";
+								echo "<table class=\"table table-bordered table-hover table-sm\"> <thead><tr><th width=\"20%\">Subject Code</th><th width=\"50%\">Subject Description</th><th width=\"15%\">Grade</th><th width=\"15%\">Unit</th></tr></thead><tbody>";
+
+								$query_student_grades = "SELECT * FROM student_grades WHERE stud_reg_id ='".$stud_reg_id."' AND term ='".$term."' AND school_yr='".$school_yr."'";
 								$result_student_grades = mysqli_query($connection, $query_student_grades);
 								  while($row_student_grades = mysqli_fetch_assoc($result_student_grades))
 								        {
@@ -113,17 +122,24 @@ echo get_student_reg_id($student_number,$connection)."<br>";
 								         echo "<td>".get_subject_unit_count($row_student_grades['subject_id'],"",$connection)."</td>";
 								         echo "</tr>";
 								        }
-							?>
-							</tbody>
-						</table>
-					</div>	
-
-					<p>This certification is being issued to Data: Student Name (Surname Only) for whatever purpose it may serve him best.</p>
-				</div>
+								echo "</tbody></table></div>";								
+							 }
+							 echo "<p>This certification is being issued to ".$requesters_name." for whatever purpose it may serve him best.</p>";
+							?>						
+					</div>
 			</div>
 		</div>
 	</div>
+    <center>
+      <button id="preview-print" class="btn btn-primary no-print"><i class="fa fa-print" aria-hidden="true"></i></i></i> Print Certificate</button>
+    </center><br>
 </div>
 
-</body>
-</html>
+<div style="display: none;">
+	<?php include 'layout/footer.php';?>
+</div>
+<script type="text/javascript">
+  $('#preview-print').click(function () {
+    window.print("cert-of-grades");
+  });
+</script>

@@ -7,6 +7,8 @@
   <?php 
     if (isset($_GET['sec_id'])) {
       $sec_id = $_GET["sec_id"];
+      $term = $_GET["term"];
+      $school_yr = $_GET["school_yr"];      
 
       $query  = "SELECT * FROM sections WHERE sec_id='".$sec_id."'";
       $result = mysqli_query($connection, $query);
@@ -81,7 +83,7 @@
         
         
 
-        $query  = "SELECT classes.class_id,classes.sec_id, classes.subject_id, classes.teacher_id, classes.students_enrolled, classes.student_limit, sections.sec_name, sections.year, sections.course_id FROM classes INNER JOIN sections ON classes.sec_id=sections.sec_id WHERE classes.sec_id='".$sec_id."'";
+        $query  = "SELECT classes.class_id,classes.sec_id, classes.subject_id, classes.teacher_id, classes.students_enrolled, classes.student_limit, sections.sec_name, sections.year, sections.course_id FROM classes INNER JOIN sections ON classes.sec_id=sections.sec_id WHERE classes.sec_id='".$sec_id."' AND classes.school_yr='".$school_yr."' AND classes.term='".$term."'";
 
         $result = mysqli_query($connection, $query);
 
@@ -137,7 +139,7 @@
             for ($i=0; $i < sizeof($missing_subjects); $i++) { 
               echo"<li class=\"list-group-item d-flex justify-content-between align-items-center\">";
               echo get_subject_code($new_array[$i],"",$connection)." (".get_subject_name($new_array[$i],"",$connection).")";
-              echo "<a href=\"add_missing_class?sec_id=".urlencode($sec_id)."&subject_id=".$new_array[$i]."\" class=\"btn btn-success btn-sm\">Create Class</a>";
+              echo "<a href=\"add_missing_class?sec_id=".urlencode($sec_id)."&term=".urlencode($term)."&school_yr=".$school_yr."&subject_id=".$new_array[$i]."\" class=\"btn btn-success btn-sm\">Create Class</a>";
 
             }
         ?>

@@ -5,11 +5,12 @@
 
 
     if (isset($_POST['course']) && isset($_POST['year'])) {
+        echo "<option value=\"0\" selected=\"selected\">Please select a section</option>";
     	$query  = "SELECT * FROM sections WHERE course_id=".$_POST['course']." AND year='".$_POST['year']."'";
     	$result = mysqli_query($connection, $query);
 
     	if (mysqli_num_rows($result)< 1) {
-    		echo "<option value=\"N/A\">No Section Created Yet Under This Course and Year</option>";
+    		echo "<option value=\"0\">No Section Created Yet Under This Course and Year</option>";
     	}
     	else{
          while($row = mysqli_fetch_assoc($result))

@@ -74,8 +74,8 @@ footer.sticky-footer{
 #dataTable tr .option-grp{
     text-align: center;
 }
-#dataTable tr .option-grp a{
-
+#dataTable_wrapper{
+    margin-top: 1em;
 }
 /*print enrollment form styles*/
 #print-enrollment-form{

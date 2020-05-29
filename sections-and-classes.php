@@ -66,9 +66,9 @@
             echo "<td>".$term."</td>";
             echo "<td>".$row['year']."</td>";
             echo "<td>".$school_yr."</td>";
-            $enrolled_students = get_enrolled_regular_students($row['sec_id'],"",$connection);
+            $enrolled_students = get_enrolled_regular_students($row['sec_id'],$term,$school_yr,"",$connection);
             echo "<td>".$enrolled_students."</td>";
-            echo "<td class=\"option-grp\"><a class=\"btn btn-success btn-sm\" href=\"classes.php?sec_id=".urlencode($row['sec_id'])."\">Create Classes</a>";
+            echo "<td class=\"option-grp\"><a class=\"btn btn-success btn-sm\" href=\"classes.php?sec_id=".urlencode($row['sec_id'])."&term=".urlencode($term)."&school_yr=".urlencode($school_yr)."\">Create Classes</a>";
             echo "</tr>";
         }
 
