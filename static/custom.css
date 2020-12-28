@@ -1,5 +1,4 @@
 div.login-container{
-	background: url('log-in-bg.jpg') no-repeat center center;
 	height: 100vh;
 }
 .login-container h1.site-name{
@@ -9,6 +8,40 @@ div.login-container{
 .login-container #site-name-container{
 	margin-top: 15% !important;
 }
+.login-form-intro {
+    font-size: 14px;
+    text-align: center;
+    color: #7c7c7c;
+}
+.col-md-5.center-block-e {
+    background: rgba(255,255,255,.9);
+    padding: 30px 0;
+}
+#username,#password{
+    padding-left: 26px;
+}
+#login-page{
+    background: url('vincentiu-solomon-ln5drpv_ImI-unsplash.jpg') no-repeat top center;
+    background-size: cover;
+}
+#login-page i.fa.fa-user,#login-page i.fa.fa-unlock-alt {
+    position: relative;
+    top: -30px;
+    left: 10px;
+    color: #495057;
+}
+.btn-group-fb a{
+    color: #3578E5;
+    font-size: 12px;
+}
+.btn-group-web a{
+    color: #7b092b;
+    font-size: 12px;
+}
+.btn-group-fb i.fa.fa-facebook-official, .btn-group.btn-group-web i.fa.fa-globe {
+    margin-right: 5px;
+}
+/*Login styles end*/
 .navbar .site-logo{
 	max-width: 75px;
 	margin-right: 10px;
@@ -84,15 +117,98 @@ footer.sticky-footer{
     margin: auto;
 }
 /*custom classes to overide colors*/
-.btn-primary {
-    border-color: #7b092b;
+.bg-dark{
+    background-color: #051729 !important; 
 }
-.btn-primary, .bg-dark{
-    background-color: #7b092b !important; 
+div#term-sy-indicator {
+    background-color: #7a0d2d !important;
+    padding-top: 12px;
 }
 .sidebar {
-    background-color: #4e071c;
+    background-color: #f9f9f9;
+    border-right: 8px solid #d0d0d0;
 }
+.sidebar i{
+    margin-right: 5px;
+}
+.sidebar i.fa.fa-file {
+    color: #1496bd;
+}
+.sidebar i.fa.fa-building,.sidebar i.fa.fa-calendar-o {
+    color: #ef1e40;
+}
+.sidebar i.fa.fa-id-card,.sidebar i.fa.fa-users{
+    color: #2794f1;
+ }
+ .sidebar i.fa.fa-clipboard{
+    color: #6eba14; 
+ }
+.navbar-nav .nav-item.active .nav-link {
+  color: #000;
+}
+.sidebar .nav-item .nav-link {
+  color: rgba(0, 0, 0, 0.75);
+}
+.sidebar .nav-item .nav-link:active, .sidebar .nav-item .nav-link:focus, .sidebar .nav-item .nav-link:hover {
+  color: rgba(0, 0, 0, 0.9);
+}
+/*additional dashboard items*/
+.dashboard-window { background: #62acec; width: 100%; padding: 20px; color: #FFF; border-radius: 4px; margin-bottom: 1em;}
+.d-w-icon { width: 30%; float: left; margin-right: 5px;}
+.d-w-text { width: 65%; float: left; font-size: 13px; }
+.giant-white-icon { font-size: 48px; color: #FFF;}
+.d-w-num { font-size: 38px; color: #FFF; vertical-align: top; line-height: 100%; }
+
+.db-header { border-bottom: 1px solid #d3d3d3; margin-bottom: 20px; padding-bottom: 1px;}
+.db-header-title { font-size: 18px; float: left;}
+.page-header-title { font-size: 24px; float: left;}
+.task-header-title { font-size: 18px; float: left;}
+.db-header-extra { float: right; padding: 5px;  }
+/*sidebar menu animation*/
+@media (min-width: 992px) {
+  .animate {
+    animation-duration: 0.3s;
+    -webkit-animation-duration: 0.3s;
+    animation-fill-mode: both;
+    -webkit-animation-fill-mode: both;
+  }
+}
+
+@keyframes slideIn {
+  0% {
+    transform: translateY(1rem);
+    opacity: 0;
+  }
+  100% {
+    transform:translateY(0rem);
+    opacity: 1;
+  }
+  0% {
+    transform: translateY(1rem);
+    opacity: 0;
+  }
+}
+
+@-webkit-keyframes slideIn {
+  0% {
+    -webkit-transform: transform;
+    -webkit-opacity: 0;
+  }
+  100% {
+    -webkit-transform: translateY(0);
+    -webkit-opacity: 1;
+  }
+  0% {
+    -webkit-transform: translateY(1rem);
+    -webkit-opacity: 0;
+  }
+}
+
+.slideIn {
+  -webkit-animation-name: slideIn;
+  animation-name: slideIn;
+}
+/**/
 /*custom classes to overide and custom position*/
 .button-flt-right{
     float: right;

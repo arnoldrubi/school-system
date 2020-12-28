@@ -114,7 +114,9 @@
 							<tr>
 								<th>Subject Code</th>
 								<th>Description</th>
-								<th>Units</th>
+								<th>Lecture Units</th>
+								<th>Lab Units</th>
+								<th>Total Units</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -131,13 +133,16 @@
 								$result = mysqli_query($connection, $query);
 						        while($row = mysqli_fetch_assoc($result))
 						        {
+						        $units_array = get_subject_unit_count($row['subject_id'],"",$connection);
 						        echo "<tr>";			        
 								echo "<td>".get_subject_code($row['subject_id'],"",$connection)."</td>";
 								echo "<td>".get_subject_name($row['subject_id'],"",$connection)."</td>";
-								echo "<td>".get_subject_unit_count($row['subject_id'],"",$connection)."</td>";
+								echo "<td>".$units_array[0]."</td>";
+								echo "<td>".$units_array[1]."</td>";
+								echo "<td>".$units_array[2]."</td>";
 								echo "</tr>";
 
-								$unit_count = $unit_count + get_subject_unit_count($row['subject_id'],"",$connection);
+								$unit_count += $units_array[2];
 
 						     }
 
@@ -146,7 +151,9 @@
 						<tfoot>
 							<tr class="table-active">
 							  <td>&nbsp;</td>
-						      <td>Total Units</td>
+							  <td>&nbsp;</td>
+							  <td>&nbsp;</td>
+						      <td>Grand Total Units</td>
 						      <td><?php echo $unit_count; ?></td>
 						    </tr>
 						</tfoot>

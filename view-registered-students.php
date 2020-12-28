@@ -44,7 +44,7 @@
         echo "   <th>Address</th>";
         echo "   <th>Email</th>";
         echo "   <th>Phone Number</th>";
-        echo "   <th>&nbsp;</th>";   
+        echo "   <th>Options</th>";   
         echo "  </tr></thead><tbody>";
         
         
@@ -61,8 +61,8 @@
         echo "<td>".$row['barangay']." ".$row['municipality'].", ".$row['province']."</td>"; 
         echo "<td>".$row['email']."</td>";      
         echo "<td>".$row['phone_number']."</td>";
-        echo "<td><a href=\"edit-student.php?stud_reg_id=".$row['stud_reg_id']."\"".">Edit Info</a> | ";
-        echo "<a href=\"javascript:confirmDelete('delete-student.php?stud_reg_id=".$row['stud_reg_id']."')\"> Delete Info</a></td>";
+        echo "<td style=\"text-align: center;\"><a class=\"btn btn-warning btn-xs\" title=\"Edit\" href=\"edit-student.php?stud_reg_id=".$row['stud_reg_id']."\""."><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a> ";
+        echo "<a title=\"Delete\" class=\"btn btn-danger btn-xs\" href=\"javascript:confirmDelete('delete-student.php?stud_reg_id=".$row['stud_reg_id']."')\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></a></td>";
         //echo "<a href=\"delete-student.php?stud_reg_id=".$row['stud_reg_id']."\""." onclick=\"confirm('Are you sure?')\"> Delete Info</a></td>";
         echo "</tr>";
         }

@@ -21,13 +21,13 @@
 
         if ($role == "administrator") {
 
-          echo "<table id=\"datatable\" class=\"table table-striped table-bordered table-sm\">";
+          echo "<table class=\"table table-bordered dataTable\" id=\"dataTable\" width=\"100%\" cellspacing=\"0\" role=\"grid\" aria-describedby=\"dataTable_info\" style=\"width: 100%;\">";
           echo " <thead>";
           echo "  <tr>";
           echo "   <th>Username</th>";
           echo "   <th>Email</th>";
           echo "   <th>Role</th>";
-          echo "   <th>&nbsp;</th>";   
+          echo "   <th>Options</th>";   
           echo "  </tr></thead><tbody>";
 
           $query  = "SELECT * FROM users";
@@ -40,8 +40,8 @@
             echo "<td>".$row['email']."</td>"; 
             echo "<td>".$row['role']."</td>"; 
           
-            echo "<td><a href=\"edit-user.php?user_id=".$row['user_id']."\">Edit User</a> | ";
-            echo "<a href=\"delete-user.php?user_id=".$row['user_id']."\"> Delete User</a></td>";
+            echo "<td style=\"text-align: center;\"><a class=\"btn btn-warning btn-xs\" title=\"Edit\" href=\"edit-user.php?user_id=".$row['user_id']."\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a> ";
+            echo "<a title=\"Delete\" class=\"btn btn-danger btn-xs\" href=\"delete-user.php?user_id=".$row['user_id']."\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a></td>";
             echo "</tr>";
           }
 

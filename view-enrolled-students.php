@@ -74,8 +74,7 @@
         echo "   <th>S.Y.</th>";
         echo "   <th>Semester</th>";
         echo "   <th>Regular/Irregular</th>"; 
-        echo "   <th class=\"skip-filter\">&nbsp;</th>";
-        echo "   <th class=\"skip-filter\">&nbsp;</th>";   
+        echo "   <th class=\"skip-filter\">Options</th>";   
         echo "  </tr></thead><tbody>";
         
         
@@ -121,9 +120,8 @@
         }
         echo "<td>".$regirreg."</td>";
         echo "<td style=\"text-align:center\">";
-        echo "<a title=\"Delete Enrollment Info\" href=\"javascript:confirmDelete('delete-student-enrollment.php?student_id=".$student_id."&student_reg_id=".$stud_reg_id."&course_id=".$new_course_id."&sy=".urlencode($sy)."&term=".urlencode($term)."&year=".$year."&sec_id=".urlencode($sec_id)."&irregular=".urlencode($row['irregular'])."')\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a></td>";
-        echo "<td style=\"text-align:center\">";
-        echo "<a title=\"Print Enrollment Form\" target=\"_blank\" href=\"print-enrollment-form.php?student_reg_id=".urlencode($stud_reg_id)."&irregular=".urlencode($row['irregular'])."\"><i class=\"fa fa-print\" aria-hidden=\"true\"></i></a></td>";
+        echo "<a class=\"btn btn-danger btn-xs\" title=\"Delete Enrollment Info\" href=\"javascript:confirmDelete('delete-student-enrollment.php?student_id=".$student_id."&student_reg_id=".$stud_reg_id."&course_id=".$new_course_id."&sy=".urlencode($sy)."&term=".urlencode($term)."&year=".$year."&sec_id=".urlencode($sec_id)."&irregular=".urlencode($row['irregular'])."')\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a> ";
+        echo "<a class=\"btn btn-warning btn-xs\" title=\"Print Enrollment Form\" target=\"_blank\" href=\"print-enrollment-form.php?student_reg_id=".urlencode($stud_reg_id)."&irregular=".urlencode($row['irregular'])."\"><i class=\"fa fa-print\" aria-hidden=\"true\"></i></a></td>";
         echo "</tr>";
         }
 

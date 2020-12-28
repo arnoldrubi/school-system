@@ -33,7 +33,7 @@
       <h2>Faculty Info</h2>
       <?php
 
-        echo "<table id=\"datatable\" class=\"table table-striped table-bordered table-sm\">";
+        echo "<table class=\"table table-bordered dataTable\" id=\"dataTable\" width=\"100%\" cellspacing=\"0\" role=\"grid\" aria-describedby=\"dataTable_info\" style=\"width: 100%;\">";
         echo " <thead>";
         echo "  <tr>";
         echo "   <th>First Name</th>";
@@ -61,7 +61,7 @@
       <h2>Rooms Info</h2>
       <?php
 
-        echo "<table id=\"datatable\" class=\"table table-striped table-bordered table-sm\">";
+        echo "<table class=\"table table-bordered dataTable\" id=\"dataTable\" width=\"100%\" cellspacing=\"0\" role=\"grid\" aria-describedby=\"dataTable_info\" style=\"width: 100%;\">";
         echo " <thead>";
         echo "  <tr>";
         echo "   <th>Room Name</th>";

@@ -318,13 +318,17 @@ global $sidebar_context;
    	function get_subject_unit_count($subject_id, $unit, $connection){
 		$query_subject_unit = "SELECT * FROM subjects WHERE subject_id='".$subject_id."' LIMIT 1";
         $result_subject_unit = mysqli_query($connection, $query_subject_unit);
+
+        $units_array = array();
         while($row_subject_unit = mysqli_fetch_assoc($result_subject_unit))
         {
-          $subject_unit = $row_subject_unit['units'];
-        
+          $lect_units = $row_subject_unit['lect_units'];
+          $lab_units = $row_subject_unit['lab_units'];
+          $total_units = $row_subject_unit['total_units'];
         }
-
-        return $subject_unit;
+        array_push($units_array, $lect_units,$lab_units,$total_units);
+        
+        return $units_array;
     }
    	function get_course_code($course_id, $course_code, $connection){
 		$query_course_code = "SELECT * FROM courses WHERE course_id='".$course_id."' LIMIT 1";

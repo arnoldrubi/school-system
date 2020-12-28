@@ -103,13 +103,13 @@
       <hr>
       <?php
 
-        echo "<table id=\"datatable\" class=\"table table-striped table-bordered table-sm\">";
+        echo "<table class=\"table table-bordered dataTable\" id=\"dataTable\" width=\"100%\" cellspacing=\"0\" role=\"grid\" aria-describedby=\"dataTable_info\" style=\"width: 100%;\">";
         echo " <thead>";
         echo "  <tr>";
         echo "   <th>Section Name</th>";
         echo "   <th>Course</th>";
         echo "   <th>Year</th>";
-        echo "   <th>&nbsp;</th>";   
+        echo "   <th>Option</th>";   
         echo "  </tr></thead><tbody>";
         
         
@@ -123,7 +123,7 @@
         echo "<td>".$row['sec_name']."</td>";
         echo "<td>".get_course_code($row['course_id'],"",$connection)."</td>";
         echo "<td>".$row['year']."</td>";
-        echo "<td><a href=\"javascript:confirmDelete('delete-section.php?sec_id=".$row['sec_id']."')\"> Delete Section</a></td>";
+        echo "<td style=\"text-align: center;\"><a class=\"btn btn-danger btn-xs\" href=\"javascript:confirmDelete('delete-section.php?sec_id=".$row['sec_id']."')\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a></td>";
         echo "</tr>";
         }
 

@@ -41,7 +41,7 @@
         echo "   <th>Address</th>";
         echo "   <th>Email</th>";
         echo "   <th>Phone Number</th>";
-        echo "   <th>&nbsp;</th>";   
+        echo "   <th width=\"9%\">Option</th>";   
         echo "  </tr></thead><tbody>";
         
         
@@ -58,7 +58,7 @@
         echo "<td>".$row['barangay']." ".$row['municipality'].", ".$row['province']."</td>"; 
         echo "<td>".$row['email']."</td>";      
         echo "<td>".$row['phone_number']."</td>";
-        echo "<td><a href=\"process-enrollment.php?stud_reg_id=".$row['stud_reg_id']."\"".">Enroll Student</a>";
+        echo "<td style=\"text-align: center;\"><a class=\"btn btn-success btn-sm\" href=\"process-enrollment.php?stud_reg_id=".$row['stud_reg_id']."\"".">Enroll Student</a>";
         echo "</tr>";
         }
 

@@ -41,7 +41,7 @@
         echo "  <tr>";
         echo "   <th>Room Name</th>";
         echo "   <th>Description</th>";
-        echo "   <th>&nbsp;</th>";   
+        echo "   <th>Options</th>";   
         echo "  </tr></thead><tbody>";
         
         
@@ -54,9 +54,8 @@
         echo "<tr>";
         echo "<td>".$row['room_name']."</td>";
         echo "<td>".$row['description']."</td>";
-        echo "<td><a href=\"edit-room.php?room_id=".$row['room_id']."\"".">Edit Room</a> | ";
-        echo "<a href=\"javascript:confirmDelete('delete-room.php?room_id=".$row['room_id']."')\"> Delete Room</a></td>";
-        //echo "<a href=\"delete-room.php?room_id=".$row['room_id']."\""." onclick=\"confirm('Are you sure?')\"> Delete Room</a></td>";
+        echo "<td style=\"text-align: center;\"><a class=\"btn btn-warning btn-xs\" title=\"Edit\" href=\"edit-room.php?room_id=".$row['room_id']."\""."><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a> ";
+        echo "<a title=\"Delete\" class=\"btn btn-danger btn-xs\" href=\"javascript:confirmDelete('delete-room.php?room_id=".$row['room_id']."')\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a></td>";
         echo "</tr>";
         }
 

@@ -62,20 +62,25 @@
         while($row = mysqli_fetch_assoc($result))
           {
             echo  "<div class=\"form-group row\">";
-            echo  "<label class=\"col-md-2 col-form-label\" for=\"subject-name\">Subject Name</label>";
+            echo  "<label class=\"col-md-1 col-form-label\" for=\"subject-name\">Subject Name</label>";
             echo  "<div class=\"col-md-3\">";
             echo "<input id=\"subject-name\" name=\"subject-name\" type=\"text\" placeholder=\"Input Subject Name\" class=\"form-control\" required value=\"".$row['subject_name']."\">";
             echo "</div>";
 
-            echo  "<label class=\"col-md-2 col-form-label\" for=\"subject-name\">Subject Code</label>";
+            echo  "<label class=\"col-md-1 col-form-label\" for=\"subject-name\">Subject Code</label>";
             echo  "<div class=\"col-md-2\">";
             echo "<input id=\"subject-code\" name=\"subject-code\" type=\"text\" placeholder=\"Input Subject Code\" class=\"form-control\" required value=\"".$row['subject_code']."\">";
             echo "<span class=\"help-block\">Input the code for the subject (example: IT1)</span> ";
             echo "</div>";
 
-            echo  "<label class=\"col-md-1 col-form-label\" for=\"subject-name\">Subject Units</label>";
-            echo  "<div class=\"col-md-2\">";
-            echo "<input id=\"subject-units\" min=\"1\" max=\"6\" type=\"number\" name=\"units\" placeholder=\"1\" class=\"form-control\" required value=\"".$row['units']."\">";
+            echo  "<label class=\"col-md-1 col-form-label\" for=\"subject-name\">Lecture Units</label>";
+            echo  "<div class=\"col-md-1\">";
+            echo "<input id=\"subject-units\" min=\"0\" max=\"6\" type=\"number\" name=\"lect_units\" placeholder=\"\" class=\"form-control\" required value=\"".$row['lect_units']."\">";
+            echo "</div>";
+
+            echo  "<label class=\"col-md-1 col-form-label\" for=\"subject-name\">Lab Units</label>";
+            echo  "<div class=\"col-md-1\">";
+            echo "<input id=\"subject-units\" min=\"0\" max=\"6\" type=\"number\" name=\"lab_units\" placeholder=\"0\" class=\"form-control\" required value=\"".$row['lab_units']."\">";
             echo "</div>";
 
           }
@@ -96,17 +101,19 @@
   if (isset($_POST['submit'])) {
     $subject_name = $_POST["subject-name"];
     $subject_code = $_POST["subject-code"];
-    $units = (int) $_POST["units"];
+    $lect_units = (int) $_POST["lect_units"];
+    $lab_units = (int) $_POST["lab_units"];
+    $total_units = $lect_units + $lab_units;
 
-    if (!isset($subject_name) || !isset($subject_code) || !isset($units) || $subject_name == "" || $subject_code == "" || $units == "") {
+    if (!isset($subject_name) || !isset($subject_code) || !isset($lect_units) || !isset($lab_units) || !isset($total_units) || $subject_name == "" || $subject_code == "" || $lect_units == "" || $total_units == "") {
       die ("<div class=\"alert alert-danger\" role=\"alert\">Error: One or more fields are empty.</div>");
     }
-    elseif (is_int($units) == 0) {
+    elseif (is_int($total_units) == 0) {
       die ("<div class=\"alert alert-danger\" role=\"alert\">Error: Units value should be integer.</div>");
     }
 
     else{
-      $query  = "UPDATE subjects SET subject_name = '{$subject_name}', subject_code = '{$subject_code}', units = '{$units}' WHERE subject_id = {$subject_id} LIMIT 1";
+      $query  = "UPDATE subjects SET subject_name = '{$subject_name}', subject_code = '{$subject_code}', lect_units = '{$lect_units}', lab_units = '{$lab_units}', total_units = '{$total_units}' WHERE subject_id = {$subject_id} LIMIT 1";
       $result = mysqli_query($connection, $query);
 
       if ($result === TRUE) {

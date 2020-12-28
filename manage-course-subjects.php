@@ -41,7 +41,7 @@
         echo "   <th>Course</th>";
         echo "   <th>Year</th>";
         echo "   <th>Term</th>";
-        echo "   <th>&nbsp;</th>";   
+        echo "   <th>Options</th>";   
         echo "  </tr></thead><tbody>";
         
         
@@ -67,8 +67,8 @@
         $yearurl = urlencode($row['year']);
         $termurl = urlencode($row['term']); 
         $school_yr = urlencode($row['school_yr']); 
-        echo "<td><a href=\"edit-course-subjects.php?course_id=".$row['course_id']."&year=".$yearurl."&term=".$termurl."&school_yr=".$school_yr."\">Edit Subject Group</a> | ";
-        echo "<a href=\"javascript:confirmDelete('delete-course-subjects.php?course_id=".$row['course_id']."&year=".$yearurl."&term=".$termurl."&school_yr=".$school_yr."')\"> Delete Subject Group</a>";
+        echo "<td><a class=\"btn btn-warning btn-xs\" href=\"edit-course-subjects.php?course_id=".$row['course_id']."&year=".$yearurl."&term=".$termurl."&school_yr=".$school_yr."\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\" title=\"Edit\"></i></a>  ";
+        echo "<a title=\"Delete\" class=\"btn btn-danger btn-xs\" href=\"javascript:confirmDelete('delete-course-subjects.php?course_id=".$row['course_id']."&year=".$yearurl."&term=".$termurl."&school_yr=".$school_yr."')\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></a>";
         echo "</tr>";
         }
 

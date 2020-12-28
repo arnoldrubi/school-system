@@ -118,7 +118,9 @@
         echo "  <tr>";
         echo "   <th>Subject Name</th>";
         echo "   <th>Subject Code</th>";
-        echo "   <th>Units</th>";
+        echo "   <th>Lecture Units</th>";
+        echo "   <th>Lab Units</th>";
+        echo "   <th>Total Units</th>";
         echo "   <th>&nbsp;</th>";   
         echo "  </tr></thead><tbody>";
         
@@ -132,7 +134,9 @@
         echo "<tr>";
         echo "<td>".$row['subject_name']."</td>";
         echo "<td>".$row['subject_code']."</td>";
-        echo "<td>".$row['units']."</td>";
+        echo "<td>".$row['lect_units']."</td>";
+        echo "<td>".$row['lab_units']."</td>";
+        echo "<td>".$row['total_units']."</td>";
         echo "<td class=\"subject-wrap\"><a class=\"".$row['subject_code']."\" id=\"".$row['subject_id']."\""." href=\"#\">Add Subject</a> </td>";
         echo "</tr>";
         }

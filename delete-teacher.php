@@ -15,6 +15,9 @@
     $query  = "DELETE FROM teachers WHERE teacher_id = {$teacher_id} LIMIT 1";
     $result = mysqli_query($connection, $query);
 
+    $query  = "DELETE FROM users WHERE teacher_id = {$teacher_id} LIMIT 1";
+    $result = mysqli_query($connection, $query);
+
 
   //close database connection after an sql command
 

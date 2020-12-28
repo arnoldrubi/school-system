@@ -42,7 +42,6 @@
   <div id="wrapper">
 
   <?php
-  $sidebar_context = "grading";
 
   include 'layout/admin-sidebar.php';?>
 
@@ -52,7 +51,7 @@
           <a href="faculty-dashboard.php">Dashboard</a>
         </li>
         <li class="breadcrumb-item">
-          <a href="faculty-portal.php">Grading Portal</a>
+          <a href="faculty-grading-portal.php">Grading Portal</a>
         </li>
         <li class="breadcrumb-item active">
          Process Grades
@@ -169,13 +168,10 @@
           }
         }
 
-        echo "&nbsp;<a class=\"btn btn-secondary\" href=\"grading-portal.php\">Cancel</a></div>";
+        echo "&nbsp;<a class=\"btn btn-secondary\" href=\"faculty-grading-portal.php\">Cancel</a></div>";
       ?>
 
-      <center>
-             <?php echo "<a id=\"preview-print\" style=\"color: #fff;\" class=\"btn btn-primary hidden-print\" href=\"preview-print-grades-all.php?subject_id=".$subject_id."&term=".urlencode($term)."&course_id=".urlencode($course_id)."&year=".urlencode($year)."&section=".urlencode($section)."&teacher_id=".urlencode($teacher_id)."\"><i class=\"fa fa-table\" aria-hidden=\"true\"></i> Preview Summary</a>";
-             ?>
-      <center><br>     
+  
       <div class="alert alert-success" role="alert">
         Make sure you "Post" the grades first before clicking preview to get the latest data on the grades.
       </div>

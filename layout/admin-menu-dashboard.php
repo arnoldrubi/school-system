@@ -1,7 +1,7 @@
 <?php
 
 if ($_SESSION["role"] == "administrator" || $_SESSION["role"] == "registrar") {
-
+  echo "<h4>Admin Menu</h4>";
   echo "<div class=\"row\">";
   echo "<div class=\"col-xl-3 col-sm-6 mb-3\">";
   echo "<div class=\"card text-white bg-warning o-hidden h-100\">";         

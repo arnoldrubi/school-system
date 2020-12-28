@@ -33,7 +33,7 @@
       <hr>
       <?php
 
-        echo "<table id=\"datatable\" class=\"table table-striped table-bordered table-sm\">";
+        echo "<table class=\"table table-bordered dataTable\" id=\"dataTable\" width=\"100%\" cellspacing=\"0\" role=\"grid\" aria-describedby=\"dataTable_info\" style=\"width: 100%;\">";
         echo " <thead>";
         echo "  <tr>";
         echo "   <th>Courses Name</th>";
@@ -62,7 +62,7 @@
 
       <form>
         <div class="form-group row">
-          <label class="col-md-2 col-form-label" for="BirthDay">Show Deleted Courses</label>  
+          <label class="col-md-2 col-form-label" for="ShowDeletedCourses">Show Deleted Courses</label>  
           <div class="col-md-2">
             <select id="select-deleted" class="form-control">
               <option selected disabled>Confirm Selection</option>
@@ -92,18 +92,14 @@
 
   <script type="text/javascript">
     $(document).ready(function(){
-      var show_deleted = 0; 
-       $("#select-deleted").change(function(){
-        show_deleted = $("#select-deleted").val();
-        if (show_deleted == 1) {
-          $("#datatable").load("include-deleted-courses.php",{
-            show_deleted: show_deleted
-          });
-        }
-        else{
-          location.href="view-courses.php";
-        }
-       });
-      }
-    );
+      $("#select-deleted").change(function(){
+        var show_deleted = $("#select-deleted").val();
+        //run ajax
+        $.post("include-deleted-courses.php",{
+          show_deleted: show_deleted
+        },function(data,status){
+          $("#dataTable").html(data);
+        });
+      });
+    });
   </script>

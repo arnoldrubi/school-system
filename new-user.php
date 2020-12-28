@@ -30,8 +30,8 @@
         <hr>
         <div class="form-group">
           <label for="exampleInputEmail1">Email address</label>
-          <input type="email" class="form-control" id="exampleInputEmail1" required aria-describedby="emailHelp" name="email" value="" placeholder="Enter email">
-          <br>
+          <input type="email" id="email" class="form-control" id="exampleInputEmail1" required aria-describedby="emailHelp" name="email" value="" placeholder="Enter email">
+          <p id="warning-text-email"></p>
           <label for="role">Role:</label>
           <select class="form-control" name="role" required>
             <option value="administrator">Administrator</option>
@@ -84,12 +84,9 @@
                 else{
                 echo "Error updating record: " . $connection->error;
               }
-        }
+        }    
 
-       
-
-
-        }
+       }
       }
 
   if(isset($connection)){ mysqli_close($connection); }
@@ -123,6 +120,19 @@
 
     });
 
+    $("#email").keyup(function(){
+      console.log("true");
+      var email = $("#email").val();
+
+      //run ajax
+      $.post("scan_email.php",{
+        user_input_email: email
+      },function(data,status){
+        $("#warning-text-email").html(data);
+
+      });
+
+    });
 
   });
   </script>

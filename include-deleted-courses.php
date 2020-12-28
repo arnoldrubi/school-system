@@ -1,6 +1,8 @@
 <?php
 	include("includes/db_connection.php");
-	
+	require_once("includes/functions.php");
+    require_once("includes/session.php");
+
 	$show_deleted = $_POST["show_deleted"];
 
         echo " <thead>";
@@ -11,13 +13,9 @@
         echo "   <th>&nbsp;</th>";   
         echo "  </tr></thead><tbody>";
         
-        if ($show_deleted = 1) {
- 			$query  = "SELECT * FROM courses ORDER BY course_code ASC ";
-        }
-        elseif ($show_deleted = 0)
-        {
-           echo "<script>alert('Hi!')</script>";
-        }     	
+
+ 	    $query  = "SELECT * FROM courses WHERE course_deleted ='".$show_deleted."' ORDER BY course_deleted";
+  	
       
         $result = mysqli_query($connection, $query);
 

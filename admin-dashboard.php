@@ -19,9 +19,107 @@
           </li>
     </ol>
 
+<?php
+// bunch of query getting the total population
+
+// Total Students Enrolled for this term and School Year
+
+  $query_total_students = "SELECT * FROM enrollment WHERE term ='".return_current_term($connection,"")."' AND school_yr='".return_current_sy($connection,"")."'" ;
+  $result_total_students = mysqli_query($connection, $query_total_students);
+
+  $total_students_enrolled =mysqli_num_rows($result_total_students);
+
+
+  $query_total_teachers = "SELECT * FROM teachers" ;
+  $result_total_teachers = mysqli_query($connection, $query_total_teachers);
+
+  $total_teachers =mysqli_num_rows($result_total_teachers);
+
+  $query_total_classes = "SELECT * FROM classes WHERE term ='".return_current_term($connection,"")."' AND school_yr='".return_current_sy($connection,"")."'" ;
+  $result_total_classes = mysqli_query($connection, $query_total_classes);
+
+  $total_classes =mysqli_num_rows($result_total_classes);
+
+  $query_total_courses = "SELECT * FROM courses" ;
+  $result_total_courses = mysqli_query($connection, $query_total_courses);
+
+  $total_courses =mysqli_num_rows($result_total_courses);
+
+?>
+
+<h4>Summary</h4>
+  <div class="row">
+
+    <div class="col-md-3">
+      <div class="dashboard-window clearfix" style="background: #62acec; border-left: 5px solid #5798d1;">
+        <div class="d-w-icon">
+          <span class="glyphicon glyphicon-send giant-white-icon"></span>
+        </div>
+        <div class="d-w-text">
+           <span class="d-w-num"><?php echo $total_students_enrolled; ?></span><br>Students Enrolled </div>
+      </div>
+      </div>
+
+      <div class="col-md-3">
+      <div class="dashboard-window clearfix" style="background: #5cb85c; border-left: 5px solid #4f9f4f;">
+        <div class="d-w-icon">
+          <span class="glyphicon glyphicon-wrench giant-white-icon"></span>
+        </div>
+        <div class="d-w-text">
+           <span class="d-w-num"><?php echo $total_teachers; ?></span><br>Teachers </div>
+      </div>
+      </div>
+
+      <div class="col-md-3">
+      <div class="dashboard-window clearfix" style="background: #f0ad4e; border-left: 5px solid #d89b45;">
+        <div class="d-w-icon">
+          <span class="glyphicon glyphicon-folder-close giant-white-icon"></span>
+        </div>
+        <div class="d-w-text">
+           <span class="d-w-num"><?php echo $total_classes; ?></span><br>Classes  </div>
+      </div>
+      </div>
+
+      <div class="col-md-3">
+      <div class="dashboard-window clearfix" style="background: #d9534f; border-left: 5px solid #b94643;">
+        <div class="d-w-icon">
+          <span class="glyphicon glyphicon-user giant-white-icon"></span>
+        </div>
+        <div class="d-w-text">
+           <span class="d-w-num"><?php echo $total_courses; ?></span><br>Courses Offered</div>
+      </div>
+      </div>
+    </div>
+
+    <hr>
+
     <?php include 'layout/admin-menu-dashboard.php';?>
 
     </div>
+
+<!--     <div class="row">
+      <div class="col-lg-8">
+        <div class="card mb-3">
+          <div class="card-header">
+            <i class="fas fa-chart-bar"></i>
+            Enrollment Per Course</div>
+          <div class="card-body">
+            <canvas id="myBarChart" width="100%" height="50"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card mb-3">
+          <div class="card-header">
+            <i class="fas fa-chart-pie"></i>
+            Enrollment Data</div>
+          <div class="card-body">
+            <canvas id="myPieChart" width="100%" height="100"></canvas>
+          </div>
+        </div>
+      </div>
+    </div> -->
+
   </div>
   <!-- /#wrapper -->
 
@@ -37,3 +135,12 @@
   //close database connection after an sql command
   ?>
 <?php include 'layout/footer.php';?>
+
+
+  <!-- Page level plugin JavaScript-->
+  <script src="static/Chart.min.js"></script>
+
+  <!-- Demo scripts for this page-->
+  <script src="static/chart-area-demo.js"></script>
+  <script src="static/chart-bar-demo.js"></script>
+  <script src="static/chart-pie-demo.js"></script>

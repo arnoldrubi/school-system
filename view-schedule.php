@@ -114,8 +114,8 @@
           echo "<td>".$day."</td>";
           echo "<td>".date("g:i A", strtotime($row['time_start']))."</td>";
           echo "<td>".date("g:i A", strtotime($row['time_end']))."</td>";
-          echo "<td><a href=\"edit-schedule.php?schedule_id=".$row['schedule_id']."\"".">Edit Schedule</a> | ";
-          echo "<a href=\"javascript:confirmDelete('delete-schedule.php?schedule_id=".$row['schedule_id']."')\"> Delete Schedule</a></td>";
+          echo "<td style=\"text-align: center;\"><a class=\"btn btn-warning btn-xs\" title=\"Edit\" href=\"edit-schedule.php?schedule_id=".$row['schedule_id']."\""."><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a> ";
+          echo "<a title=\"Delete\" class=\"btn btn-danger btn-xs\" href=\"javascript:confirmDelete('delete-schedule.php?schedule_id=".$row['schedule_id']."')\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a></td>";
           //echo "<a href=\"delete-schedule.php?schedule_id=".$row['schedule_id']."\""." onclick=\"confirm('Are you sure?')\"> Delete Schedule</a></td>";
           echo "</tr>";
         }

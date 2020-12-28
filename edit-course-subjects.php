@@ -93,7 +93,9 @@
         echo "  <tr>";
         echo "   <th>Subject Name</th>";
         echo "   <th>Subject Code</th>";
-        echo "   <th>Units</th>";
+        echo "   <th>Lecture Units</th>";
+        echo "   <th>Lab Units</th>";
+        echo "   <th>Total Units</th>";
         echo "   <th>&nbsp;</th>";   
         echo "  </tr></thead><tbody>";
         
@@ -112,7 +114,9 @@
             echo "<tr>";
             echo "<td>".$row2['subject_name']."</td>";
             echo "<td>".$row2['subject_code']."</td>";
-            echo "<td>".$row2['units']."</td>";
+            echo "<td>".$row2['lect_units']."</td>";
+            echo "<td>".$row2['lab_units']."</td>";
+            echo "<td>".$row2['total_units']."</td>";
 
             echo "<td class=\"subject-wrap\"><a href=\"javascript:confirmDelete('remove-subject-from-course?course_id=".$course_id."&subject_id=".$subject_id."&year=".urlencode($year)."&term=".urlencode("$term")."&school_yr=".urlencode("$school_yr")."')\"> Remove Subject</a></td>";
             echo "</tr>";
@@ -130,7 +134,9 @@
         echo "  <tr>";
         echo "   <th>Subject Name</th>";
         echo "   <th>Subject Code</th>";
-        echo "   <th>Units</th>";
+        echo "   <th>Lecture Units</th>";
+        echo "   <th>Lab Units</th>";
+        echo "   <th>Total Units</th>";
         echo "   <th>&nbsp;</th>";   
         echo "  </tr></thead><tbody>";
         
@@ -155,7 +161,9 @@
         echo "<tr>";
         echo "<td>".$row['subject_name']."</td>";
         echo "<td>".$row['subject_code']."</td>";
-        echo "<td>".$row['units']."</td>";
+        echo "<td>".$row2['lect_units']."</td>";
+        echo "<td>".$row2['lab_units']."</td>";
+        echo "<td>".$row2['total_units']."</td>";
         echo "<td class=\"subject-wrap\"><a href=\"add-subject-to-course.php?course_id=".$course_id."&subject_id=".$row['subject_id']."&year=".urlencode($year)."&term=".urlencode("$term")."&school_yr=".urlencode("$school_yr")."\">Add Subject</a> </td>";
         echo "</tr>";
         }

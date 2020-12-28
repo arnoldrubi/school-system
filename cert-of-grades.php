@@ -109,17 +109,20 @@ else{
 								$school_yr = $row_distinct_term_sy["school_yr"];
 
 								echo "<h5>".$term.", ".$school_yr."</h5>";
-								echo "<table class=\"table table-bordered table-hover table-sm\"> <thead><tr><th width=\"20%\">Subject Code</th><th width=\"50%\">Subject Description</th><th width=\"15%\">Grade</th><th width=\"15%\">Unit</th></tr></thead><tbody>";
+								echo "<table class=\"table table-bordered table-hover table-sm\"> <thead><tr><th width=\"20%\">Subject Code</th><th width=\"50%\">Subject Description</th><th width=\"15%\">Grade</th><th width=\"5%\">Lecture Units</th><th width=\"5%\">Lab Units</th><th width=\"5%\">Total Units</th></tr></thead><tbody>";
 
 								$query_student_grades = "SELECT * FROM student_grades WHERE stud_reg_id ='".$stud_reg_id."' AND term ='".$term."' AND school_yr='".$school_yr."'";
 								$result_student_grades = mysqli_query($connection, $query_student_grades);
 								  while($row_student_grades = mysqli_fetch_assoc($result_student_grades))
 								        {
+								         $units_array = get_subject_unit_count($row_student_grades['subject_id'],"",$connection);
 								         echo "<tr>";
 								         echo "<td>".get_subject_code($row_student_grades['subject_id'],"",$connection)."</td>";
 								         echo "<td>".get_subject_name($row_student_grades['subject_id'],"",$connection)."</td>";
 								         echo "<td>".$row_student_grades['final_grade']."</td>";
-								         echo "<td>".get_subject_unit_count($row_student_grades['subject_id'],"",$connection)."</td>";
+								         echo "<td>".$units_array[0]."</td>";
+								         echo "<td>".$units_array[1]."</td>";
+								         echo "<td>".$units_array[2]."</td>";
 								         echo "</tr>";
 								        }
 								echo "</tbody></table></div>";								

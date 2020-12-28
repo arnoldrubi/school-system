@@ -65,7 +65,7 @@
                   }
 
                   else{
-                    $query   = "INSERT INTO courses (course_desc, course_code) VALUES ('{$course_desc}', '{$course_code}')";
+                    $query   = "INSERT INTO courses (course_desc, course_code, course_deleted) VALUES ('{$course_desc}', '{$course_code}', 0)";
                     $result = mysqli_query($connection, $query);
 
 

@@ -42,7 +42,7 @@
         echo "   <th>First Name</th>";
         echo "   <th>Last Name</th>";
         echo "   <th>Department</th>";
-        echo "   <th>&nbsp;</th>";   
+        echo "   <th>Options</th>";   
         echo "  </tr></thead><tbody>";
         
         
@@ -56,8 +56,8 @@
         echo "<td>".$row['first_name']."</td>";
         echo "<td>".$row['last_name']."</td>";
         echo "<td>".$row['department']."</td>";
-        echo "<td><a href=\"edit-teacher.php?teacher_id=".$row['teacher_id']."\"".">Edit Info</a> | ";
-        echo "<a href=\"javascript:confirmDelete('delete-teacher.php?teacher_id=".$row['teacher_id']."')\"> Delete Info</a></td>";
+        echo "<td style=\"text-align: center;\"><a class=\"btn btn-warning btn-xs\" title=\"Edit\" href=\"edit-teacher.php?teacher_id=".$row['teacher_id']."\""."><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a> ";
+        echo "<a title=\"Delete\" class=\"btn btn-danger btn-xs\" href=\"javascript:confirmDelete('delete-teacher.php?teacher_id=".$row['teacher_id']."')\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a></td>";
         //echo "<a href=\"delete-teacher.php?teacher_id=".$row['teacher_id']."\""." onclick=\"confirm('Are you sure?')\"> Delete Info</a></td>";
         echo "</tr>";
         }

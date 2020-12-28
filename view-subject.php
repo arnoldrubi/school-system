@@ -41,8 +41,10 @@
         echo "  <tr>";
         echo "   <th>Subject Name</th>";
         echo "   <th>Subject Code</th>";
-        echo "   <th>Units</th>";
-        echo "   <th>&nbsp;</th>";   
+        echo "   <th>Lecture Units</th>";
+        echo "   <th>Lab Units</th>";
+        echo "   <th>Total Units</th>";
+        echo "   <th>Options</th>";   
         echo "  </tr></thead><tbody>";
         
         
@@ -55,9 +57,11 @@
         echo "<tr>";
         echo "<td>".$row['subject_name']."</td>";
         echo "<td>".$row['subject_code']."</td>";
-        echo "<td>".$row['units']."</td>";
-        echo "<td><a href=\"edit-subject.php?subject_id=".$row['subject_id']."\"".">Edit Subject</a> | ";
-        echo "<a href=\"javascript:confirmDelete('delete-subject.php?subject_id=".$row['subject_id']."')\"> Delete Subject</a></td>";
+        echo "<td>".$row['lect_units']."</td>";
+        echo "<td>".$row['lab_units']."</td>";
+        echo "<td>".$row['total_units']."</td>";
+        echo "<td><a class=\"btn btn-warning btn-xs\" title=\"Edit\" href=\"edit-subject.php?subject_id=".$row['subject_id']."\""."><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a> ";
+        echo "<a title=\"Delete\" class=\"btn btn-danger btn-xs\" href=\"javascript:confirmDelete('delete-subject.php?subject_id=".$row['subject_id']."')\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a></td>";
         //echo "<a href=\"delete-subject.php?subject_id=".$row['subject_id']."\""." onclick=\"confirm('Are you sure?')\"> Delete Subject</a></td>";
         echo "</tr>";
         }
