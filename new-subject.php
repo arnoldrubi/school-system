@@ -48,7 +48,7 @@
         </div>
         <label class="col-md-1 col-form-label" for="subject-code">Lab Units</label>  
         <div class="col-md-2">
-         <input id="lab-units" name="lab_units" min="0" max="6" type="number" class="form-control" placeholder="0" required>
+         <input id="lab-units" name="lab_units" min="0" max="6" type="number" class="form-control" placeholder="0">
         </div>
       </div>
       <div class="form-group row">

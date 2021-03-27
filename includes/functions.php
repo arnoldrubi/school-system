@@ -336,6 +336,14 @@ global $sidebar_context;
 
         return $total_units;
     }
+   	function check_if_subject_exist($subject_id, $connection){
+		$query_check_if_subject_exist = "SELECT * FROM subjects WHERE subject_id='".$subject_id."' LIMIT 1";
+        $result_check_if_subject_exist = mysqli_query($connection, $query_check_if_subject_exist);
+
+        $rowcount = mysqli_num_rows($result_check_if_subject_exist);
+
+        return $rowcount;
+    }
    	function get_subject_unit_count($subject_id, $unit, $connection){
 		$query_subject_unit = "SELECT * FROM subjects WHERE subject_id='".$subject_id."' LIMIT 1";
         $result_subject_unit = mysqli_query($connection, $query_subject_unit);
@@ -370,8 +378,9 @@ global $sidebar_context;
           $prerequisite_id = $row_prerequisite_id['pre_id'];
         
         }
-        if ($prerequisite_id !== NULL ) {
+        if (check_if_subject_exist($prerequisite_id, $connection)>0) {
         	return $prerequisite_id;
+        	// create a new function: check if subject exist
         }  
     }
    	function is_subject_credited($subject_id, $stud_reg_id,  $subject_credited, $connection){
