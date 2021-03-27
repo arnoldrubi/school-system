@@ -46,7 +46,7 @@
         
         
 
-        $query  = "SELECT * FROM students_reg ORDER BY last_name ASC";
+        $query  = "SELECT * FROM students_reg WHERE is_active = 1 ORDER BY last_name ASC";
         $result = mysqli_query($connection, $query);
 
       while($row = mysqli_fetch_assoc($result))

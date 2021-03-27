@@ -16,6 +16,9 @@
           $year = NULL;
           $term = NULL;
         }
+        if (isset($_GET["error"])) {
+          $errormsg = urldecode($_GET["error"]);
+        }
         if ($course_id == NULL) {
           redirect_to("view-courses.php");
        }
@@ -54,8 +57,8 @@
           
   <?php
 
-            $query  = "SELECT * FROM courses WHERE course_id='".$course_id."' LIMIT 1";
-            $result = mysqli_query($connection, $query);
+        $query  = "SELECT * FROM courses WHERE course_id='".$course_id."' LIMIT 1";
+        $result = mysqli_query($connection, $query);
 
         if (mysqli_num_rows($result) < 1) {
         echo "<script type='text/javascript'>";
@@ -77,7 +80,9 @@
         echo "</p>";
         echo "<p>Year: ".$year."</p>";
         echo "<p>Term: ".$term."</p>";
-        echo "</div>";
+        echo "<div class=\"form-group row\"><label class=\"col-md-2 col-form-label\" for=\"Course\">Max Units</label><div class=\"col-md-3\">";
+        echo "<input type=\"text\" id=\"max-units\" name=\"max_units\" class=\"form-control\" value=".return_max_units($connection)." readonly>";
+        echo "</div></div></div>";
         }
  ?>
       </div>
@@ -87,42 +92,59 @@
         
 
       <?php
+        if (isset($errormsg)) {
+          echo "<div class=\"alert alert-warning alert-dismissible fade show\" role=\"alert\">
+            <strong>Adding of subject failed!</strong> Total units for this course is over the allowed max units.
+            <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
+              <span aria-hidden=\"true\">&times;</span>
+            </button>
+          </div>";
+        }
+
         echo "<h3>Current Subjects</h3>";
         echo "<table id=\"datatable\" class=\"table table-striped table-bordered dataTable\">";
         echo " <thead>";
         echo "  <tr>";
         echo "   <th>Subject Name</th>";
         echo "   <th>Subject Code</th>";
+        echo "   <th>Prerequisite</th>";
         echo "   <th>Lecture Units</th>";
         echo "   <th>Lab Units</th>";
         echo "   <th>Total Units</th>";
         echo "   <th>&nbsp;</th>";   
         echo "  </tr></thead><tbody>";
         
-        
+        $arr_subjects = array();
 
         $query  = "SELECT subject_id FROM course_subjects WHERE course_id='".$course_id."' AND year='".$year."' AND term ='".$term."'";
         $result = mysqli_query($connection, $query);
 
+        $sum_units = 0;
       while($row = mysqli_fetch_assoc($result))
         {
         $subject_id = $row['subject_id'];
         $subject_items[] = $row['subject_id'];
+        $total_units = get_subject_total_unit($row['subject_id'],"",$connection);
+        
           $query2  = "SELECT * FROM subjects WHERE subject_id='".$subject_id."'";
           $result2 = mysqli_query($connection, $query2);
           while($row2 = mysqli_fetch_assoc($result2)){
             echo "<tr>";
-            echo "<td>".$row2['subject_name']."</td>";
-            echo "<td>".$row2['subject_code']."</td>";
+            echo "<td>".get_subject_name($subject_id,"",$connection)."</td>";
+            echo "<td>".get_subject_code($subject_id,"",$connection)."</td>";
+            echo "<td>".get_subject_code(get_prerequisite_id($subject_id,"",$connection),"",$connection)."</td>";
             echo "<td>".$row2['lect_units']."</td>";
             echo "<td>".$row2['lab_units']."</td>";
-            echo "<td>".$row2['total_units']."</td>";
+            echo "<td>".get_subject_total_unit($subject_id,"",$connection)."</td>";
 
             echo "<td class=\"subject-wrap\"><a href=\"javascript:confirmDelete('remove-subject-from-course?course_id=".$course_id."&subject_id=".$subject_id."&year=".urlencode($year)."&term=".urlencode("$term")."&school_yr=".urlencode("$school_yr")."')\"> Remove Subject</a></td>";
             echo "</tr>";
           }
+        $sum_units = $sum_units + (int) $total_units;
         }
+        echo "<tr><td colspan=\"3\">&nbsp;</td><td>Total Units</td><td><input type=\"text\" id=\"current-units\" name=\"current_units\" class=\"form-control col-sm-3\" value=\"".$sum_units."\" readonly></td><td>&nbsp;</td></tr>";
         echo "</tbody></table>"; 
+
       ?>
 
         <?php
@@ -134,6 +156,7 @@
         echo "  <tr>";
         echo "   <th>Subject Name</th>";
         echo "   <th>Subject Code</th>";
+        echo "   <th>Prerequisite</th>";
         echo "   <th>Lecture Units</th>";
         echo "   <th>Lab Units</th>";
         echo "   <th>Total Units</th>";
@@ -161,9 +184,10 @@
         echo "<tr>";
         echo "<td>".$row['subject_name']."</td>";
         echo "<td>".$row['subject_code']."</td>";
-        echo "<td>".$row2['lect_units']."</td>";
-        echo "<td>".$row2['lab_units']."</td>";
-        echo "<td>".$row2['total_units']."</td>";
+        echo "<td>".get_subject_code(get_prerequisite_id($row['subject_id'],"",$connection),"",$connection)."</td>";
+        echo "<td>".$row['lect_units']."</td>";
+        echo "<td>".$row['lab_units']."</td>";
+        echo "<td>".$row['total_units']."</td>";
         echo "<td class=\"subject-wrap\"><a href=\"add-subject-to-course.php?course_id=".$course_id."&subject_id=".$row['subject_id']."&year=".urlencode($year)."&term=".urlencode("$term")."&school_yr=".urlencode("$school_yr")."\">Add Subject</a> </td>";
         echo "</tr>";
         }
@@ -193,6 +217,13 @@ $( document ).ready(function() {
         $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
       });
     });
+
+    function confirmAdd(addSubjectlUrl) {
+      if (confirm("Add this subject?")) {
+       document.location = addSubjectlUrl;
+      }
+    }
+
   });
 
 </script>

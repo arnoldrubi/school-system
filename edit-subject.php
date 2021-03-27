@@ -81,12 +81,29 @@
             echo  "<label class=\"col-md-1 col-form-label\" for=\"subject-name\">Lab Units</label>";
             echo  "<div class=\"col-md-1\">";
             echo "<input id=\"subject-units\" min=\"0\" max=\"6\" type=\"number\" name=\"lab_units\" placeholder=\"0\" class=\"form-control\" required value=\"".$row['lab_units']."\">";
-            echo "</div>";
+            echo "</div></div>";
+            echo  "<div class=\"form-group row\">";
+            echo  "<label class=\"col-md-1 col-form-label\" for=\"pre_id\">Prerequisite Subject</label>";
+            echo  "<div class=\"col-md-5\">";
+            echo "<select class=\"form-control\" name=\"pre_id\">";
+            echo "<option value=\"\">None</option>";
 
+              $query2  = "SELECT * FROM subjects ORDER BY subject_code";
+              $result2 = mysqli_query($connection, $query2);
+
+              while($row2 = mysqli_fetch_assoc($result2)){
+                if ($row2['subject_id'] == $row1['subject_id']) {
+                  echo "<option value=\"".$row2['subject_id']."\" selected>".$row2['subject_code'].": ".$row2['subject_name']."</option>";
+                }
+                else{
+                  echo "<option value=\"".$row2['subject_id']."\">".$row2['subject_code'].": ".$row2['subject_name']."</option>";
+                }
+              }
+            echo "</select></div></div>";
           }
 
     ?>
-      </div>
+
       <div class="row">
         <div class="col-md-12 d-flex justify-content-center">
          <input type="submit" name="submit" value="Edit Subject" class="btn btn-primary" />&nbsp;
@@ -104,8 +121,9 @@
     $lect_units = (int) $_POST["lect_units"];
     $lab_units = (int) $_POST["lab_units"];
     $total_units = $lect_units + $lab_units;
+    $pre_id = (int) $_POST["pre_id"];
 
-    if (!isset($subject_name) || !isset($subject_code) || !isset($lect_units) || !isset($lab_units) || !isset($total_units) || $subject_name == "" || $subject_code == "" || $lect_units == "" || $total_units == "") {
+    if (!isset($subject_name) || !isset($subject_code) || $subject_name == "" || $subject_code == "") {
       die ("<div class=\"alert alert-danger\" role=\"alert\">Error: One or more fields are empty.</div>");
     }
     elseif (is_int($total_units) == 0) {
@@ -113,7 +131,7 @@
     }
 
     else{
-      $query  = "UPDATE subjects SET subject_name = '{$subject_name}', subject_code = '{$subject_code}', lect_units = '{$lect_units}', lab_units = '{$lab_units}', total_units = '{$total_units}' WHERE subject_id = {$subject_id} LIMIT 1";
+      $query  = "UPDATE subjects SET subject_name = '{$subject_name}', subject_code = '{$subject_code}', lect_units = '{$lect_units}', lab_units = '{$lab_units}', total_units = '{$total_units}', pre_id = '{$pre_id}' WHERE subject_id = {$subject_id} LIMIT 1";
       $result = mysqli_query($connection, $query);
 
       if ($result === TRUE) {

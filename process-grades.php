@@ -93,7 +93,7 @@ if (isset($_POST['post'])) {
          echo "alert('Student grades are now posted!');";
          echo "</script>";
 
-         $URL= "encode-grades.php?subject_id=".urlencode($subject_id)."&term=".urlencode($term)."&school_yr=".urlencode("2019-2020")."&course_id=".urlencode($course_id)."&year=".urlencode($year)."&section=".urlencode($section)."&teacher_id=".urlencode($teacher_id)."&grade_saved=2";
+         $URL= "encode-grades.php?subject_id=".urlencode($subject_id)."&term=".urlencode(return_current_term($connection,""))."&school_yr=".urlencode(return_current_sy($connection,""))."&course_id=".urlencode($course_id)."&year=".urlencode($year)."&section=".urlencode($section)."&teacher_id=".urlencode($teacher_id)."&grade_saved=2";
          echo "<script>location.href='$URL'</script>";
 
 	    // redirect_to("encode-grades.php?subject_id=".urlencode($subject_id)."&term=".urlencode($term)."&course_id=".urlencode($course_id)."&year=".urlencode($year)."&section=".urlencode($section)."&teacher_id=".urlencode($teacher_id)."&grade_saved=2");

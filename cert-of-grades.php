@@ -81,53 +81,88 @@ else{
 				<div class="col-md-12">
 							<?php
 
-							$query_distinct_term_sy_first = "SELECT DISTINCT term, school_yr FROM student_grades WHERE stud_reg_id ='".$stud_reg_id."' ORDER BY school_yr, term LIMIT 1" ;
-							$result_distinct_term_sy_first = mysqli_query($connection, $query_distinct_term_sy_first);
+							$query_check_if_grades_exists = "SELECT * FROM student_grades WHERE stud_reg_id ='".$stud_reg_id."' AND grade_posted =1";
+							$result_check_if_grades_exists = mysqli_query($connection, $query_check_if_grades_exists);
 
-							while($row_distinct_term_sy_first = mysqli_fetch_assoc($result_distinct_term_sy_first)){
-								$first_term_and_sy = $row_distinct_term_sy_first["term"]." ".$row_distinct_term_sy_first["school_yr"];
-							}
-
-							$query_distinct_term_sy_last = "SELECT DISTINCT term, school_yr FROM student_grades WHERE stud_reg_id ='".$stud_reg_id."' ORDER BY school_yr, term DESC LIMIT 1" ;
-							$result_distinct_term_sy_last = mysqli_query($connection, $query_distinct_term_sy_last);
-
-							while($row_distinct_term_sy_last = mysqli_fetch_assoc($result_distinct_term_sy_last)){
-								$last_term_and_sy = $row_distinct_term_sy_last["term"]." ".$row_distinct_term_sy_last["school_yr"];
+							if (mysqli_num_rows($result_check_if_grades_exists) < 1) {
+								echo "No posted grades. Please contact the registar.";
 							} 
+							// end if for no grades found
 
-							echo "<h2 class=\"text-center text-primary\">Certification Of Grades</h2>";
-							echo "<p class=\"text-left\">TO WHOM IT MAY CONCERN:</p>";
-							echo "<p>This is to certify that based on the records on file, <strong>".$student_name."</strong>, a ". $student_graduate.", took the following subjects and obtained the grades set opposite it, for ".$first_term_and_sy.", up to ".$last_term_and_sy." .</p>";
-							echo "<div class=\"table-grades-container\">";
+							else{
 
-							$query_distinct_term_sy = "SELECT DISTINCT term, school_yr FROM student_grades WHERE stud_reg_id ='".$stud_reg_id."' ORDER BY school_yr, term" ;
-							$result_distinct_term_sy = mysqli_query($connection, $query_distinct_term_sy);
+								$query_distinct_term_sy_first = "SELECT DISTINCT term, school_yr FROM student_grades WHERE stud_reg_id ='".$stud_reg_id."' ORDER BY school_yr, term LIMIT 1" ;
+								$result_distinct_term_sy_first = mysqli_query($connection, $query_distinct_term_sy_first);
 
-							while($row_distinct_term_sy = mysqli_fetch_assoc($result_distinct_term_sy)){
+								while($row_distinct_term_sy_first = mysqli_fetch_assoc($result_distinct_term_sy_first)){
+									$first_term_and_sy = $row_distinct_term_sy_first["term"]." ".$row_distinct_term_sy_first["school_yr"];
+								}
 
-								$term = $row_distinct_term_sy["term"];
-								$school_yr = $row_distinct_term_sy["school_yr"];
+								$query_distinct_term_sy_last = "SELECT DISTINCT term, school_yr FROM student_grades WHERE stud_reg_id ='".$stud_reg_id."' ORDER BY school_yr, term DESC LIMIT 1" ;
+								$result_distinct_term_sy_last = mysqli_query($connection, $query_distinct_term_sy_last);
 
-								echo "<h5>".$term.", ".$school_yr."</h5>";
-								echo "<table class=\"table table-bordered table-hover table-sm\"> <thead><tr><th width=\"20%\">Subject Code</th><th width=\"50%\">Subject Description</th><th width=\"15%\">Grade</th><th width=\"5%\">Lecture Units</th><th width=\"5%\">Lab Units</th><th width=\"5%\">Total Units</th></tr></thead><tbody>";
+								while($row_distinct_term_sy_last = mysqli_fetch_assoc($result_distinct_term_sy_last)){
+									$last_term_and_sy = $row_distinct_term_sy_last["term"]." ".$row_distinct_term_sy_last["school_yr"];
+								} 
 
-								$query_student_grades = "SELECT * FROM student_grades WHERE stud_reg_id ='".$stud_reg_id."' AND term ='".$term."' AND school_yr='".$school_yr."'";
-								$result_student_grades = mysqli_query($connection, $query_student_grades);
-								  while($row_student_grades = mysqli_fetch_assoc($result_student_grades))
-								        {
-								         $units_array = get_subject_unit_count($row_student_grades['subject_id'],"",$connection);
-								         echo "<tr>";
-								         echo "<td>".get_subject_code($row_student_grades['subject_id'],"",$connection)."</td>";
-								         echo "<td>".get_subject_name($row_student_grades['subject_id'],"",$connection)."</td>";
-								         echo "<td>".$row_student_grades['final_grade']."</td>";
-								         echo "<td>".$units_array[0]."</td>";
-								         echo "<td>".$units_array[1]."</td>";
-								         echo "<td>".$units_array[2]."</td>";
-								         echo "</tr>";
-								        }
-								echo "</tbody></table></div>";								
+								echo "<h2 class=\"text-center text-primary\">Certification Of Grades</h2>";
+								echo "<p class=\"text-left\">TO WHOM IT MAY CONCERN:</p>";
+								echo "<p>This is to certify that based on the records on file, <strong>".$student_name."</strong>, a ". $student_graduate.", took the following subjects and obtained the grades set opposite it, for ".$first_term_and_sy.", up to ".$last_term_and_sy." .</p>";
+								echo "<div class=\"table-grades-container\">";
+
+								$query_distinct_term_sy = "SELECT DISTINCT term, school_yr FROM student_grades WHERE stud_reg_id ='".$stud_reg_id."' ORDER BY school_yr, term" ;
+								$result_distinct_term_sy = mysqli_query($connection, $query_distinct_term_sy);
+
+								while($row_distinct_term_sy = mysqli_fetch_assoc($result_distinct_term_sy)){
+
+									$term = $row_distinct_term_sy["term"];
+									$school_yr = $row_distinct_term_sy["school_yr"];
+
+									echo "<h5>".$term.", ".$school_yr."</h5>";
+									echo "<table class=\"table table-bordered table-hover table-sm\"> <thead><tr><th width=\"20%\">Subject Code</th><th width=\"50%\">Subject Description</th><th width=\"15%\">Grade</th><th width=\"5%\">Lecture Units</th><th width=\"5%\">Lab Units</th><th width=\"5%\">Total Units</th></tr></thead><tbody>";
+
+									$query_student_grades = "SELECT * FROM student_grades WHERE stud_reg_id ='".$stud_reg_id."' AND term ='".$term."' AND school_yr='".$school_yr."' AND grade_posted =1";
+									$result_student_grades = mysqli_query($connection, $query_student_grades);
+									  while($row_student_grades = mysqli_fetch_assoc($result_student_grades))
+									        {
+									         $units_array = get_subject_unit_count($row_student_grades['subject_id'],"",$connection);
+									         echo "<tr>";
+									         echo "<td>".get_subject_code($row_student_grades['subject_id'],"",$connection)."</td>";
+									         echo "<td>".get_subject_name($row_student_grades['subject_id'],"",$connection)."</td>";
+									         echo "<td>".$row_student_grades['final_grade']."</td>";
+									         echo "<td>".$units_array[0]."</td>";
+									         echo "<td>".$units_array[1]."</td>";
+									         echo "<td>".$units_array[2]."</td>";
+									         echo "</tr>";
+									        }
+									echo "</tbody></table></div>";								
+								 }
+
+								$query_student_credited_subjects = "SELECT * FROM transfer_of_credits WHERE stud_reg_id='".$stud_reg_id."'";
+								$result_student_credited_subjects = mysqli_query($connection, $query_student_credited_subjects);
+
+								if (mysqli_num_rows($result_student_credited_subjects) > 0) {
+									echo "<h5>Credits</h5>";
+									echo "<table class=\"table table-bordered table-hover table-sm\"> <thead><tr><th width=\"20%\">Subject Description</th><th width=\"30%\">Subject Name</th><th width=\"15%\">School</th><th width=\"15%\">Term Taken</th><th width=\"5%\">Year Taken</th><th width=\"5%\">Final Grade</th><th width=\"15%\">Equivalent Subject</th></tr></thead><tbody>";
+									while($row_student_credited_subjects = mysqli_fetch_assoc($result_student_credited_subjects))
+									{
+										echo "<tr>";
+										echo "<td>".$row_student_credited_subjects['subject_desc']."</td>";
+										echo "<td>".$row_student_credited_subjects['subject_name']."</td>";
+										echo "<td>".$row_student_credited_subjects['school_name']."</td>";
+										echo "<td>".$row_student_credited_subjects['term_taken']."</td>";
+										echo "<td>".$row_student_credited_subjects['year_taken']."</td>";
+										echo "<td>".$row_student_credited_subjects['final_grade']."</td>";
+										echo "<td>".get_subject_code($row_student_credited_subjects['equivalent_subject_id'],"",$connection)."</td>";
+										echo "</tr>";
+									}
+									echo "</tbody></table>";	
+								}
+
+
+								 echo "<p>This certification is being issued to ".$requesters_name." for whatever purpose it may serve him best.</p>";
 							 }
-							 echo "<p>This certification is being issued to ".$requesters_name." for whatever purpose it may serve him best.</p>";
+							 // End else of grades are found
 							?>						
 					</div>
 			</div>

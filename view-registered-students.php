@@ -44,12 +44,15 @@
         echo "   <th>Address</th>";
         echo "   <th>Email</th>";
         echo "   <th>Phone Number</th>";
+        echo "   <th>Legal Guardian</th>";
+        echo "   <th>Guardian's Phone Number</th>";
+        echo "   <th>Relationship</th>";
         echo "   <th>Options</th>";   
         echo "  </tr></thead><tbody>";
         
         
 
-        $query  = "SELECT * FROM students_reg ORDER BY last_name ASC";
+        $query  = "SELECT * FROM students_reg WHERE is_active = 1 ORDER BY last_name ASC";
         $result = mysqli_query($connection, $query);
 
       while($row = mysqli_fetch_assoc($result))
@@ -61,8 +64,11 @@
         echo "<td>".$row['barangay']." ".$row['municipality'].", ".$row['province']."</td>"; 
         echo "<td>".$row['email']."</td>";      
         echo "<td>".$row['phone_number']."</td>";
+        echo "<td>".$row['guardian_name']."</td>";
+        echo "<td>".$row['guardian_phone_number']."</td>";
+        echo "<td>".$row['guardian_relationship']."</td>";
         echo "<td style=\"text-align: center;\"><a class=\"btn btn-warning btn-xs\" title=\"Edit\" href=\"edit-student.php?stud_reg_id=".$row['stud_reg_id']."\""."><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a> ";
-        echo "<a title=\"Delete\" class=\"btn btn-danger btn-xs\" href=\"javascript:confirmDelete('delete-student.php?stud_reg_id=".$row['stud_reg_id']."')\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></a></td>";
+        echo "<a title=\"Set to Inactive\" class=\"btn btn-danger btn-xs\" href=\"javascript:confirmDelete('delete-student.php?stud_reg_id=".$row['stud_reg_id']."')\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></a></td>";
         //echo "<a href=\"delete-student.php?stud_reg_id=".$row['stud_reg_id']."\""." onclick=\"confirm('Are you sure?')\"> Delete Info</a></td>";
         echo "</tr>";
         }

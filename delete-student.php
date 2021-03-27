@@ -12,34 +12,37 @@
     redirect_to("view-registered-students.php");
   }
 
+    $query = "UPDATE students_reg SET is_active = 0 WHERE stud_reg_id = '{$stud_reg_id}' LIMIT 1"; 
+    $result = mysqli_query($connection, $query);
+
     //delete first the grades, then enrollment, then student registration
 
-    $query  = "DELETE FROM student_grades WHERE stud_reg_id ='".$stud_reg_id."'";
-    $result = mysqli_query($connection, $query);
+    // $query  = "DELETE FROM student_grades WHERE stud_reg_id ='".$stud_reg_id."'";
+    // $result = mysqli_query($connection, $query);
 
-    //query for irreg student
+    // //query for irreg student
 
-    $query_irreg = "SELECT * FROM irreg_manual_sched WHERE stud_reg_id ='".$stud_reg_id."'";
-    $result_irreg = mysqli_query($connection, $query_irreg);
+    // $query_irreg = "SELECT * FROM irreg_manual_sched WHERE stud_reg_id ='".$stud_reg_id."'";
+    // $result_irreg = mysqli_query($connection, $query_irreg);
 
-    $query_irreg2 = "SELECT * FROM irreg_manual_subject WHERE stud_reg_id ='".$stud_reg_id."'";
-    $result_irreg2 = mysqli_query($connection, $query_irreg2);
+    // $query_irreg2 = "SELECT * FROM irreg_manual_subject WHERE stud_reg_id ='".$stud_reg_id."'";
+    // $result_irreg2 = mysqli_query($connection, $query_irreg2);
 
-    if (mysqli_num_rows($result_irreg)>0 && mysqli_num_rows($result_irreg2)>0) {
+    // if (mysqli_num_rows($result_irreg)>0 && mysqli_num_rows($result_irreg2)>0) {
 
-    $query_del_irreg  = "DELETE FROM irreg_manual_sched WHERE stud_reg_id ='".$stud_reg_id."'";
-    $result_del_irreg = mysqli_query($connection, $query_del_irreg);
+    // $query_del_irreg  = "DELETE FROM irreg_manual_sched WHERE stud_reg_id ='".$stud_reg_id."'";
+    // $result_del_irreg = mysqli_query($connection, $query_del_irreg);
 
-    $query_del_irreg2  = "DELETE FROM irreg_manual_subject WHERE stud_reg_id ='".$stud_reg_id."'";
-    $result_del_irreg2 = mysqli_query($connection, $query_del_irreg2);
+    // $query_del_irreg2  = "DELETE FROM irreg_manual_subject WHERE stud_reg_id ='".$stud_reg_id."'";
+    // $result_del_irreg2 = mysqli_query($connection, $query_del_irreg2);
 
-    }
+    // }
 
-    $query  = "DELETE FROM enrollment WHERE stud_reg_id ='".$stud_reg_id."'";
-    $result = mysqli_query($connection, $query);
+    // $query  = "DELETE FROM enrollment WHERE stud_reg_id ='".$stud_reg_id."'";
+    // $result = mysqli_query($connection, $query);
 
-    $query  = "DELETE FROM students_reg WHERE stud_reg_id ='".$stud_reg_id."' LIMIT 1";
-    $result = mysqli_query($connection, $query);
+    // $query  = "DELETE FROM students_reg WHERE stud_reg_id ='".$stud_reg_id."' LIMIT 1";
+    // $result = mysqli_query($connection, $query);
 
 // next query: update the student count of the deleted student on the scheduling blocks
 

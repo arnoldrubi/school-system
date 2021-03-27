@@ -126,7 +126,6 @@
 
       <center>
           <?php
-            echo "<a href=\"create-schedule-for-class.php?sec_id=".urlencode($sec_id)."\" class=\"btn btn-success btn-sm\">Go Back to Class Scheduling</a>&nbsp";
             echo "<a href=\"new-group-schedule.php\" class=\"btn btn-success btn-sm\">Select Another Section</a>";             
           ?>
       </center>

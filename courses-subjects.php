@@ -34,10 +34,9 @@
       <h1>Assign Subjects to Course</h1>
       <hr>
       <div class="row">
-
         <div class="col-md-6">
           <h3>Course Info</h3>
-          <form id="courses_form" action="process-courses-subjects.php" method="post" >
+          <form id="courses_form" action="" method="post" >
             <?php
 
               echo "<div class=\"form-group row\">";
@@ -91,6 +90,15 @@
                     </select>
                   </div>
                 </div>
+                <div class="form-group row">
+                  <label class="col-md-2 col-form-label" for="Course">Max Units</label>
+                  <div class="col-md-3">
+                    <?php
+                      echo "<input type=\"text\" id=\"max-units\" name=\"max_units\" class=\"form-control\" value=".return_max_units($connection)." readonly>";
+                    ?>
+                    
+                  </div>
+                </div>
 
                 <div class="col-md-6">
                   <input type="submit" id="submit" name="submit" value="Build Course Subjects" class="btn btn-primary" /><br> <br>
@@ -99,15 +107,86 @@
               <input type="text" name="array_values" id="array_values" style="display: none">
  
 
-        </form>
+        
 
-      </div>
+        </div>
 
       <div class="col-md-6">
           <h3>Selected Subjects</h3>
           <ul id="selected-subjects">
           </ul>
+          <div class="form-group row">
+            <label class="col-md-2 col-form-label" for="Course">Current Units</label>
+            <div class="col-md-3">
+              <input type="text" name="current_units" class="form-control" id="current-units" value="0" readonly="">                    
+            </div>
+          </div>
       </div>
+      </form>
+      <?php 
+        // // get the subject id from #selected-subjects li
+        // // create a loop for the sql insert command
+        // // use the count of li elements under #selected-subjects as the max loop
+        // insert course id, subject id, year, and term
+        if (isset($_POST['submit'])) {
+
+          $max_units = $_POST['max_units'];
+          $current_total_units = $_POST['current_units'];
+
+          if ($current_total_units > $max_units || $current_total_units <=0) {
+           echo "<div class=\"col-md-12\"><div class=\"alert alert-danger\" role=\"alert\">Error: Current units exceeds the allotted max units or no subject was selected.</div></div>";
+          }
+
+          else{
+            $data = $_POST['array_values'];
+            $arrVal = explode(";",$data);
+            $arrLength = count($arrVal);
+
+
+            $course = $_POST["course"];
+            $year = mysql_prep($_POST["year"]);
+            $semester = mysql_prep($_POST["semester"]);
+            $school_yr = mysql_prep($_POST["school_yr"]);
+
+            $query  = "SELECT * FROM course_subjects WHERE course_id = '".$course."' AND year = '".$year."' AND term = '".$semester."'";
+            $result = mysqli_query($connection, $query);
+
+            if (mysqli_num_rows($result)>0) {
+              echo "<script type='text/javascript'>";
+              echo "alert('Subject set already exists for this course, year and term.');";
+              echo "</script>";
+
+              $URL="manage-course-subjects.php";
+              echo "<script>location.href='$URL'</script>";
+            }
+
+            else{
+
+              foreach ($arrVal as $subjects) {
+              $query   = "INSERT INTO course_subjects (course_id, subject_id, year, term, school_yr) VALUES ('{$course}', '{$subjects}', '{$year}', '{$semester}', '{$school_yr}')";
+              $result = mysqli_query($connection, $query);
+
+              }
+
+            }
+
+              if ($result === TRUE) {
+                echo "<script type='text/javascript'>";
+                echo "alert('Create subject set successful!');";
+                echo "</script>";
+
+                $URL="manage-course-subjects.php";
+                echo "<script>location.href='$URL'</script>";
+
+                } else {
+                  echo "Error updating record: " . $connection->error;
+                }
+            }
+
+          }
+
+
+        ?>
       <div class="col-md-12">
         <h3>Available Subjects</h3>
         <input class="form-control" id="myInput" type="text" placeholder="Quick Search">
@@ -118,6 +197,7 @@
         echo "  <tr>";
         echo "   <th>Subject Name</th>";
         echo "   <th>Subject Code</th>";
+        echo "   <th>Prerequisite</th>";
         echo "   <th>Lecture Units</th>";
         echo "   <th>Lab Units</th>";
         echo "   <th>Total Units</th>";
@@ -134,14 +214,18 @@
         echo "<tr>";
         echo "<td>".$row['subject_name']."</td>";
         echo "<td>".$row['subject_code']."</td>";
+        echo "<td>".get_subject_code($row['pre_id'],"",$connection)."</td>";
         echo "<td>".$row['lect_units']."</td>";
         echo "<td>".$row['lab_units']."</td>";
-        echo "<td>".$row['total_units']."</td>";
-        echo "<td class=\"subject-wrap\"><a class=\"".$row['subject_code']."\" id=\"".$row['subject_id']."\""." href=\"#\">Add Subject</a> </td>";
+        echo "<td class=\"".$row['total_units']."\" id=\"class\">".$row['total_units']."</td>";
+        echo "<td class=\"subject-wrap\"><a class=\"".$row['total_units']."-".$row['subject_code']."\" id=\"".$row['subject_id']."\""." href=\"#\">Add Subject</a> </td>";
         echo "</tr>";
         }
 
         echo "</tbody></table>"; 
+
+        if(isset($connection)){ mysqli_close($connection); }
+        //close database connection after an sql command   
       ?>
       </div>
     </div>
@@ -163,27 +247,43 @@ $( document ).ready(function() {
 
   $('.subject-wrap a').click(function(){
     var $checker = false;
-    $( "#selected-subjects li:contains('"+ $(this).attr('class') +"')" ).each(function(){
-
+    var class_and_unit = $(this).attr('class');
+    var arr_class_and_unit = class_and_unit.split("-");
+    $( "#selected-subjects li:contains('"+ arr_class_and_unit[1] +"')" ).each(function(){
         alert('Error! This subject is already selected');
         $checker = true;
       }
     );
     if ($checker === false){
-    alert ($(this).attr('class')+ " has been selected!");
-    $( "#selected-subjects" ).append( "<li id=\""+$(this).attr('id')+"\">"+$(this).attr('class')+" <a href=\"#\">x</a></li>" );
-    $( "#courses_form" ).append( "<input type=\"text\" name=\""+$(this).attr('id')+"\" value=\""+$(this).attr('id')+"\" style=\"display: none\">" );
-    arrval.push($(this).attr('id'));
-    $("#array_values").val(arrval.join('; '));
+        if (parseInt($("#current-units").val()) >= parseInt($("#max-units").val())) {
+          alert('Error! Total units is more than the max units allowed for this term.');
+        }
+        else if (parseInt($("#current-units").val()) < parseInt($("#max-units").val())) {
+          var current_units = parseInt($("#current-units").val())+parseInt(arr_class_and_unit[0]);
+          $("#current-units").val(current_units);
+
+          alert (arr_class_and_unit[1]+ " has been selected!");
+          $( "#selected-subjects" ).append( "<li id=\""+$(this).attr('id')+"\">"+arr_class_and_unit[1]+" <a href=\"#\" class=\""+arr_class_and_unit[0]+"\">x</a></li>" );
+          $( "#courses_form" ).append( "<input type=\"text\" name=\""+$(this).attr('id')+"\" value=\""+$(this).attr('id')+"\" style=\"display: none\">" );
+          arrval.push($(this).attr('id'));
+          $("#array_values").val(arrval.join('; '));
+        }
+      
     }
     var $count = $("#selected-subjects input").length;
-
     console.log(arrval.join('; '));
 
-
     $("#selected-subjects li a").click(function(){//remove this and place it under a document on load function
+
+      var confirm_remove = confirm("Do you want to remove a subject from the list?");
+
+      if (confirm_remove == true) {
         $(this).closest("li").remove();
+        var current_units = parseInt($("#current-units").val())-parseInt($(this).attr('class'));
+        $("#current-units").val(current_units);
+
         alert ("Subject has been removed!");
+        event.stopImmediatePropagation();
 
         var removeItem = $(this).closest("li").attr("id");
 
@@ -191,6 +291,14 @@ $( document ).ready(function() {
           return value != removeItem;
         });
         $("#array_values").val(arrval.join('; '));
+
+        // basic check to make sure current units stays 0 as min value
+        if ($("#current-units").val() < 0) {
+          $("#current-units").val(0);
+        }
+
+      }
+
     });
 
   });
@@ -207,3 +315,22 @@ $( document ).ready(function() {
 
 
 
+<!--   <script>
+  $(document).ready(function() {
+    $(".subject-btn").click(function(){
+      var current_units = $("#current_units").val();
+      var subject_id = $(this).attr("id");
+      $.post("add_new_subject_to_course.php",
+        {
+          subject_id: subject_id
+        }
+        ,function(data,status){
+        $("#selected-subjects").html(data);
+      });
+      console.log(current_units);
+      $("#current-units").val(current_units);
+      total_units = $("#current-units").val() + current_units;
+      
+    });
+  });
+  </script> -->

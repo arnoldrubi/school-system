@@ -3,6 +3,11 @@ function confirmDelete(delUrl) {
    document.location = delUrl;
   }
 }
+function confirmAdd(addSubjectlUrl) {
+  if (confirm("Add this subject?")) {
+   document.location = addSubjectlUrl;
+  }
+}
 function confirmRestore(RestoreUrl) {
   if (confirm("Do you want to restore this coures?")) {
    document.location = RestoreUrl;

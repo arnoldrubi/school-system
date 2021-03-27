@@ -122,6 +122,16 @@
           echo "<p style=\"text-align: center\"><img class=\"current-pic\" src=\"".$current_picture."\"></p>";
           echo "<div class=\"alert alert-primary\" role=\"alert\">Warning: Uploading a new file will replace the current photo.</div>";
           echo "</div></div>";
+          echo "<div class=\"form-group row\">";
+          echo "<label class=\"col-md-2 col-form-label\" for=\"guardian_name\">Guardian's Name</label>";
+          echo "<div class=\"col-md-2\">";
+          echo "<input id=\"guardian_name\" name=\"guardian_name\" value=\"".$row['guardian_name']."\" type=\"text\" class=\"form-control\" required></div>";            
+          echo "<label class=\"col-md-1 col-form-label\" for=\"guardian_phone_number\">Guardian's Phone Number</label>";
+          echo "<div class=\"col-md-2\">";
+          echo "<input id=\"guardian_phone_number\" name=\"guardian_phone_number\" value=\"".$row['guardian_phone_number']."\" type=\text\" type=\"tel\" pattern=\"[0-9]{4}-[0-9]{3}-[0-9]{4}\" class=\"form-control\">";
+          echo "<span class=\"help-block\">Format: 09xx-xxx-xxxx</span></div>";
+          echo "<label class=\"col-md-2 col-form-label\" for=\"guardian_relationship\">Guardian's Relationship</label><div class=\"col-md-2\">";  
+          echo "<input id=\"guardian_relationship\" name=\"guardian_relationship\" value=\"".$row['guardian_relationship']."\" type=\"text\" class=\"form-control\" required></div></div>";    
           }
   ?>
       <div class="row">
@@ -170,21 +180,24 @@
       $province = mysql_prep($_POST["province"]);      
       $phonenum = mysql_prep($_POST["phonenum"]);
       $email = mysql_prep($_POST["email"]);
-
+      $guardian_name = mysql_prep($_POST["guardian_name"]);
+      $guardian_phone_number = mysql_prep($_POST["guardian_phone_number"]);
+      $guardian_relationship = mysql_prep($_POST["guardian_relationship"]);
+         
       if (!isset($lastname) || !isset($firstname) || !isset($middlename) || !isset($birthday) ||  !isset($municipality) ||  !isset($province) || !isset($filename) || $lastname == "" || $firstname == "" || $middlename == "" || $birthday == "" || $municipality == "" || $province == "") {
         die ("<div class=\"alert alert-danger\" role=\"alert\">Error: One or more fields are empty.</div>");
       }
       else{
         
         if ($filename == "") { //logical check if user did not upload a new photo, it will use the current one. Run a query and will not update the photo_url column
-          $query = "UPDATE students_reg SET last_name = '{$lastname}', first_name = '{$firstname}', middle_name = '{$middlename}', name_ext = '{$nameext}', gender = '{$gender}', birth_date = '{$birthday}', Barangay = '{$Barangay}', municipality = '{$municipality}', province = '{$province}', phone_number = '{$phonenum}', email = '{$email}' WHERE stud_reg_id = '{$stud_reg_id}' LIMIT 1"; 
+          $query = "UPDATE students_reg SET last_name = '{$lastname}', first_name = '{$firstname}', middle_name = '{$middlename}', name_ext = '{$nameext}', gender = '{$gender}', birth_date = '{$birthday}', Barangay = '{$Barangay}', municipality = '{$municipality}', province = '{$province}', phone_number = '{$phonenum}', email = '{$email}', guardian_name = '{$guardian_name}', guardian_phone_number = '{$guardian_phone_number}', guardian_relationship = '{$guardian_relationship}' WHERE stud_reg_id = '{$stud_reg_id}' LIMIT 1"; 
 
         }
         //if user uploads a new photo, move that file to the uploads folder
         else{
           move_uploaded_file($_FILES["photoupload"]["tmp_name"], $targetdir); // Upload file to server
           $filename = mysql_prep($filename);
-          $query = "UPDATE students_reg SET last_name = '{$lastname}', first_name = '{$firstname}', middle_name = '{$middlename}', name_ext = '{$nameext}', gender = '{$gender}', birth_date = '{$birthday}', Barangay = '{$Barangay}', municipality = '{$municipality}', province = '{$province}', phone_number = '{$phonenum}', email = '{$email}', photo_url = '{$filename}' WHERE stud_reg_id = '{$stud_reg_id}' LIMIT 1"; 
+          $query = "UPDATE students_reg SET last_name = '{$lastname}', first_name = '{$firstname}', middle_name = '{$middlename}', name_ext = '{$nameext}', gender = '{$gender}', birth_date = '{$birthday}', Barangay = '{$Barangay}', municipality = '{$municipality}', province = '{$province}', phone_number = '{$phonenum}', email = '{$email}', photo_url = '{$filename}', guardian_name = '{$guardian_name}', guardian_phone_number = '{$guardian_phone_number}', guardian_relationship = '{$guardian_relationship}' WHERE stud_reg_id = '{$stud_reg_id}' LIMIT 1"; 
 
         }
       }

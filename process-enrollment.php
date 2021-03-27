@@ -42,7 +42,7 @@
     </ol>
       <h1>Enrollment Process</h1>
       <hr>
-     <form action="" method="post">
+     <form id="enrollment-form" action="" method="post">
       <h2>Student Info</h2>
       <?php
 
@@ -203,7 +203,48 @@
   $remarks = mysql_prep($_POST["remarks"]);
   $year = mysql_prep($_POST["year"]);
 
+  // 
 
+  $arrPreId = array();
+
+  $query_subject_for_check = "SELECT * FROM course_subjects WHERE course_id='".$course."' AND year='".$year."' AND term='".$term."'";
+  $result_subject_for_check = mysqli_query($connection, $query_subject_for_check);
+
+  while($row_subject_for_check = mysqli_fetch_assoc($result_subject_for_check))
+    {
+      $subject_id = $row_subject_for_check['subject_id'];
+
+      // do a check if a student choose a subject with prerequisite
+      // the logic is the same as the validation on the assign subjects irreg student. This one gets the array of subject id from the course subjects table
+
+      $subject_has_prerequisite = get_prerequisite_id($subject_id,"",$connection);
+
+      if ($subject_has_prerequisite !== NULL) {
+
+        $check_if_student_passed = check_if_student_passed($subject_has_prerequisite,$stud_reg_id,"",$connection);
+
+        if ($check_if_student_passed == "no grade") {
+          array_push($arrPreId, $subject_id);
+        }
+      }
+
+    }
+
+  if (count($arrPreId)>=1){
+
+      echo "<div class=\"col-md-12 mt-3\"><div class=\"alert alert-danger\" role=\"alert\">Cannot enroll this student. The following prerequisite has not been fulfilled. " ;
+
+      // create a list displaying all the prerequisite not yet fulfilled
+      // place this in a conditional so it will not appear if everything is succesful
+      echo "<ul>";
+      foreach ($arrPreId as $pre_id_for_table) {
+      echo "<li>".get_subject_code(get_prerequisite_id($pre_id_for_table,"",$connection),"",$connection)."</li>";
+      }
+      echo "</ul>";
+      die("Error. Please contact the registrar");
+      echo "</div></div>";
+    }
+  //End validation for checking if a student has unfulfilled prerequsite subject
 
   $query  = "SELECT * FROM enrollment WHERE stud_reg_id = '".$stud_reg_id."' AND term ='".$term."' AND school_yr ='".$sy."'";
   $result = mysqli_query($connection, $query);
@@ -217,6 +258,7 @@
     echo "<script>location.href='$URL'</script>";
 
   }
+  // end validation in checking if a student has record for the set year and term
   else{
 
     if ($regirreg == "1") {
@@ -228,64 +270,67 @@
 
     //Validation, to make sure the proper section is selected
      if ($sec_id == 0) {
-      echo "<script>alert('Please select a section!');";
-      $URL="process-enrollment.php?stud_reg_id=".$stud_reg_id;
-      echo "location.href='$URL';";
-      echo "document.getElementById('section').focus()</script>";
-    }
+        echo "<script>alert('Please select a section!');";
+        $URL="process-enrollment.php?stud_reg_id=".$stud_reg_id;
+        echo "location.href='$URL';";
+        echo "document.getElementById('section').focus()</script>";
+      }
     //End Validation
 
     //validation: Enrollment will not proceed if there subjects w/o classes for the chosen course, and year
-    $classes_subjects = array();
-    $query_check_classes  = "SELECT * FROM classes WHERE sec_id='".$sec_id."' AND term='".$term."' AND school_yr='". $sy."'";
-    $result_check_classes = mysqli_query($connection, $query_check_classes);
+      $classes_subjects = array();
+      $query_check_classes  = "SELECT * FROM classes WHERE sec_id='".$sec_id."' AND term='".$term."' AND school_yr='". $sy."'";
+      $result_check_classes = mysqli_query($connection, $query_check_classes);
 
-    while($row_check_classes = mysqli_fetch_assoc($result_check_classes))
-    {
-      array_push($classes_subjects, $row_check_classes['subject_id']);
-    }
-
-    $subjects_from_course = array();
-    $query  = "SELECT * FROM course_subjects WHERE course_id='".$course."' AND year='".$year."' AND term='".return_current_term($connection,"")."' AND school_yr='".return_current_sy($connection,"")."'";
-    $result = mysqli_query($connection, $query);
-
-    while($row = mysqli_fetch_assoc($result))
+      while($row_check_classes = mysqli_fetch_assoc($result_check_classes))
       {
-        array_push($subjects_from_course, $row['subject_id']);
+        array_push($classes_subjects, $row_check_classes['subject_id']);
       }
 
-    $missing_subjects = array_diff($subjects_from_course, $classes_subjects);
-
-    if (sizeof($missing_subjects) > 0) {
-     $redirect_class = "classes.php?sec_id=".urlencode($sec_id);
-     die("<div class=\"alert alert-danger\" role=\"alert\">Class for this course and year is incomplete! Go to the <a href=\"".$redirect_class."\">Classes Page to Create</a></div>");
-    }
-    //End validation
-      $query  = "SELECT * FROM classes WHERE sec_id ='".$sec_id."' AND term='".$term."' AND school_yr='". $sy."'";
+      $subjects_from_course = array();
+      $query  = "SELECT * FROM course_subjects WHERE course_id='".$course."' AND year='".$year."' AND term='".return_current_term($connection,"")."' AND school_yr='".return_current_sy($connection,"")."'";
       $result = mysqli_query($connection, $query);
 
       while($row = mysqli_fetch_assoc($result))
         {
-          $subject_id = $row['subject_id'];
-          $teacher_id = $row['teacher_id'];
-          $class_id = $row['class_id'];
-
-          $query2  = "INSERT INTO student_grades (stud_reg_id, subject_id, teacher_id, course_id, year, term, sec_id, school_yr, grade_posted) VALUES ('{$reg_id_enroll}', '{$subject_id}', '{$teacher_id}', '{$course}', '{$year}', '{$term}','{$sec_id}', '{$sy}', '0');";
-          $result2 = mysqli_query($connection, $query2);
-         
+          array_push($subjects_from_course, $row['subject_id']);
         }
 
+      $missing_subjects = array_diff($subjects_from_course, $classes_subjects);
+
+      if (sizeof($missing_subjects) > 0) {
+       $redirect_class = "classes.php?sec_id=".urlencode($sec_id);
+       die("<div class=\"alert alert-danger\" role=\"alert\">Class for this course and year is incomplete! Go to the <a href=\"sections-and-classes.php\">Classes Page to Create</a></div>".$query);
       }
+      //End validation
+        $query  = "SELECT * FROM classes WHERE sec_id ='".$sec_id."' AND term='".$term."' AND school_yr='". $sy."'";
+        $result = mysqli_query($connection, $query);
+
+        while($row = mysqli_fetch_assoc($result))
+          {
+            $subject_id = $row['subject_id'];
+            $teacher_id = $row['teacher_id'];
+            $class_id = $row['class_id'];
+            $check_if_subject_is_credited = is_subject_credited($subject_id,$stud_reg_id,"",$connection);
+
+            if ($check_if_subject_is_credited == FALSE) {
+              $query2  = "INSERT INTO student_grades (stud_reg_id, subject_id, teacher_id, course_id, year, term, sec_id, school_yr, grade_posted) VALUES ('{$reg_id_enroll}', '{$subject_id}', '{$teacher_id}', '{$course}', '{$year}', '{$term}','{$sec_id}', '{$sy}', '0');";
+              $result2 = mysqli_query($connection, $query2); 
+            }          
+          }
+      }
+      // end else from if ($regirreg == "1")
+
       //NEXT MANAGE CONFLICT IN STUDENT NUMBER FOR MULTIPLE ENROLLMENT
   
-        $query3  = "SELECT course_code FROM courses WHERE course_id='".$course."' LIMIT 1";
-        $result3 = mysqli_query($connection, $query3);
-        $students_enrolled = mysqli_num_rows($result3);
+      $query3  = "SELECT course_code FROM courses WHERE course_id='".$course."' LIMIT 1";
+      $result3 = mysqli_query($connection, $query3);
+      $students_enrolled = mysqli_num_rows($result3);
 
-        while($row3 = mysqli_fetch_assoc($result3))
-        { 
-            $course_code = $row3['course_code'];
-        }    
+      while($row3 = mysqli_fetch_assoc($result3))
+      { 
+          $course_code = $row3['course_code'];
+      }    
 
       //Generate student number
       $new_student_number = generate_student_number($sy,$course_code,strval($stud_reg_id));
@@ -371,7 +416,7 @@
 
 <?php include 'layout/footer.php';?>
 
-<!--Simle script to disable the select section function when a student is irregular -->
+<!--Simple script to disable the select section function when a student is irregular -->
 <script type="text/javascript">
 
 function load_section(course,year){

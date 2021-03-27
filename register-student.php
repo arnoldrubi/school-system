@@ -46,7 +46,7 @@
       <div class="form-group row">
         <label class="col-md-2 col-form-label" for="MiddleName">Middle Name</label>  
         <div class="col-md-4">
-        <input id="MiddleName" name="middlename" type="text" placeholder="Input Middle Name" class="form-control" required>
+        <input id="MiddleName" name="middlename" type="text" placeholder="Input Middle Name" class="form-control">
         </div>
 
         <label class="col-md-2 col-form-label" for="NameExt">Name Extension</label>  
@@ -100,6 +100,22 @@
         </div>
       </div>
 
+      <div class="form-group row">
+        <label class="col-md-2 col-form-label" for="guardian_name">Guardian's Name</label>  
+        <div class="col-md-2">
+         <input id="guardian_name" name="guardian_name" type="text" class="form-control" required>
+        </div>
+        <label class="col-md-1 col-form-label" for="guardian_phone_number">Guardian's Phone Number</label>
+        <div class="col-md-2">
+         <input id="guardian_phone_number" name="guardian_phone_number" type="text" type="tel" pattern="[0-9]{4}-[0-9]{3}-[0-9]{4}" class="form-control">
+          <span class="help-block">Format: 09xx-xxx-xxxx</span>  
+        </div>
+        <label class="col-md-2 col-form-label" for="guardian_relationship">Guardian's Relationship</label>  
+        <div class="col-md-2">
+         <input id="guardian_relationship" name="guardian_relationship" type="text" class="form-control" required>
+        </div>
+      </div>  
+
       <div class="row">
         <div class="col-md-12 d-flex justify-content-center">
         <input type="submit" name="submit" value="Register Student" class="btn btn-primary" />&nbsp;
@@ -132,8 +148,11 @@
         $province = mysql_prep($_POST["province"]);
         $phonenum = mysql_prep($_POST["phonenum"]);
         $email = mysql_prep($_POST["email"]);
+        $guardian_name = mysql_prep($_POST["guardian_name"]);
+        $guardian_phone_number = mysql_prep($_POST["guardian_phone_number"]);
+        $guardian_relationship = mysql_prep($_POST["guardian_relationship"]);
 
-        if (!isset($lastname) || !isset($firstname) || !isset($middlename) || !isset($birthday) || !isset($municipality) ||  !isset($province) || !isset($filename) || $lastname == "" || $firstname == "" || $middlename == "" || $birthday == "" || $municipality == "" || $province == "") {
+        if (!isset($lastname) || !isset($firstname) || !isset($birthday) || !isset($municipality) ||  !isset($province) || !isset($filename) || $lastname == "" || $firstname == "" || $birthday == "" || $municipality == "" || $province == "") {
             die ("<div class=\"alert alert-danger\" role=\"alert\">Error: One or more fields are empty.</div>");
         }
         else{
@@ -170,7 +189,7 @@
           $filename = "default.jpg";
           }
         
-            $query   = "INSERT INTO students_reg (last_name, first_name, middle_name, name_ext, gender, birth_date, Barangay, municipality, province, phone_number, email, photo_url) VALUES ('{$lastname}', '{$firstname}', '{$middlename}', '{$nameext}', '{$gender}', '{$birthday}', '{$Barangay}', '{$municipality}', '{$province}', '{$phonenum}', '{$email}', '{$filename}')";
+            $query   = "INSERT INTO students_reg (last_name, first_name, middle_name, name_ext, gender, birth_date, Barangay, municipality, province, phone_number, email, photo_url, guardian_name, guardian_phone_number, guardian_relationship,is_active) VALUES ('{$lastname}', '{$firstname}', '{$middlename}', '{$nameext}', '{$gender}', '{$birthday}', '{$Barangay}', '{$municipality}', '{$province}', '{$phonenum}', '{$email}', '{$filename}', '{$guardian_name}', '{$guardian_phone_number}', '{$guardian_relationship}', 1)";
             $result = mysqli_query($connection, $query);
 
             if ($result === TRUE) {

@@ -22,7 +22,7 @@ if ($_SESSION["role"] == "administrator" || $_SESSION["role"] == "registrar") {
   echo "<div class=\"card-body-icon\">";        
   echo "<i class=\"fa fa-fw fa-id-card\"></i>";          
   echo "</div><div class=\"mr-5\">Faculty and Room Management</div></div>";                            
-  echo "<a class=\"card-footer text-white clearfix small z-1\" href=\"view-teachers-and-rooms\">";                
+  echo "<a class=\"card-footer text-white clearfix small z-1\" href=\"view-teachers-and-rooms.php\">";                
   echo "<span class=\"float-left\">Go to Faculty and Room Management</span>";                              
   echo "<span class=\"float-right\">";            
   echo "<i class=\"fa fa-angle-right\"></i></span></a></div></div>";            

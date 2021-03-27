@@ -217,7 +217,7 @@ global $sidebar_context;
 	}
 
 
-//utility function that calls the general query run on the system to save space and refactor the codes
+//utility functions that calls the general query run on the system to save space and refactor the codes
 	function return_current_sy($connection,$current_sy){
 		$query_return_current_sy = "SELECT active_sy FROM site_settings LIMIT 1";
         $result_return_current_sy = mysqli_query($connection, $query_return_current_sy);
@@ -237,6 +237,16 @@ global $sidebar_context;
      	
         }
         return $current_term;
+	}
+	function return_max_units($connection){
+		$query_return_max_units = "SELECT max_units FROM site_settings LIMIT 1";
+        $result_return_max_units = mysqli_query($connection, $query_return_max_units);
+        while($row_return_max_units = mysqli_fetch_assoc($result_return_max_units))
+        {
+          $max_units = $row_return_max_units['max_units'];
+     	
+        }
+        return $max_units;
 	}
 
 //NEXT: Utility function to count the current enrollment of irreg students for the given course, year, term, SY, and section
@@ -315,6 +325,17 @@ global $sidebar_context;
 
         return $subject_code;
     }
+   	function get_subject_total_unit($subject_id, $total_unit, $connection){
+		$query_get_subject_total_unit = "SELECT * FROM subjects WHERE subject_id='".$subject_id."' LIMIT 1";
+        $result_get_subject_total_unit = mysqli_query($connection, $query_get_subject_total_unit);
+
+        while($row_subject_total_unit = mysqli_fetch_assoc($result_get_subject_total_unit))
+        {
+        	$total_units = $row_subject_total_unit['total_units'];
+        }
+
+        return $total_units;
+    }
    	function get_subject_unit_count($subject_id, $unit, $connection){
 		$query_subject_unit = "SELECT * FROM subjects WHERE subject_id='".$subject_id."' LIMIT 1";
         $result_subject_unit = mysqli_query($connection, $query_subject_unit);
@@ -340,6 +361,48 @@ global $sidebar_context;
         }
 
         return $course_code;
+    }
+   	function get_prerequisite_id($subject_id, $prerequisite_id, $connection){
+		$query_prerequisite_id = "SELECT pre_id FROM subjects WHERE subject_id='".$subject_id."' LIMIT 1";
+        $result_prerequisite_id = mysqli_query($connection, $query_prerequisite_id);
+        while($row_prerequisite_id = mysqli_fetch_assoc($result_prerequisite_id))
+        {
+          $prerequisite_id = $row_prerequisite_id['pre_id'];
+        
+        }
+        if ($prerequisite_id !== NULL ) {
+        	return $prerequisite_id;
+        }  
+    }
+   	function is_subject_credited($subject_id, $stud_reg_id,  $subject_credited, $connection){
+		$query_is_subject_credited = "SELECT * FROM transfer_of_credits WHERE equivalent_subject_id='".$subject_id."' AND stud_reg_id='".$stud_reg_id."' LIMIT 1";
+        $result_is_subject_credited = mysqli_query($connection, $query_is_subject_credited);
+        
+        if (mysqli_num_rows($result_is_subject_credited) == 1) {
+        	$subject_credited = TRUE;
+        	
+        }
+        else{
+        	$subject_credited = FALSE;
+        }
+        return $subject_credited;
+    }
+
+    function check_if_student_passed($subject_id, $student_reg_id, $remarks, $connection){
+		$query_check_if_student_passed = "SELECT remarks FROM student_grades WHERE stud_reg_id='".$student_reg_id."' AND  subject_id ='".$subject_id."' LIMIT 1";
+        $result_check_if_student_passed = mysqli_query($connection, $query_check_if_student_passed);
+        
+        if (mysqli_num_rows($result_check_if_student_passed)==0) {
+        	$remarks = "no grade";
+        }
+        else{
+        	while($row_check_if_student_passed = mysqli_fetch_assoc($result_check_if_student_passed))
+			{
+				$remarks = $row_check_if_student_passed['remarks'];
+			}
+        }
+  
+        return $remarks;
     }
     function get_student_name($stud_reg_id,$connection){
     	$query_student_name = "SELECT * FROM students_reg WHERE stud_reg_id=".$stud_reg_id;

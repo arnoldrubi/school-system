@@ -29,24 +29,26 @@ require_once("includes/db_connection.php");
       $query_delete_sched   = "DELETE FROM irreg_manual_sched WHERE stud_reg_id='".$stud_reg_id."' AND year='".$year."' AND term='".$term."' AND school_yr='".$sy."'";
       $result = mysqli_query($connection, $query_delete_sched);
 
+      if (sizeof($class_ids) > 0) {
+       for ($i=0; $i < sizeof($class_ids); $i++) { 
+          
+          $query_get_irreg_count  = "SELECT COUNT(*) AS num FROM irreg_manual_sched WHERE class_id='".$class_ids[$i]."'";
+          $result_get_enrolled = mysqli_query($connection, $query_get_irreg_count);
+          while($row_get_enrolled = mysqli_fetch_assoc($result_get_enrolled)){
+             $irreg_count = $row_get_enrolled['num'];
+           }
 
-     for ($i=0; $i < sizeof($class_ids); $i++) { 
-        
-        $query_get_irreg_count  = "SELECT COUNT(*) AS num FROM irreg_manual_sched WHERE class_id='".$class_ids[$i]."'";
-        $result_get_enrolled = mysqli_query($connection, $query_get_irreg_count);
-        while($row_get_enrolled = mysqli_fetch_assoc($result_get_enrolled)){
-           $irreg_count = $row_get_enrolled['num'];
-         }
+          $sec_id = get_section_name_by_class($class_ids[$i],"",$connection);
+          $count_regular_student = get_enrolled_regular_students($sec_id,$term,$sy,"",$connection);
 
-        $sec_id = get_section_name_by_class($class_ids[$i],"",$connection);
-        $count_regular_student = get_enrolled_regular_students($sec_id,"",$connection);
+          $current_students_total = $irreg_count + $count_regular_student;
 
-        $current_students_total = $irreg_count + $count_regular_student;
-
-        $query4  = "UPDATE classes SET students_enrolled = '{$current_students_total}' WHERE class_id ='".$class_ids[$i]."'";
-        $result4 = mysqli_query($connection, $query4);
+          $query4  = "UPDATE classes SET students_enrolled = '{$current_students_total}' WHERE class_id ='".$class_ids[$i]."'";
+          $result4 = mysqli_query($connection, $query4);
+        }        
       }
-      
+
+
       $query_delete_grades   = "DELETE FROM student_grades WHERE stud_reg_id='".$stud_reg_id."' AND year='".$year."' AND term='".$term."' AND school_yr='".$sy."' AND sec_id='"."0"."'";
       $result2 = mysqli_query($connection, $query_delete_grades);
 

@@ -35,6 +35,7 @@
       $site_logo = $row['site_logo']; 
       $active_term = $row['active_term'];
       $active_sy = $row['active_sy'];
+      $max_units = $row['max_units'];
     }
  
 ?>
@@ -57,6 +58,12 @@
           <label for="Phone Number">Phone Number</label>
           <input type="text" value="<?php echo $phone_number; ?>" class="form-control col-md-3" id="phone_number" required name="phone_number">
         </div>
+        <div class="form-group row">
+          <label class="col-md-2 col-form-label" for="Max Units">Max Units Per Term</label>
+          <div class="col-md-1">
+            <input type="number" name="max_units" value="<?php echo $max_units; ?>" class="form-control" id="max_units" required>
+          </div>
+        </div>
         <div class="form-group">
         <label class="col-md-2 col-form-label" for="photoupload">Upload Logo</label>
         <div class="col-md-2">
@@ -71,9 +78,11 @@
           </div>
         </div>
       </form>
-      <hr>
-      <form action="update_enrollment_settings.php" method="post">
-        <h2>Manage Enrollment Settings</h2>
+    </div>
+    <hr>
+    <h2>Manage Enrollment Settings</h2>
+    <div class="col-md-9 col-md-offset-3">      
+      <form action="update_enrollment_settings.php" method="post">        
         <div class="form-group row">
           <label class="col-md-2 col-form-label" for="Active Semester">Active Semester</label>
           <div class="col-md-2">
@@ -148,6 +157,7 @@
     $school_name = mysql_prep($_POST["school_name"]);
     $school_address = mysql_prep($_POST["school_address"]);
     $phone_number = mysql_prep($_POST["phone_number"]);
+    $max_units = $_POST["max_units"];
 
     if (!isset($school_name) || !isset($school_address) || !isset($phone_number)) {
       die ("<div class=\"alert alert-danger\" role=\"alert\">Error: One or more fields are empty.</div>");
@@ -156,7 +166,7 @@
     else{
 
       if ($filename = "" || !isset($filename) || $filename == null) {
-        $query  = "UPDATE site_settings SET school_name = '{$school_name}', school_address = '{$school_address}', phone_number = '{$phone_number}' WHERE id = 1 LIMIT 1";
+        $query  = "UPDATE site_settings SET school_name = '{$school_name}', school_address = '{$school_address}', phone_number = '{$phone_number}', max_units = '{$max_units}' WHERE id = 1 LIMIT 1";
         $result = mysqli_query($connection, $query);
       }
       else{
@@ -169,14 +179,14 @@
           die ("<div class=\"row alert alert-danger\" role=\"alert\">Error: Logo must be in .jpg or .png or .gif format.</div>");
         }
 
-        $query  = "UPDATE site_settings SET school_name = '{$school_name}', school_address = '{$school_address}', phone_number = '{$phone_number}',site_logo = '{$filename}' WHERE id = 1 LIMIT 1";
+        $query  = "UPDATE site_settings SET school_name = '{$school_name}', school_address = '{$school_address}', phone_number = '{$phone_number}',site_logo = '{$filename}', max_units = '{$max_units}' WHERE id = 1 LIMIT 1";
         $result = mysqli_query($connection, $query);
 
 
       }
       if ($result === TRUE) {
         echo "<script type='text/javascript'>";
-        echo "alert('Edit site settings successful!".$filename."');";
+        echo "alert('Edit site settings successful!');";
         echo "</script>";
 
         $URL="admin-dashboard.php";

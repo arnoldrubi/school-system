@@ -128,21 +128,32 @@
 							 	$query = "SELECT * FROM irreg_manual_subject WHERE stud_reg_id='".$student_reg_id."'";
 							}
 							else{
-								$query = "SELECT * FROM course_subjects WHERE course_id='".$course_id."' AND term='".$term."' AND year='".$year."' AND school_yr='".$school_yr."'";
+									$query = "SELECT * FROM course_subjects WHERE course_id='".$course_id."' AND term='".$term."' AND year='".$year."' AND school_yr='".$school_yr."'";
 						        }
+
+						        
+
 								$result = mysqli_query($connection, $query);
 						        while($row = mysqli_fetch_assoc($result))
 						        {
-						        $units_array = get_subject_unit_count($row['subject_id'],"",$connection);
-						        echo "<tr>";			        
-								echo "<td>".get_subject_code($row['subject_id'],"",$connection)."</td>";
-								echo "<td>".get_subject_name($row['subject_id'],"",$connection)."</td>";
-								echo "<td>".$units_array[0]."</td>";
-								echo "<td>".$units_array[1]."</td>";
-								echo "<td>".$units_array[2]."</td>";
-								echo "</tr>";
+						        	$note_on_credit = "";
 
-								$unit_count += $units_array[2];
+							        $check_if_subject_is_credited = is_subject_credited($row['subject_id'],$student_reg_id,"",$connection);
+							        if ($check_if_subject_is_credited == TRUE) {
+							        	$note_on_credit = "<br>(Unit is credited ***)";
+							        }
+
+							        $units_array = get_subject_unit_count($row['subject_id'],"",$connection);
+							        
+							        echo "<tr>";			        
+									echo "<td>".get_subject_code($row['subject_id'],"",$connection)."</td>";
+									echo "<td>".get_subject_name($row['subject_id'],"",$connection)." ".$note_on_credit."</td>";
+									echo "<td>".$units_array[0]."</td>";
+									echo "<td>".$units_array[1]."</td>";
+									echo "<td>".$units_array[2]."</td>";
+									echo "</tr>";
+
+									$unit_count += $units_array[2];
 
 						     }
 
