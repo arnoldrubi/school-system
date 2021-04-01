@@ -21,7 +21,7 @@
 
 //Validation, making sure all required fields are entered
 
-if (!isset($graduated) && !isset($student_number) && !isset($_POST["submit"])) {
+if (!isset($_POST["submit"])) {
 	redirect_to("request-certificate-of-grades.php");
 }
 else{
@@ -31,6 +31,9 @@ else{
 	    //Requester's name
 		$requesters_name =  $_POST["firstname"]." ".substr($_POST["middlename"], 0, 1).". ".$_POST["lastname"]." ".$_POST["nameext"];
 
+		if (!isset($graduated) || !isset($student_number)) {
+			redirect_to("request-certificate-of-grades.php");
+		}
 
 		//Set the status of the student
 		$student_graduate = "";
@@ -44,6 +47,13 @@ else{
 
 	    $query   = "SELECT * FROM enrollment WHERE student_number='".$student_number."' LIMIT 1";
 	    $result = mysqli_query($connection, $query);
+
+	    // another validation, make sure student number exists
+
+	    if (mysqli_num_rows($result) <1) {
+	    	echo "No record exists";
+	    	exit;
+	    }
 
 	   while($row = mysqli_fetch_assoc($result))
 	        {    

@@ -152,6 +152,20 @@ div#term-sy-indicator {
 .sidebar .nav-item .nav-link:active, .sidebar .nav-item .nav-link:focus, .sidebar .nav-item .nav-link:hover {
   color: rgba(0, 0, 0, 0.9);
 }
+.btn-success {
+    background-color: #7a0d2d;
+    border-color: #48081b;
+}
+.btn-success:hover {
+    background-color: #d05277;
+    border-color: #8c3f56;
+}
+.btn-warning {
+    background-color: #ffe082;
+}
+.btn-warning:hover {
+    background-color: #fff0c4;
+}
 /*additional dashboard items*/
 .dashboard-window { background: #62acec; width: 100%; padding: 20px; color: #FFF; border-radius: 4px; margin-bottom: 1em;}
 .d-w-icon { width: 30%; float: left; margin-right: 5px;}

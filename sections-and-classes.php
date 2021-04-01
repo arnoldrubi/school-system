@@ -54,7 +54,6 @@
         $query  = "SELECT sections.sec_id, sections.course_id, sections.sec_name, sections.year, courses.course_id, courses.course_code, courses.course_desc FROM sections INNER JOIN courses ON sections.course_id=courses.course_id ORDER BY courses.course_code;";
         $result = mysqli_query($connection, $query);
 
-        print_r($query);
       while($row = mysqli_fetch_assoc($result))
         {
 

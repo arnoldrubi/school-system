@@ -137,12 +137,12 @@
             echo "<td>".$row2['lab_units']."</td>";
             echo "<td>".get_subject_total_unit($subject_id,"",$connection)."</td>";
 
-            echo "<td class=\"subject-wrap\"><a href=\"javascript:confirmDelete('remove-subject-from-course?course_id=".$course_id."&subject_id=".$subject_id."&year=".urlencode($year)."&term=".urlencode("$term")."&school_yr=".urlencode("$school_yr")."')\"> Remove Subject</a></td>";
+            echo "<td class=\"subject-wrap\"><a href=\"javascript:confirmDelete('remove-subject-from-course.php?course_id=".$course_id."&subject_id=".$subject_id."&year=".urlencode($year)."&term=".urlencode("$term")."&school_yr=".urlencode("$school_yr")."')\"> Remove Subject</a></td>";
             echo "</tr>";
           }
         $sum_units = $sum_units + (int) $total_units;
         }
-        echo "<tr><td colspan=\"3\">&nbsp;</td><td>Total Units</td><td><input type=\"text\" id=\"current-units\" name=\"current_units\" class=\"form-control col-sm-3\" value=\"".$sum_units."\" readonly></td><td>&nbsp;</td></tr>";
+        echo "<tr><td colspan=\"4\">&nbsp;</td><td>Total Units</td><td><input type=\"text\" id=\"current-units\" name=\"current_units\" class=\"form-control col-sm-3\" value=\"".$sum_units."\" readonly></td><td>&nbsp;</td></tr>";
         echo "</tbody></table>"; 
 
       ?>
