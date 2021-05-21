@@ -39,6 +39,7 @@
         echo "<table class=\"table table-bordered dataTable\" id=\"dataTable\" width=\"100%\" cellspacing=\"0\" role=\"grid\" aria-describedby=\"dataTable_info\" style=\"width: 100%;\">";
         echo " <thead>";
         echo "  <tr>";
+        echo "   <th>Employee Code</th>";
         echo "   <th>First Name</th>";
         echo "   <th>Last Name</th>";
         echo "   <th>Department</th>";
@@ -53,6 +54,7 @@
       while($row = mysqli_fetch_assoc($result))
         {
         echo "<tr>";
+        echo "<td>".$row['emp_code']."</td>";
         echo "<td>".$row['first_name']."</td>";
         echo "<td>".$row['last_name']."</td>";
         echo "<td>".$row['department']."</td>";

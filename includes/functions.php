@@ -125,6 +125,26 @@ global $sidebar_context;
 		return $student_number;
 
 	}
+	function generate_emp_code(string $teacher_id,$emp_code){
+
+		if (strlen($teacher_id) == 1) {
+		 $teacher_id = "000".$teacher_id;	
+		}
+		elseif (strlen($teacher_id) == 2) {
+		 $teacher_id = "00".$teacher_id;
+		}
+
+		$emp_code = "EMP-".$teacher_id;
+
+		return $emp_code;
+
+	}
+//password randomizer
+	function password_generate($chars) 
+	{
+	  $data = '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcefghijklmnopqrstuvwxyz';
+	  return substr(str_shuffle($data), 0, $chars);
+	}
 	function query_for_current_students(string $table, string $course_id,string $year,string $term, string $section, string $sy){
 		$query_counter = "SELECT * FROM ".$table." WHERE course_id='".$course_id."' AND year='".$year."' AND term='".$term."' AND section='".$section."' AND school_yr='".$sy."'";
 		return $query_counter;
@@ -292,6 +312,35 @@ global $sidebar_context;
 
         return $section_id;
     }
+    function find_schedule_data($subject_id, $class_id, $connection, $schedule_id){
+		$query_find_schedule_data = "SELECT * FROM schedule_block WHERE class_id='".$class_id."' AND subject_id='".$subject_id."'";
+		$result_find_schedule_data = mysqli_query($connection, $query_find_schedule_data);
+
+		if (mysqli_num_rows($result_find_schedule_data) > 0) {
+			while($row_find_schedule_data = mysqli_fetch_assoc($result_find_schedule_data))
+			{
+				$schedule_id = $row_find_schedule_data['schedule_id'];
+			}
+		}
+
+		else{
+			$schedule_id = NULL;
+		}
+
+		return $schedule_id;
+
+    }
+  	function get_subject_id_by_class($subject_id, $class_id, $connection){
+		$query_subject_id_by_class = "SELECT * FROM classes WHERE class_id='".$class_id."' LIMIT 1";
+        $result_subject_id_by_class = mysqli_query($connection, $query_subject_id_by_class);
+        while($row_subject_id_by_class = mysqli_fetch_assoc($result_subject_id_by_class))
+        {
+          $subject_id = $row_section_name_by_class['subject_id'];
+        
+        }
+
+        return $subject_id;
+    }
  	function get_section_year($sec_id, $section_year, $connection){
 		$query_section_year = "SELECT * FROM sections WHERE sec_id='".$sec_id."' LIMIT 1";
         $result_section_year = mysqli_query($connection, $query_section_year);
@@ -360,11 +409,11 @@ global $sidebar_context;
         return $units_array;
     }
    	function get_course_code($course_id, $course_code, $connection){
-		$query_course_code = "SELECT * FROM courses WHERE course_id='".$course_id."' LIMIT 1";
+		$query_course_code = "SELECT * FROM courses WHERE course_id='".$course_id."'";
         $result_course_code = mysqli_query($connection, $query_course_code);
         while($row_course_code = mysqli_fetch_assoc($result_course_code))
         {
-          $course_code = $row_course_code['course_code'];
+          $course_code = $course_code.",".$row_course_code['course_code'];
         
         }
 

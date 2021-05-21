@@ -14,7 +14,7 @@
 
 ?>
 
-  <title>Edit Subject</title>
+  <title>Edit Faculty Info</title>
   </head>
 
   <body>
@@ -84,7 +84,7 @@
           $last_name = mysql_prep($_POST["last-name"]);
           $department = mysql_prep($_POST["department"]);
 
-          if (!isset($first_name) || !isset($last_name) || !isset($deparment) || $first_name == "" || $last_name == "" || $department == "") {
+          if (!isset($first_name) || !isset($last_name)) {
             die ("<div class=\"alert alert-danger\" role=\"alert\">Error: One or more fields are empty.</div>");
           }
           else{
@@ -111,7 +111,7 @@
       <div class="row">
         <div class="col-md-12 d-flex justify-content-center">
           <input type="submit" name="submit" value="Edit Teacher" class="btn btn-primary" />&nbsp;
-          <a class="btn btn-secondary"href="manage-schedules.php">Cancel</a>
+          <a class="btn btn-secondary"href="view-teachers.php">Cancel</a>
         </div>
       </div>
 

@@ -47,7 +47,7 @@
         echo "   <th>Legal Guardian</th>";
         echo "   <th>Guardian's Phone Number</th>";
         echo "   <th>Relationship</th>";
-        echo "   <th>Options</th>";   
+        echo "   <th width=\"12%\">Options</th>";   
         echo "  </tr></thead><tbody>";
         
         

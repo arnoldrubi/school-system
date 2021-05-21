@@ -30,7 +30,7 @@
           echo "   <th>Options</th>";   
           echo "  </tr></thead><tbody>";
 
-          $query  = "SELECT * FROM users";
+          $query  = "SELECT * FROM users WHERE user_id NOT IN(1)";
           $result = mysqli_query($connection, $query);
 
         while($row = mysqli_fetch_assoc($result))
@@ -41,7 +41,7 @@
             echo "<td>".$row['role']."</td>"; 
           
             echo "<td style=\"text-align: center;\"><a class=\"btn btn-warning btn-xs\" title=\"Edit\" href=\"edit-user.php?user_id=".$row['user_id']."\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a> ";
-            echo "<a title=\"Delete\" class=\"btn btn-danger btn-xs\" href=\"delete-user.php?user_id=".$row['user_id']."\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a></td>";
+            echo "<a title=\"Delete\" class=\"btn btn-danger btn-xs\" href=\"delete-user.php?user_id=".$row['user_id']."\"><i class=\"fa fa-trash\" aria-hidden=\"true\" onclick=\"return confirm('Are you sure you want to delete?')\"></i></a></td>";
             echo "</tr>";
           }
 

@@ -68,121 +68,53 @@
         
         $class_set = implode(",", $class_id);
 
-        $query  = "SELECT * FROM schedule_block WHERE class_id IN (".$class_set.") ORDER BY time_start ASC ";
+        
+
+        $query  = "SELECT * FROM schedule_block WHERE class_id IN (".$class_set.") ORDER BY time_start ASC, day ASC";
         $result = mysqli_query($connection, $query);
 
         if (mysqli_num_rows($result) < 1) {
          die ("<tr><td><div class=\"alert alert-danger\" role=\"alert\">No schedule created. <a href=\"create-schedule-for-class.php?sec_id=".$sec_id."\" class=\"btn btn-success btn-sm\">Add New Schedule</a></div></td></tr>");
         }
 
+        else{
+          $td_count = 0;
+          while($row = mysqli_fetch_assoc($result)){
+            $subject_id = $row['subject_id'];
+            $teacher_id = $row['teacher_id'];
+            
+              if ($td_count == 0) {
+              echo "<tr>";
+            }     
+              for ($i=1; $i <= 7; $i++) { 
 
-        while($row = mysqli_fetch_assoc($result)){
+                if ($i !== $row['day']) {
+                  echo "<td>&nbsp;</td>";
+                }
+                if ($i == $row['day']) {
+                  echo "<td width=\"14%\">";
+                  echo get_subject_code($subject_id,"",$connection)."<br>";
+                  echo get_subject_name($subject_id,"",$connection)."<br>";
+                  echo "Class Start: ".date("g:i A", strtotime($row['time_start']))."<br>";
+                  echo "Class End: ".date("g:i A", strtotime($row['time_end']))."<br>";
+                  echo "Room: ".$row['room']."<br>";
+                  echo "Teacher: ".get_teacher_name($teacher_id,"",$connection);
+                  echo "<br>day: ".$row['day'];
+                  echo "</td>"; 
+                  break;
+                }
+              }
+              $td_count = $td_count +1;
 
-        	$subject_id = $row['subject_id'];
-        	$teacher_id = $row['teacher_id'];
-        	$teacher_name = "";
+            if ($td_count == 7) {
+              echo "</tr>";
+              $td_count = 0;
+            }  
+                
+          } 
 
-        	echo "<tr>";
-        			if ($row['day'] == 1) {
-        				echo "<td width=\"14%\">";
-        				echo get_subject_code($subject_id,"",$connection)."<br>";
-        				echo get_subject_name($subject_id,"",$connection)."<br>";
-        				echo "Class Start: ".date("g:i A", strtotime($row['time_start']))."<br>";
-          				echo "Class End: ".date("g:i A", strtotime($row['time_end']))."<br>";
-        				echo "Room: ".$row['room']."<br>";
-        				echo "Teacher: ".get_teacher_name($teacher_id,"",$connection);
-        				echo "</td>";
-        			}
-        			else{
-        				echo "<td>&nbsp;</td>";
-        			}
-
-        			if ($row['day'] == 2) {
-        				echo "<td width=\"14%\">";
-                echo get_subject_code($subject_id,"",$connection)."<br>";
-                echo get_subject_name($subject_id,"",$connection)."<br>";
-        				echo "Class Start: ".date("g:i A", strtotime($row['time_start']))."<br>";
-          				echo "Class End: ".date("g:i A", strtotime($row['time_end']))."<br>";
-        				echo "Room: ".$row['room']."<br>";
-        				echo "Teacher: ".get_teacher_name($teacher_id,"",$connection);
-        				echo "</td>";
-        			}
-        			else{
-        				echo "<td>&nbsp;</td>";
-        			}
-
-        			if ($row['day'] == 3) {
-        				echo "<td width=\"14%\">";
-                echo get_subject_code($subject_id,"",$connection)."<br>";
-                echo get_subject_name($subject_id,"",$connection)."<br>";
-        				echo "Class Start: ".date("g:i A", strtotime($row['time_start']))."<br>";
-          				echo "Class End: ".date("g:i A", strtotime($row['time_end']))."<br>";
-        				echo "Room: ".$row['room']."<br>";
-        				echo "Teacher: ".get_teacher_name($teacher_id,"",$connection);
-        				echo "</td>";
-        			}
-        			else{
-        				echo "<td>&nbsp;</td>";
-        			}
-
-        			if ($row['day'] == 4) {
-        				echo "<td width=\"14%\">";
-                echo get_subject_code($subject_id,"",$connection)."<br>";
-                echo get_subject_name($subject_id,"",$connection)."<br>";
-        				echo "Class Start: ".date("g:i A", strtotime($row['time_start']))."<br>";
-          				echo "Class End: ".date("g:i A", strtotime($row['time_end']))."<br>";
-        				echo "Room: ".$row['room']."<br>";
-        				echo "Teacher: ".get_teacher_name($teacher_id,"",$connection);
-        				echo "</td>";
-        			}
-        			else{
-        				echo "<td>&nbsp;</td>";
-        			}
-
-        			if ($row['day'] == 5) {
-        				echo "<td width=\"14%\">";
-                echo get_subject_code($subject_id,"",$connection)."<br>";
-                echo get_subject_name($subject_id,"",$connection)."<br>";
-        				echo "Class Start: ".date("g:i A", strtotime($row['time_start']))."<br>";
-          				echo "Class End: ".date("g:i A", strtotime($row['time_end']))."<br>";
-        				echo "Room: ".$row['room']."<br>";
-        				echo "Teacher: ".get_teacher_name($teacher_id,"",$connection);
-        				echo "</td>";
-        			}
-        			else{
-        				echo "<td>&nbsp;</td>";
-        			}
-
-        			if ($row['day'] == 6) {
-        				echo "<td width=\"14%\">";
-                echo get_subject_code($subject_id,"",$connection)."<br>";
-                echo get_subject_name($subject_id,"",$connection)."<br>";
-        				echo "Class Start: ".date("g:i A", strtotime($row['time_start']))."<br>";
-          				echo "Class End: ".date("g:i A", strtotime($row['time_end']))."<br>";
-        				echo "Room: ".$row['room']."<br>";
-        				echo "Teacher: ".get_teacher_name($teacher_id,"",$connection);
-        				echo "</td>";
-        			}
-        			else{
-        				echo "<td>&nbsp;</td>";
-        			}
-
-        			if ($row['day'] == 7) {
-        				echo "<td width=\"14%\">";
-                echo get_subject_code($subject_id,"",$connection)."<br>";
-                echo get_subject_name($subject_id,"",$connection)."<br>";
-        				echo "Class Start: ".date("g:i A", strtotime($row['time_start']))."<br>";
-          				echo "Class End: ".date("g:i A", strtotime($row['time_end']))."<br>";
-        				echo "Room: ".$row['room']."<br>";
-        				echo "Teacher: ".get_teacher_name($teacher_id,"",$connection);
-        				echo "</td>";
-        			}
-        			else{
-        				echo "<td>&nbsp;</td>";
-        			}
-
-           	echo "</tr>";
-      }
+ 
+    }
 
         echo "</tbody></table>"; 
 
@@ -190,6 +122,8 @@
 <?php 
   if(isset($connection)){ mysqli_close($connection); }
   //close database connection after an sql command
+
+
   ?>
 
 

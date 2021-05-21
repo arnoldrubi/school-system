@@ -33,48 +33,33 @@
      <form action="" method="post" >
       <h2>Teacher's Info</h2>
       <div class="form-group row">
-        <label class="col-md-2 col-form-label" for="first-name">First Name</label>  
-        <div class="col-md-2">
-        <input id="first-name" name="first-name" type="text" placeholder="Input First Name" class="form-control input-md" required="">
-        </div>
-
-        <label class="col-md-2 col-form-label" for="last-name">Last Name</label>  
-        <div class="col-md-2">
-        <input id="last-name" name="last-name" type="text" placeholder="Input Last Name" class="form-control input-md" required="">
-        </div>
-
-        <label class="col-md-2 col-form-label" for="department">Department</label>  
-        <div class="col-md-2">
-        <input id="department" name="dapartment" type="text" placeholder="Input Department" class="form-control input-md" required="">
+        <label class="col-sm-1 col-form-label" for="first-name">First Name</label>  
+        <div class="col-sm-3">
+          <input id="first-name" name="first-name" type="text" placeholder="Input First Name" class="form-control input-md" required="">
         </div>
       </div>
-      <hr>
-      <div class="form-group">
-
-        <h3>User Login Info</h3>
-        <label for="username">Username</label>
-        <input type="text" value="" class="form-control" id="username" required name="username" placeholder="Username">
-        <p id="warning-text"></p>
-        <label for="exampleInputPassword1">Password</label>
-        <input type="password" value="" class="form-control" id="InputPassword1" required name="password1" placeholder="Password">
-        <label for="exampleInputPassword1">Repeat Password</label>
-        <input type="password" value="" class="form-control" id="InputPassword2" required name="password2" placeholder="Repeat Password">
-      </div>
-      <hr>
-      <div class="form-group">
-        <label for="exampleInputEmail1">Email address</label>
-        <input type="email" class="form-control" id="exampleInputEmail1" required aria-describedby="emailHelp" name="email" value="" placeholder="Enter email">
-        <br>
-        <label for="role">Role:</label>
-        <select class="form-control" name="role" required>
-          <option value="faculty">Faculty</option>
-        </select>
-      </div>
-      <div class="row">
-        <div class="col-md-12 d-flex justify-content-center">
-          <input type="submit" id="submit" name="submit" value="Add Teacher" class="btn btn-primary" />&nbsp;
-          <a class="btn btn-secondary"href="admin-dashboard.php">Cancel</a>
+      <div class="form-group row">
+        <label class="col-sm-1 col-form-label" for="last-name">Last Name</label>
+        <div class="col-sm-3">   
+          <input id="last-name" name="last-name" type="text" placeholder="Input Last Name" class="form-control input-md" required="">
         </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-1 col-form-label" for="department">Department</label>  
+        <div class="col-sm-3">
+          <input id="department" name="dapartment" type="text" placeholder="Input Department" class="form-control input-md" required="">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-1 col-form-label" for="exampleInputEmail1">Email address</label>
+        <div class="col-sm-3">
+          <input type="email" id="email-faculty" class="form-control" id="exampleInputEmail1" required aria-describedby="emailHelp" name="email" value="" placeholder="Enter email">
+          <div id="warning-text-email"></div>
+        </div>      
+      </div>
+      <div class="col-md-5">
+        <input type="submit" id="submit" name="submit" value="Add Teacher" class="btn btn-primary" />&nbsp;
+        <a class="btn btn-secondary"href="admin-dashboard.php">Cancel</a>
       </div>
     </form>
 
@@ -85,47 +70,77 @@
           $last_name = mysql_prep($_POST["last-name"]);
           $department = mysql_prep($_POST["dapartment"]);
 
-          $password1 = mysql_prep($_POST["password1"]);
-          $password2 = mysql_prep($_POST["password2"]);
-
-          if ($password1 !== $password2) {
-            die ("<div class=\"alert alert-danger\" role=\"alert\">Repeat password mistmatch</div>");
-          }
-
 
           if (!isset($first_name) || !isset($last_name) || !isset($department) || $first_name == "" || $last_name == "" || $department == "") {
             die ("<div class=\"alert alert-danger\" role=\"alert\">Error: One or more fields are empty.</div>");
           }
           else{
-            $query   = "INSERT INTO teachers (first_name, last_name, department) VALUES ('{$first_name}', '{$last_name}', '{$department}')";
-            $result = mysqli_query($connection, $query);
 
-            $teacher_id = mysqli_insert_id($connection); //this is for the new user account creation
             //create new user for faculty
-
-            $username = mysql_prep($_POST["username"]);
-            $hashed_password = password_hash($_POST["password1"], PASSWORD_DEFAULT);
+            $rand_password = password_generate(8);
+            $hashed_password = password_hash($rand_password, PASSWORD_DEFAULT);
             $email = mysql_prep($_POST["email"]);
-            $role = mysql_prep($_POST["role"]);
-            //query check to make sure no duplicate username are created
+            $role = mysql_prep("faculty");
 
-            $query_check_user  = "SELECT username FROM users WHERE username='".$username."'";
-            $result_check_user = mysqli_query($connection, $query_check_user);
 
-            if (mysqli_num_rows($result_check_user)>0) {
-              die ("<div class=\"alert alert-danger\" role=\"alert\">Error: Username: ".$username." is already taken</div>");
+
+            $query_check_email  = "SELECT username FROM users WHERE email='".$email."'";
+            $result_check_email = mysqli_query($connection, $query_check_email);
+
+            if (mysqli_num_rows($result_check_email)>0) {
+              die ("<div class=\"alert alert-danger\" role=\"alert\">Error: Email: ".$email." is already used</div>");
             }
+
             else{
+
+
+                $query  = "INSERT INTO teachers (last_name, first_name, department) VALUES ('{$last_name}','{$first_name}', '{$department}')";
+                $result = mysqli_query($connection, $query);
+
+                // created a function that generates the emp_code
+                // ran two queries 1. for inserting new teacher info, 2. for updating the emp_code with the auto generated emp_code
+
+                $teacher_id = mysqli_insert_id($connection); //this is for the new user account creation            
+                $emp_code = generate_emp_code($teacher_id,"");
+
+                $query   = "UPDATE teachers SET emp_code = '".$emp_code."' WHERE teacher_id = ".$teacher_id;
+                $result = mysqli_query($connection, $query);
+
+                //query check to make sure no duplicate username and emails were added
+                $username = $emp_code;
+                $query_check_user  = "SELECT username FROM users WHERE username='".$username."'";
+                $result_check_user = mysqli_query($connection, $query_check_user);
+
+                if (mysqli_num_rows($result_check_user)>0) {
+                  die ("<div class=\"alert alert-danger\" role=\"alert\">Error: Username: ".$username." is already taken</div>");
+                }
 
                 $query  = "INSERT INTO users (teacher_id, username, password, email, role) VALUES ('{$teacher_id}','{$username}', '{$hashed_password}', '{$email}', '{$role}')";
                 $result = mysqli_query($connection, $query);
 
+
+              //create the email
+
+              $to = $email;
+
+              $subject = "AIMS Account Registration";
+
+              $message = "<p>You have been registered to the AIMS Portal. Below are your credentials:</p>";
+              $message .= "<p>U: ".$username."<br> P: ".$rand_password."</p>";
+              $message .= "<p>Please change the password by logging in to <a href=\"https://fcat.com.ph/aims/\">AIMS</a>, go \"My Account\" after log in</p>";
+              $message .= "<p>Sincerely,<br> AIMS Admin</p>";
+              $headers = "From: AIMS Admin <admin@aims.fcat.com.ph>\r\n";
+              $headers .="Reply-To: <admin@aims.fcat.com.ph>\r\n";
+              $headers .="Content-type: text/html\r\n";
+
+              mail($to, $subject, $message, $headers);
+
               if ($result === TRUE) {
                 echo "<script type='text/javascript'>";
-                echo "alert('New user successfully created!');";
+                echo "alert('New user successfully created! Login credentials were sent to registered email');";
                 echo "</script>";
 
-                $URL="view-users.php";
+                $URL="view-teachers.php";
                   echo "<script>location.href='$URL'</script>";
                     }
                   else{
@@ -134,16 +149,6 @@
             }
             //end create new user
 
-            if ($result === TRUE) {
-            echo "<script type='text/javascript'>";
-            echo "alert('New teacher added!');";
-            echo "</script>";
-
-            $URL="view-teachers.php";
-            echo "<script>location.href='$URL'</script>";
-          } else {
-            echo "Error updating record: " . $connection->error;
-          }
         }
       }
 
@@ -165,26 +170,16 @@
 
   <script>
   $(document).ready(function() {
-    $("#submit").click(function() {
-      if($("#InputPassword1").val() !== $("#InputPassword2").val()) {
-        alert("Repeat password mistmatch");
-        location.href='new-teacher.php';
-      }
-    });
-
-    $("#username").keyup(function(){
-      var username = $("#username").val();
-
+    $("#email-faculty").keyup(function(){
+      
+      var email = $("#email-faculty").val();
       //run ajax
-      $.post("scan_username.php",{
-        user_input: username
+      $.post("scan_email.php",{
+        user_input_email: email
       },function(data,status){
-        $("#warning-text").html(data);
-
+        $("#warning-text-email").html(data);
       });
-
     });
-
 
   });
   </script>

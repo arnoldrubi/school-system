@@ -22,9 +22,24 @@
     	  $school_yr = $row_student_reg_id['school_yr'];
     	  $year = $row_student_reg_id['year'];
     	  $term = $row_student_reg_id['term'];
+    	  $section = $row_student_reg_id['sec_id'];
+    	  $irregular = $row_student_reg_id['irregular'];
     	 }
 
 	$student_name = get_student_name($student_reg_id,$connection);
+
+	if ($irregular == 0) {
+		// create an array of all the class ID of the given section
+		$query_get_class_ids = "SELECT * FROM classes WHERE sec_id ='".$section."'";
+		$result_get_class_ids = mysqli_query($connection, $query_get_class_ids);
+
+		$classes = array();
+
+		while($row_get_class_ids = mysqli_fetch_assoc($result_get_class_ids))
+    	 {
+    	 	array_push($classes, $row_get_class_ids['class_id']);
+    	 }
+	}
 
 ?>
 
@@ -45,9 +60,7 @@
 <div class="container-fluid">
 	<div class="row" id="print-enrollment-form">
 		<div class="col-md-12">
-			<div class="row">
-				<div class="col-md-4">
-
+	
     <?php
 
       $query  = "SELECT * FROM site_settings LIMIT 1";
@@ -57,24 +70,22 @@
         $school_name = $row['school_name'];
         $school_address = $row['school_address'];
         $phone_number = $row['phone_number'];
+        $site_logo = $row['site_logo'];
       }
       ?>
-					<h2><?php echo $school_name ?></h2> 
-					<address>
-						<p><strong>Main Campus</strong><br /><i class="fa fa-map-marker" aria-hidden="true"></i> <?php echo $school_address; ?><br>
-						<i class="fa fa-phone" aria-hidden="true"></i><abbr title="Phone"></abbr> <?php echo $phone_number; ?></p>
-					</address>
-					<h4>Form Processed by:</h4>
-					<p>Registrar Name</p>
-					<p><strong>Date Processed: </strong><?php echo date("m/d/Y"); ?></p>
-					<div class="alert alert-info" role="alert">
-					 This form is not valid as an official receipt.
-					</div>
-				</div>
-				<div class="col-md-8">
-					<h1>Enrollment Certificate</h1>
+      		<div style="text-align: center;" class="justify-content-center">
+      			<img width="100" class="site-logo" src="uploads/<?php echo  $site_logo." " ?>">
+				<h2><?php echo $school_name ?></h2> 
+				<address>
+					<p><strong>Main Campus</strong><br /><i class="fa fa-map-marker" aria-hidden="true"></i> <?php echo $school_address; ?><br>
+					<i class="fa fa-phone" aria-hidden="true"></i><?php echo $phone_number; ?></p>
+				</address>
+				<p><strong>Date Processed: </strong><?php echo date("m/d/Y"); ?></p>
+				<h3>Enrollment Certificate</h3>
+				<p><?php echo "SY".return_current_sy($connection,"").", ".return_current_term($connection,""); ?></p>
+			</div>					
 					<hr>
-					<h2>Student Info</h2> 
+					<h4>Student Info</h4> 
 					<table class="table table-hover">
 						<tbody>
 							<tr>
@@ -98,25 +109,21 @@
 								<td>Year:</td>
 								<td><?php echo $year;?></td>
 							</tr>
-							<tr>
-								<td>Term:</td>
-								<td><?php echo $term;?></td>
-							</tr>
-							<tr>
-								<td>School Year:</td>
-								<td><?php echo $school_yr;?></td>
-							</tr>
 						</tbody>
 					</table>
-					<h3>Course Subjects</h3>
+					<h4>Course Subjects</h4>
 					<table class="table table-hover">
 						<thead>
 							<tr>
 								<th>Subject Code</th>
 								<th>Description</th>
-								<th>Lecture Units</th>
-								<th>Lab Units</th>
-								<th>Total Units</th>
+								<th width="3%">Lecture Units</th>
+								<th width="3%">Lab Units</th>
+								<th width="3%">Total Units</th>
+								<th>Time</th>
+								<th>Day(s)</th>
+								<th>Room</th>
+								<th>Teacher</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -125,11 +132,12 @@
 								$unit_count = 0;
 							if ($irregular_student == 1) {
 
-							 	$query = "SELECT * FROM irreg_manual_subject WHERE stud_reg_id='".$student_reg_id."'";
+							 	$query = "SELECT * FROM irreg_manual_sched WHERE stud_reg_id='".$student_reg_id."'";
+							 	$result = mysqli_query($connection, $query);
 							}
 							else{
-									$query = "SELECT * FROM course_subjects WHERE course_id='".$course_id."' AND term='".$term."' AND year='".$year."' AND school_yr='".$school_yr."'";
-						        }
+								$query = "SELECT * FROM course_subjects WHERE course_id='".$course_id."' AND term='".$term."' AND year='".$year."' AND school_yr='".$school_yr."'";
+						    }
 
 						        
 
@@ -143,7 +151,14 @@
 							        	$note_on_credit = "<br>(Unit is credited ***)";
 							        }
 
+
+
 							        $units_array = get_subject_unit_count($row['subject_id'],"",$connection);
+							        // for schedule data, set up variables
+							        $time = NULL;
+							        $day = NULL;
+							        $room = NULL;
+							        $teacher = NULL;
 							        
 							        echo "<tr>";			        
 									echo "<td>".get_subject_code($row['subject_id'],"",$connection)."</td>";
@@ -151,6 +166,30 @@
 									echo "<td>".$units_array[0]."</td>";
 									echo "<td>".$units_array[1]."</td>";
 									echo "<td>".$units_array[2]."</td>";
+
+									for ($i=0; $i < count($classes) ; $i++) { 
+
+										$schedule_id = find_schedule_data($row['subject_id'],$classes[$i],$connection,"");
+										if ($schedule_id !== NULL) {
+
+											$query_get_schedule_data = "SELECT * FROM schedule_block WHERE schedule_id in(".$schedule_id.") ORDER BY day ASC, time_start ASC";
+											$result_get_schedule_data = mysqli_query($connection, $query_get_schedule_data);
+
+											while($row_get_schedule_data = mysqli_fetch_assoc($result_get_schedule_data))
+											{
+												$time =  date("g:i A", strtotime($row_get_schedule_data['time_start']))."-".date("g:i A", strtotime($row_get_schedule_data['time_end']));
+												$day = number_to_day($row_get_schedule_data['day']);
+												$room = $row_get_schedule_data['room'];
+												$teacher = get_teacher_name($row_get_schedule_data['teacher_id'],"",$connection);
+											}
+
+										}
+									}
+
+									echo "<td>".$time."</td>";
+									echo "<td>".$day."</td>";
+									echo "<td>".$room."</td>";
+									echo "<td>".$teacher."</td>";
 									echo "</tr>";
 
 									$unit_count += $units_array[2];
@@ -166,14 +205,21 @@
 							  <td>&nbsp;</td>
 						      <td>Grand Total Units</td>
 						      <td><?php echo $unit_count; ?></td>
+						      <td>&nbsp;</td>
+						      <td>&nbsp;</td>
+						      <td>&nbsp;</td>
+						      <td>&nbsp;</td>
 						    </tr>
 						</tfoot>
 					</table>
-				</div>
-			</div>
+			<h5>Form Processed by:</h5>
+			<p><?php echo ucwords($_SESSION["username"]); ?></p>
 		    <center>
 		      <button id="preview-print" class="btn btn-primary no-print"><i class="fa fa-print" aria-hidden="true"></i></i></i> Print Enrollment Certificate</button>
 		    </center><br>
+			<div class="alert alert-info" role="alert">
+				This form is not valid as an official receipt.
+			</div>
 		</div>
 	</div>
 </div>

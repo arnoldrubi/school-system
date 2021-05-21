@@ -33,35 +33,10 @@
       </ol>
       <h1>View Enrolled Students <?php echo "For ".return_current_term($connection,"").", ".return_current_sy($connection,""); ?></h1>
       <hr>
-
-       <button class="btn btn-secondary" data-toggle="collapse" data-target="#advance-search">View Enrollment from Previous Term and School Year</button>
-        <div id="advance-search" class="collapse">
-            <div class="form-group row">
-              <label class="col-md-2 col-form-label" for="Course">Select Term, and School Year:</label>
-              <div class="col-md-3">
-                <select class="form-control" id="sy-and-term" name="sy_and_term">
-                  <?php
-
-                    echo "<option value=\"0\">Please select</option>";
-
-                    $query_distinct_term_sy = "SELECT DISTINCT term, school_yr FROM student_grades ORDER BY school_yr, term" ;
-                    $result_distinct_term_sy = mysqli_query($connection, $query_distinct_term_sy);
-
-                    while($row_distinct_term_sy = mysqli_fetch_assoc($result_distinct_term_sy)){
-                      $term_and_sy = $row_distinct_term_sy["term"].", ".$row_distinct_term_sy["school_yr"];
-
-                      echo "<option value=\"".$term_and_sy."\">".$term_and_sy."</option>";
-                    }
-
-                  ?>
-                </select>
-              </div>            
-           </div>
-        </div>
       <div class="table-responsive" id="dataTable_wrapper">
       <?php
 
-        echo "<table class=\"table table-bordered dataTable\" id=\"dataTable\" width=\"100%\" cellspacing=\"0\" role=\"grid\" aria-describedby=\"dataTable_info\" style=\"width: 100%;\">";
+        echo "<table class=\"table table-bordered\" id=\"dataTable2\" width=\"100%\" cellspacing=\"0\" role=\"grid\" aria-describedby=\"dataTable_info\" style=\"width: 100%;\">";
         echo " <thead>";
         echo "  <tr>";
         echo "   <th class=\"skip-filter\">Student Number</th>";
@@ -74,7 +49,7 @@
         echo "   <th>S.Y.</th>";
         echo "   <th>Semester</th>";
         echo "   <th>Regular/Irregular</th>"; 
-        echo "   <th class=\"skip-filter\">Options</th>";   
+        echo "   <th class=\"skip-filter\" width=\"12%\">Options</th>";   
         echo "  </tr></thead><tbody>";
         
         
@@ -120,8 +95,8 @@
         }
         echo "<td>".$regirreg."</td>";
         echo "<td style=\"text-align:center\">";
-        echo "<a class=\"btn btn-danger btn-xs\" title=\"Delete Enrollment Info\" href=\"javascript:confirmDelete('delete-student-enrollment.php?student_id=".$student_id."&student_reg_id=".$stud_reg_id."&course_id=".$new_course_id."&sy=".urlencode($sy)."&term=".urlencode($term)."&year=".$year."&sec_id=".urlencode($sec_id)."&irregular=".urlencode($row['irregular'])."')\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a> ";
-        echo "<a class=\"btn btn-warning btn-xs\" title=\"Print Enrollment Form\" target=\"_blank\" href=\"print-enrollment-form.php?student_reg_id=".urlencode($stud_reg_id)."&irregular=".urlencode($row['irregular'])."\"><i class=\"fa fa-print\" aria-hidden=\"true\"></i></a></td>";
+        echo "<a class=\"btn btn-warning btn-xs\" title=\"Print Enrollment Form\" target=\"_blank\" href=\"print-enrollment-form.php?student_reg_id=".urlencode($stud_reg_id)."&irregular=".urlencode($row['irregular'])."\"><i class=\"fa fa-print\" aria-hidden=\"true\"></i></a>";
+        echo "<a class=\"btn btn-danger btn-xs\" title=\"Delete Enrollment Info\" href=\"javascript:confirmDelete('delete-student-enrollment.php?student_id=".$student_id."&student_reg_id=".$stud_reg_id."&course_id=".$new_course_id."&sy=".urlencode($sy)."&term=".urlencode($term)."&year=".$year."&sec_id=".urlencode($sec_id)."&irregular=".urlencode($row['irregular'])."')\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a></td>";
         echo "</tr>";
         }
 
@@ -135,6 +110,30 @@
         </button>
       </div>
      </div>
+     <button class="btn btn-secondary" data-toggle="collapse" data-target="#advance-search">View Enrollment from Previous Term and School Year</button>
+      <div id="advance-search" class="collapse">
+          <div class="form-group row">
+            <label class="col-md-2 col-form-label" for="Course">Select Term, and School Year:</label>
+            <div class="col-md-3">
+              <select class="form-control" id="sy-and-term" name="sy_and_term">
+                <?php
+
+                  echo "<option value=\"0\">Please select</option>";
+
+                  $query_distinct_term_sy = "SELECT DISTINCT term, school_yr FROM student_grades ORDER BY school_yr, term" ;
+                  $result_distinct_term_sy = mysqli_query($connection, $query_distinct_term_sy);
+
+                  while($row_distinct_term_sy = mysqli_fetch_assoc($result_distinct_term_sy)){
+                    $term_and_sy = $row_distinct_term_sy["term"].", ".$row_distinct_term_sy["school_yr"];
+
+                    echo "<option value=\"".$term_and_sy."\">".$term_and_sy."</option>";
+                  }
+
+                ?>
+              </select>
+            </div>            
+         </div>
+      </div>
     </div>
   </div>
   <!-- /#wrapper -->
@@ -157,18 +156,8 @@
 <script type="text/javascript"> 
 $(document).ready(function(){
 
-  $('#dataTable').ddTableFilter();
-
-  $("#sy-and-term").change(function(){
-    var sy_and_term = $("#sy-and-term").val();
-    //run ajax
-    $.post("load_available_students_enrolled",
-      {sy_and_term: sy_and_term}
-      ,function(data,status){
-      $("#dataTable_wrapper").html(data);
-    });
-  });
-
+  $('#dataTable2').ddTableFilter();
 
 });
+
 </script>

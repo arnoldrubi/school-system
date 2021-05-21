@@ -55,16 +55,18 @@ else{
 	    	exit;
 	    }
 
-	   while($row = mysqli_fetch_assoc($result))
-	        {    
-	         $stud_reg_id = $row['stud_reg_id'];
-	        }
+	    else{
+			while($row = mysqli_fetch_assoc($result))
+			{    
+				$stud_reg_id = $row['stud_reg_id'];
+			}
 
-	   $query_student_name = "SELECT * FROM students_reg WHERE stud_reg_id=".$stud_reg_id;
-	   $result_student_name = mysqli_query($connection, $query_student_name);
-	   while($row_student_name = mysqli_fetch_assoc($result_student_name))
-	    {
-	     $student_name = $row_student_name['last_name'].", ".$row_student_name['first_name'].", ".substr($row_student_name['middle_name'], 0,1.).".";
+			$query_student_name = "SELECT * FROM students_reg WHERE stud_reg_id=".$stud_reg_id;
+			$result_student_name = mysqli_query($connection, $query_student_name);
+			while($row_student_name = mysqli_fetch_assoc($result_student_name))
+			{
+				$student_name = $row_student_name['last_name'].", ".$row_student_name['first_name'].", ".substr($row_student_name['middle_name'], 0,1.).".";
+			}	
 	    }
 	}
 }
