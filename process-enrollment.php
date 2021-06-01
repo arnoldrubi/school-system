@@ -182,7 +182,16 @@
     <div class="form-group row">
       <label class="col-md-2 col-form-label" for="Course">Remarks</label>
       <div class="col-md-6">
-      <textarea class="form-control" rows="3" name="remarks"></textarea>
+        <textarea class="form-control" rows="5" name="remarks"></textarea>
+      </div>
+      <div class="col-md-4">
+        <p>Optional*<br><button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+           Student Number: Manual Encode
+          </button>
+        </p>
+        <div class="collapse" id="collapseExample">
+          <input type="text" class="form-control" id="manual-encode-student-num" name="manual_encode_student_num" placeholder="xxxx-xxxx">        
+        </div>
       </div>
     </div>
     <div class="row">
@@ -190,7 +199,7 @@
         <input type="submit" name="submit" value="Enroll Student" class="btn btn-primary" />&nbsp;
         <a class="btn btn-secondary"href="enrollment.php">Cancel</a>
       </div>
-     </div>
+    </div>
   </form>
 <?php
   if (isset($_POST['submit'])) {
@@ -202,8 +211,16 @@
   $regirreg = (int) ($_POST["regirreg"]);
   $remarks = mysql_prep($_POST["remarks"]);
   $year = mysql_prep($_POST["year"]);
+  $manual_stud_number = mysql_prep($_POST["manual_encode_student_num"]);
 
-  // 
+// do a simple validation in case manual encoding of student number was made and there is a duplicate
+  $query_stud_for_check = "SELECT * FROM enrollment WHERE student_number='".$manual_stud_number."'";
+  $result_stud_for_check = mysqli_query($connection, $query_stud_for_check);
+
+  if (mysqli_num_rows($result_stud_for_check)>0) {
+   die("<div class=\"alert alert-warning\" role=\"alert\">Error. Encoded Student Number already exists.</div>");
+  }
+  
 
   $arrPreId = array();
 
@@ -332,8 +349,14 @@
           $course_code = $row3['course_code'];
       }    
 
-      //Generate student number
-      $new_student_number = generate_student_number($sy,$course_code,strval($stud_reg_id));
+      if (!isset($manual_stud_number)) {
+        //Generate student number
+        $new_student_number = generate_student_number($sy,$course_code,strval($stud_reg_id));
+      }
+      else{
+        $new_student_number = $manual_stud_number;
+      }
+      
 
 
       if ($regirreg == "1") {

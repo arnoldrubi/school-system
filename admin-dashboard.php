@@ -1,7 +1,7 @@
 <?php include 'layout/header.php';?>
 <?php require_once("includes/db_connection.php"); ?>
 
-  <title>Manage Schedule</title>
+  <title>AIMS Admin Dashboard</title>
   </head>
 
   <body>

@@ -40,6 +40,17 @@
     	 	array_push($classes, $row_get_class_ids['class_id']);
     	 }
 	}
+	else{
+		$query_get_class_ids = "SELECT * FROM irreg_manual_sched WHERE stud_reg_id='".$student_reg_id."'";
+		$result_get_class_ids = mysqli_query($connection, $query_get_class_ids);
+
+		$classes = array();
+
+		while($row_get_class_ids = mysqli_fetch_assoc($result_get_class_ids))
+    	 {
+    	 	array_push($classes, $row_get_class_ids['class_id']);
+    	 }
+	}
 
 ?>
 
@@ -112,7 +123,7 @@
 						</tbody>
 					</table>
 					<h4>Course Subjects</h4>
-					<table class="table table-hover">
+					<table class="table table-hover" style="font-size: .75em;">
 						<thead>
 							<tr>
 								<th>Subject Code</th>
@@ -145,15 +156,18 @@
 						        while($row = mysqli_fetch_assoc($result))
 						        {
 						        	$note_on_credit = "";
+						        	if ($irregular_student == 1) {
+						        		$master_subject_id = get_subject_id_by_class("",$row['class_id'],$connection);
+						        	}
+						        	else{
+						        		$master_subject_id = $row['subject_id'];
+										$check_if_subject_is_credited = is_subject_credited($master_subject_id,$student_reg_id,"",$connection);
+										if ($check_if_subject_is_credited == TRUE) {
+										$note_on_credit = "<br>(Unit is credited ***)";
+										}
+						        	}		        	
 
-							        $check_if_subject_is_credited = is_subject_credited($row['subject_id'],$student_reg_id,"",$connection);
-							        if ($check_if_subject_is_credited == TRUE) {
-							        	$note_on_credit = "<br>(Unit is credited ***)";
-							        }
-
-
-
-							        $units_array = get_subject_unit_count($row['subject_id'],"",$connection);
+							        $units_array = get_subject_unit_count($master_subject_id,"",$connection);
 							        // for schedule data, set up variables
 							        $time = NULL;
 							        $day = NULL;
@@ -161,15 +175,15 @@
 							        $teacher = NULL;
 							        
 							        echo "<tr>";			        
-									echo "<td>".get_subject_code($row['subject_id'],"",$connection)."</td>";
-									echo "<td>".get_subject_name($row['subject_id'],"",$connection)." ".$note_on_credit."</td>";
+									echo "<td>".get_subject_code($master_subject_id,"",$connection)."</td>";
+									echo "<td>".get_subject_name($master_subject_id,"",$connection)." ".$note_on_credit."</td>";
 									echo "<td>".$units_array[0]."</td>";
 									echo "<td>".$units_array[1]."</td>";
 									echo "<td>".$units_array[2]."</td>";
 
 									for ($i=0; $i < count($classes) ; $i++) { 
 
-										$schedule_id = find_schedule_data($row['subject_id'],$classes[$i],$connection,"");
+										$schedule_id = find_schedule_data($master_subject_id,$classes[$i],$connection,"");
 										if ($schedule_id !== NULL) {
 
 											$query_get_schedule_data = "SELECT * FROM schedule_block WHERE schedule_id in(".$schedule_id.") ORDER BY day ASC, time_start ASC";
@@ -177,18 +191,45 @@
 
 											while($row_get_schedule_data = mysqli_fetch_assoc($result_get_schedule_data))
 											{
-												$time =  date("g:i A", strtotime($row_get_schedule_data['time_start']))."-".date("g:i A", strtotime($row_get_schedule_data['time_end']));
-												$day = number_to_day($row_get_schedule_data['day']);
-												$room = $row_get_schedule_data['room'];
+
+												$query_check_schedule_data = "SELECT * FROM schedule_block WHERE subject_id =".$row_get_schedule_data['subject_id']." AND class_id=".$row_get_schedule_data['class_id'];
+												$result_check_schedule_data = mysqli_query($connection, $query_check_schedule_data);
+												while($row_check_schedule_data = mysqli_fetch_assoc($result_check_schedule_data))
+												{
+													if (mysqli_num_rows($result_check_schedule_data)>1) {
+														$prev_day_check = NULL;
+														$prev_time_start_check = "00:00:00";
+														$prev_time_end_check = "00:00:00";
+														$prev_room_check = NULL;
+														if ($prev_day_check !== $row_check_schedule_data['day']) {
+															$day = $day.substr(number_to_day($row_check_schedule_data['day']),0,3)."/";
+														}
+														if ($row_check_schedule_data['time_start'] !== $prev_time_start_check && $row_check_schedule_data['time_end'] !== $prev_time_end_check)  {
+															$time = $time."/".date("g:i A", strtotime($row_check_schedule_data['time_start']))."-".date("g:i A", strtotime($row_check_schedule_data['time_end']));
+														}
+														if ($prev_room_check !== $row_check_schedule_data['room']) {
+															$room = $room.$row_check_schedule_data['room']."/";
+														}
+														$prev_time_start_check = $row_check_schedule_data['time_start'];
+														$prev_time_end_check = $row_check_schedule_data['time_end'];	
+														$prev_day_check = $row_check_schedule_data['day'];
+														$room = $row_check_schedule_data['room'];
+													}
+													else{
+														$day = substr(number_to_day($row_check_schedule_data['day']),0,3);
+														$time =  date("g:i A", strtotime($row_check_schedule_data['time_start']))."-".date("g:i A", strtotime($row_check_schedule_data['time_end']));
+														$room = $row_get_schedule_data['room'];
+													}
+												}																				
 												$teacher = get_teacher_name($row_get_schedule_data['teacher_id'],"",$connection);
 											}
 
 										}
 									}
 
-									echo "<td>".$time."</td>";
-									echo "<td>".$day."</td>";
-									echo "<td>".$room."</td>";
+									echo "<td>".trim($time,"/")."</td>";
+									echo "<td>".rtrim($day,"/")."</td>";
+									echo "<td>".rtrim($room,"/")."</td>";
 									echo "<td>".$teacher."</td>";
 									echo "</tr>";
 

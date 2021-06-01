@@ -1,7 +1,7 @@
 <?php include 'layout/header-faculty.php';?>
 <?php require_once("includes/db_connection.php"); ?>
 
-  <title>Manage Schedule</title>
+  <title>Faculty Dashboard</title>
   </head>
 
   <body>

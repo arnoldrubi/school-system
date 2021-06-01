@@ -1,12 +1,12 @@
-<?php require_once("includes/session.php"); ?>
-<?php require_once("includes/functions.php"); ?>
-<?php require_once("includes/db_connection.php"); ?>
+<?php
+ require_once("includes/session.php");
+ require_once("includes/functions.php");
+ require_once("includes/db_connection.php");
 
-<?php include 'layout/header.php';?>
-
-<?php 
-	if (isset($_GET['sec_id'])) {
+  if (isset($_GET['sec_id'])) {
       $sec_id = $_GET["sec_id"];
+      $term = $_GET["term"];
+      $school_yr = $_GET["school_yr"];
     }
     else{
       redirect_to("new-group-schedule.php");
@@ -30,109 +30,182 @@
     $year = $row_get_section['year'];
     $section = $row_get_section['sec_name'];
   } 
-  ?>
 
+?>
 
-<style type="text/css">
-	footer{display: none !important;}
-</style>
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
 
-  <title>Preview Schedule</title>
-  </head>
+    <!-- Custom fonts for this template-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
-  <body>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans|Roboto&display=swap" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="static/custom.css">
+</head>
+<body>
+<div class="container-fluid">
+  <div class="row" id="print-enrollment-form">
+    <div class="col-md-12">
+  
+        <h4>Class Info</h4> 
+          <table class="table table-hover">
+            <tbody>
+              <tr>
+                <td>Course:</td>
+                <td><?php echo get_course_code(get_course_id_from_section($sec_id,"",$connection),"",$connection) ?></td>
+              </tr>
+              <tr>
+                <td>Section:</td>
+                <td><?php echo get_section_name($sec_id,"",$connection) ?></td>
+              </tr>
+              <tr>
+                <td>Year:</td>
+                <td><?php echo $year;?></td>
+              </tr>
+              <tr>
+                <td>Semester:</td>
+                <td><?php echo $term;?></td>
+              </tr>
+              <tr>
+                <td>S.Y:</td>
+                <td>
+                <?php
+                  echo $school_yr;
+                ?>
+                </td>
+              </tr>
+            </tbody>
+          </table>
 
+          <h4>Course Subjects</h4>
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Subject Code</th>
+                <th>Description</th>
+                <th width="3%">Lecture Units</th>
+                <th width="3%">Lab Units</th>
+                <th width="3%">Total Units</th>
+                <th>Time</th>
+                <th>Day(s)</th>
+                <th>Room</th>
+                <th>Teacher</th>
+              </tr>
+            </thead>
+            <tbody>
 
-  <?php
+              <?php
+                $unit_count = 0;
 
-        echo "<h2 class=\"text-center mb-0\">".get_course_code($course_id,"",$connection)."</h2>";
-        echo "<p class=\"text-center mb-0\">".$year.", ".return_current_term($connection,"").", Section: ".$section."</p>";
-        echo "<p class=\"text-center\">School Year: ".return_current_sy($connection,"")."</p>";
-        echo "<center>";
-        echo "<button id=\"preview-print\" class=\"btn btn-primary no-print\"><i class=\"fa fa-print\" aria-hidden=\"true\"></i></i></i> Print Schedule</button></center><br>";
- 
+                $query = "SELECT * FROM course_subjects WHERE course_id='".$course_id."' AND term='".$term."' AND year='".$year."' AND school_yr='".$school_yr."'";
+                    
 
-        echo "<table style=\"font-size: 11px;\" id=\"schedule-table\" class=\"table table-striped table-bordered table-sm text-center\">";
-        echo " <thead>";
-        echo "  <tr>";
-        echo "   <th>Monday</th>";
-        echo "   <th>Tuesday</th>";
-        echo "   <th>Wednesday</th>";
-        echo "   <th>Thursday</th>";
-        echo "   <th>Friday</th>";
-        echo "   <th>Saturday</th>";
-        echo "   <th>Sunday</th>";   
-        echo "  </tr></thead><tbody>";
-         
+                $result = mysqli_query($connection, $query);
+                    while($row = mysqli_fetch_assoc($result))
+                    {         
 
-        
-        $class_set = implode(",", $class_id);
+                      $units_array = get_subject_unit_count($row['subject_id'],"",$connection);
+                      // for schedule data, set up variables
+                      $time = NULL;
+                      $day = NULL;
+                      $room = NULL;
+                      $teacher = NULL;
+                      
+                  echo "<tr>";              
+                  echo "<td>".get_subject_code($row['subject_id'],"",$connection)."</td>";
+                  echo "<td>".get_subject_name($row['subject_id'],"",$connection)."</td>";
+                  echo "<td>".$units_array[0]."</td>";
+                  echo "<td>".$units_array[1]."</td>";
+                  echo "<td>".$units_array[2]."</td>";
 
-        
+                  for ($i=0; $i < count($class_id) ; $i++) { 
 
-        $query  = "SELECT * FROM schedule_block WHERE class_id IN (".$class_set.") ORDER BY time_start ASC, day ASC";
-        $result = mysqli_query($connection, $query);
+                    $schedule_id = find_schedule_data($row['subject_id'],$class_id[$i],$connection,"");
+                    if ($schedule_id !== NULL) {
 
-        if (mysqli_num_rows($result) < 1) {
-         die ("<tr><td><div class=\"alert alert-danger\" role=\"alert\">No schedule created. <a href=\"create-schedule-for-class.php?sec_id=".$sec_id."\" class=\"btn btn-success btn-sm\">Add New Schedule</a></div></td></tr>");
-        }
+                      $query_get_schedule_data = "SELECT * FROM schedule_block WHERE schedule_id in(".$schedule_id.") ORDER BY day ASC, time_start ASC";
+                      $result_get_schedule_data = mysqli_query($connection, $query_get_schedule_data);
 
-        else{
-          $td_count = 0;
-          while($row = mysqli_fetch_assoc($result)){
-            $subject_id = $row['subject_id'];
-            $teacher_id = $row['teacher_id'];
-            
-              if ($td_count == 0) {
-              echo "<tr>";
-            }     
-              for ($i=1; $i <= 7; $i++) { 
+                      while($row_get_schedule_data = mysqli_fetch_assoc($result_get_schedule_data))
+                      {
 
-                if ($i !== $row['day']) {
-                  echo "<td>&nbsp;</td>";
-                }
-                if ($i == $row['day']) {
-                  echo "<td width=\"14%\">";
-                  echo get_subject_code($subject_id,"",$connection)."<br>";
-                  echo get_subject_name($subject_id,"",$connection)."<br>";
-                  echo "Class Start: ".date("g:i A", strtotime($row['time_start']))."<br>";
-                  echo "Class End: ".date("g:i A", strtotime($row['time_end']))."<br>";
-                  echo "Room: ".$row['room']."<br>";
-                  echo "Teacher: ".get_teacher_name($teacher_id,"",$connection);
-                  echo "<br>day: ".$row['day'];
-                  echo "</td>"; 
-                  break;
-                }
-              }
-              $td_count = $td_count +1;
+                        $query_check_schedule_data = "SELECT * FROM schedule_block WHERE subject_id =".$row_get_schedule_data['subject_id']." AND class_id=".$row_get_schedule_data['class_id'];
+                        $result_check_schedule_data = mysqli_query($connection, $query_check_schedule_data);
+                        while($row_check_schedule_data = mysqli_fetch_assoc($result_check_schedule_data))
+                        {
+                          if (mysqli_num_rows($result_check_schedule_data)>1) {
+                            $prev_day_check = NULL;
+                            $prev_time_start_check = "00:00:00";
+                            $prev_time_end_check = "00:00:00";
+                            $prev_room_check = NULL;
+                            if ($prev_day_check !== $row_check_schedule_data['day']) {
+                              $day = $day.substr(number_to_day($row_check_schedule_data['day']),0,3)."/";
+                            }
+                            if ($row_check_schedule_data['time_start'] !== $prev_time_start_check && $row_check_schedule_data['time_end'] !== $prev_time_end_check)  {
+                              $time = $time."/".date("g:i A", strtotime($row_check_schedule_data['time_start']))."-".date("g:i A", strtotime($row_check_schedule_data['time_end']));
+                            }
+                            if ($prev_room_check !== $row_check_schedule_data['room']) {
+                              $room = $room.$row_check_schedule_data['room']."/";
+                            }
+                            $prev_time_start_check = $row_check_schedule_data['time_start'];
+                            $prev_time_end_check = $row_check_schedule_data['time_end'];  
+                            $prev_day_check = $row_check_schedule_data['day'];
+                            $room = $row_check_schedule_data['room'];
+                          }
+                          else{
+                            $day = substr(number_to_day($row_check_schedule_data['day']),0,3);
+                            $time =  date("g:i A", strtotime($row_check_schedule_data['time_start']))."-".date("g:i A", strtotime($row_check_schedule_data['time_end']));
+                            $room = $row_get_schedule_data['room'];
+                          }
+                        }                                       
+                        $teacher = get_teacher_name($row_get_schedule_data['teacher_id'],"",$connection);
+                      }
 
-            if ($td_count == 7) {
-              echo "</tr>";
-              $td_count = 0;
-            }  
-                
-          } 
+                    }
+                  }
 
- 
-    }
+                  echo "<td>".trim($time,"/")."</td>";
+                  echo "<td>".rtrim($day,"/")."</td>";
+                  echo "<td>".rtrim($room,"/")."</td>";
+                  echo "<td>".$teacher."</td>";
+                  echo "</tr>";
 
-        echo "</tbody></table>"; 
+                  $unit_count += $units_array[2];
 
-  ?>
-<?php 
-  if(isset($connection)){ mysqli_close($connection); }
-  //close database connection after an sql command
+                 }
 
-
-  ?>
-
-
-  <?php include 'layout/footer.php';?>
-
-  <script type="text/javascript">
+              ?>
+            </tbody>
+            <tfoot>
+              <tr class="table-active">
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                  <td>Grand Total Units</td>
+                  <td><?php echo $unit_count; ?></td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                </tr>
+            </tfoot>
+          </table>
+    <center>
+      <button id="preview-print" class="btn btn-primary no-print"><i class="fa fa-print" aria-hidden="true"></i></i></i> Print Schedule</button>
+    </center><br>
+  </div>
+</div>
+</body>
+</html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript">
   
   $('#preview-print').click(function () {
-    window.print("preview-print-schedule-all");
+    window.print("print-enrollment-form");
   });
 
 </script>

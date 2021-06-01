@@ -303,10 +303,10 @@
         echo "  </tr></thead><tbody>";    
         
         if (count($arr_subj_id_in_grades)>0) {
-           $query3 = "SELECT DISTINCT class_id, subject_id, teacher_id, sec_id FROM classes WHERE subject_id NOT IN (".implode(",",$arr_subj_id_in_grades).")";
+           $query3 = "SELECT DISTINCT class_id, subject_id, teacher_id, sec_id FROM classes WHERE subject_id NOT IN (".implode(",",$arr_subj_id_in_grades).") AND students_enrolled<student_limit";
         }
         else{
-           $query3 = "SELECT DISTINCT class_id, subject_id, teacher_id, sec_id FROM classes";
+           $query3 = "SELECT DISTINCT class_id, subject_id, teacher_id, sec_id FROM classes WHERE students_enrolled<student_limit";
         }
 
        

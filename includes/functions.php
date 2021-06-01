@@ -300,7 +300,17 @@ global $sidebar_context;
 
         return $section_name;
     }
+ 	function get_course_id_from_section($sec_id, $course_name, $connection){
+		$query_course_id= "SELECT * FROM sections WHERE sec_id='".$sec_id."' LIMIT 1";
+        $result_course_id = mysqli_query($connection, $query_course_id);
+        while($row_course_id = mysqli_fetch_assoc($result_course_id))
+        {
+          $course_id = $row_course_id['course_id'];
+        
+        }
 
+        return $course_id;
+    }
   	function get_section_name_by_class($class_id, $section_id, $connection){
 		$query_section_name_by_class = "SELECT * FROM classes WHERE class_id='".$class_id."' LIMIT 1";
         $result_section_name_by_class = mysqli_query($connection, $query_section_name_by_class);
@@ -335,7 +345,7 @@ global $sidebar_context;
         $result_subject_id_by_class = mysqli_query($connection, $query_subject_id_by_class);
         while($row_subject_id_by_class = mysqli_fetch_assoc($result_subject_id_by_class))
         {
-          $subject_id = $row_section_name_by_class['subject_id'];
+          $subject_id = $row_subject_id_by_class['subject_id'];
         
         }
 
@@ -413,7 +423,7 @@ global $sidebar_context;
         $result_course_code = mysqli_query($connection, $query_course_code);
         while($row_course_code = mysqli_fetch_assoc($result_course_code))
         {
-          $course_code = $course_code.",".$row_course_code['course_code'];
+          $course_code =$row_course_code['course_code'];
         
         }
 

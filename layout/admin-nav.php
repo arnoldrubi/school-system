@@ -40,19 +40,24 @@
     </form>
 
     <ul class="navbar-nav ml-auto ml-md-0">
-      <li class="nav-item dropdown no-arrow mx-1"><label style="color: #fff;" class="col-form-label"><?php echo "Welcome back, ".ucwords($_SESSION["username"]); ?></label></li>
-<!--       <li class="nav-item dropdown no-arrow mx-1">
-        <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          <i class="fa fa-envelope fa-fw"></i>
-          <span class="badge badge-danger">7</span>
-        </a>
-        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="messagesDropdown">
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">Something else here</a>
-        </div>
-      </li> -->
+      <li class="nav-item dropdown no-arrow mx-1"><label style="color: #fff;" class="col-form-label"><?php
+
+      if ($_SESSION["role"] == "faculty") {
+
+        $query  = "SELECT first_name FROM teachers WHERE emp_code = '".$_SESSION["username"]."' LIMIT 1";
+        $result = mysqli_query($connection, $query);
+        while($row = mysqli_fetch_assoc($result))
+        {
+          $teacher_first_name = $row['first_name'];
+        }
+         echo "Welcome back, ".ucwords($teacher_first_name);
+      }
+      else{
+        echo "Welcome back, ".ucwords($_SESSION["username"]);
+
+        } ?></label></li>
+      
+
       <li class="nav-item dropdown no-arrow">
           <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fa fa-user-circle fa-fw"></i>
@@ -68,7 +73,7 @@
               }
               
             ?>
-  <!--           <a class="dropdown-item" href="#">Activity Log</a> -->
+            <!-- <a class="dropdown-item" href="#">Activity Log</a> I will put the submitted grades notifications here-->
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" href="logout.php">Logout</a>
           </div>
