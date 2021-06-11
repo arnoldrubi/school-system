@@ -5,34 +5,21 @@
 <?php include 'layout/header.php';?>
 
 <?php 
-      if (isset($_GET['regid']) && isset($_GET['student_num']) && isset($_GET['course']) && isset($_GET['year']) && isset($_GET['sy']) && isset($_GET['term'])) {
-          $stud_reg_id = $_GET["regid"];
-          $student_num = $_GET["student_num"];
-          $course = $_GET["course"];
-          $year = $_GET["year"];
-          $sy = $_GET["sy"];
-          $term = $_GET["term"];
-        }
-        else{
-          redirect_to("irregular-manual-enrollment.php");
-        }
+  if (isset($_GET['regid']) && isset($_GET['student_num']) && isset($_GET['course']) && isset($_GET['year']) && isset($_GET['sy']) && isset($_GET['term'])) {
+      $stud_reg_id = $_GET["regid"];
+      $student_num = $_GET["student_num"];
+      $course = $_GET["course"];
+      $year = $_GET["year"];
+      $sy = $_GET["sy"];
+      $term = $_GET["term"];
 
-?>
-
-<?php
-
-    $query  = "SELECT * FROM student_grades WHERE stud_reg_id = '".$stud_reg_id."' AND course_id='".$course."' AND year = '".$year."' AND term = '".$term."' AND school_yr='".$sy."'";
-    $result = mysqli_query($connection, $query);
-
-    if (mysqli_num_rows($result)>0) {
-      echo "<script type='text/javascript'>";
-      echo "alert('Student has subjects assigned for this year, and term');";
-      echo "</script>";
-      
-      $URL="irregular-manual-enrollment.php";
-      echo "<script>location.href='$URL'</script>";
+      if (isset($_GET['error'])) {
+        $error_code = $_GET['error'];
+      }
     }
-
+    else{
+      redirect_to("irregular-manual-enrollment.php");
+    }
 ?>
 
   <title>Assign Subjects to <?php echo $student_num; ?></title>
@@ -63,6 +50,11 @@
       </ol>
       <h1>Assign Subjects to Student Number: <?php echo $student_num; ?></h1>
       <hr>
+      <?php
+        if (isset($error_code) && $error_code == 1) {
+          echo "<div class=\"row\"><div class=\" col-md-12 alert alert-danger\" role=\"alert\"><p>Error: Over the max units allowed</p></div></div>";
+        }
+      ?>
       <div class="row">
 
         <div class="col-md-6">
@@ -94,23 +86,21 @@
             <label class="col-md-6 col-form-label" for="Year">Year: <?php echo $year; ?></label><br>
             <label class="col-md-6 col-form-label" for="Year">Term: <?php echo $term; ?></label><br>
             <div class="form-group">
-              <label class="col-md-2 col-form-label" for="Course">Max Units</label>
+<!--               <label class="col-md-2 col-form-label" for="Course">Max Units</label> -->
               <div class="col-md-3" style="display: inline-grid;">
                 <?php
-                  echo "<input type=\"text\" id=\"max-units\" name=\"max_units\" class=\"form-control\" value=".return_max_units($connection)." readonly>";
+                  // echo "<input type=\"text\" id=\"max-units\" name=\"max_units\" class=\"form-control\" value=".return_max_units($connection)." readonly>";
+                  echo "<a class=\"btn btn-warning btn-xs\" title=\"Print Enrollment Form\" target=\"_blank\" href=\"print-enrollment-form.php?student_reg_id=".$stud_reg_id."&irregular=1\"><i class=\"fa fa-print\" aria-hidden=\"true\"></i></a>";
                 ?>
-                <div class="form-check">
+<!--                 <div class="form-check">
                   <input class="form-check-input" type="checkbox" value="" id="allow-overload">
                   <label class="form-check-label" for="flexCheckIndeterminate">
                   Allow Overload
                   </label>
-                </div>
+                </div> -->
               </div>
             </div>
 
-            <div class="col-md-4">
-              <input type="submit" id="submit" name="submit" value="Build Subject Group" class="btn btn-primary" />
-            </div>
 
               <input type="text" name="stud_reg_id" value ="<?php echo $stud_reg_id; ?>" style="display: none">
               <input type="text" name="course" value ="<?php echo $course; ?>" style="display: none">
@@ -125,11 +115,40 @@
         <div class="col-md-6">
             <h3>Selected Subjects</h3>
             <ul id="selected-subjects">
+            <table class="table table-bordered mt-3" id="" width="50%" cellspacing="0" style="width: 100%;">
+              <thead>
+                <tr>
+                  <th>Subject Name</th><th>Subject Code</th><th width="10%">&nbsp;</th>
+                </tr>
+              </thead>
+            
+            <?php
+            // note: create array for pushing class_id
+              $current_units = 0;
+              $class_array = array();
+              $subjects_array = array();
+              $query_subject_info = "SELECT * FROM irreg_manual_sched WHERE stud_reg_id='".$stud_reg_id."'";
+              $result_subject_info = mysqli_query($connection, $query_subject_info);
+
+              while($row_subject_info = mysqli_fetch_assoc($result_subject_info))
+              {
+                $teacher_class_delete = get_teacher_id_by_class($row_subject_info['class_id'],"",$connection);
+
+                $subject_id = get_subject_id_by_class("",$row_subject_info['class_id'],$connection);
+                echo "<tr><td>".get_subject_name($subject_id,"",$connection)."</td><td>".get_subject_code($subject_id,"",$connection)."</td><td style=\"text-align: center\"><a title=\"Delete Subject\" class=\"btn btn-danger btn-xs\" href=\"delete-irreg-subjects.php?regid=".$stud_reg_id."&student_num=".urlencode($student_num)."&classid=".$row_subject_info['class_id']."&year=".urlencode($year)."&term=".urlencode($term)."&sy=".urlencode($sy)."&course=".$course."&teacherid=".$teacher_class_delete."\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a></td></tr>";
+                $current_units = $current_units + get_subject_total_unit($subject_id,"",$connection);
+
+                array_push($class_array,$row_subject_info['class_id']);
+                array_push($subjects_array,get_subject_id_by_class("",$row_subject_info['class_id'],$connection));
+              }
+
+            ?>
+            </table>
             </ul>
             <div class="form-group row">
               <label class="col-md-2 col-form-label" for="Course">Current Units</label>
               <div class="col-md-3">
-                <input type="text" name="current_units" class="form-control" id="current-units" value="0" readonly="">                    
+                <input type="text" name="current_units" class="form-control" id="current-units" <?php echo "value=".$current_units; ?> readonly="">                    
               </div>
             </div>
         </div>
@@ -148,21 +167,6 @@
 
     else{
 
-
-      $data = $_POST['array_values'];
-      $arrVal = explode(";",$data);
-      $arrLength = count($arrVal);
-      $arrPreId = array();
-
-      $stud_reg_id = (int) $_POST["stud_reg_id"];
-      $course = (int) $_POST["course"];
-      $year = mysql_prep($_POST["year"]);
-      $term = mysql_prep($_POST["term"]);
-      $sy = mysql_prep($_POST["sy"]);
-
-      $query  = "SELECT * FROM student_grades WHERE stud_reg_id = '".$stud_reg_id."' AND course_id='".$course."' AND year = '".$year."' AND term = '".$term."' AND school_yr='".$sy."'";
-      $result = mysqli_query($connection, $query);
-
       if (mysqli_num_rows($result)>0) {
         echo "<script type='text/javascript'>";
         echo "alert('Student has subjects assigned for this year, and term');";
@@ -174,91 +178,6 @@
 
       else{
 
-      foreach ($arrVal as $class_arr_for_check) {
-
-        $query_class_info_for_check = "SELECT * FROM classes WHERE class_id='".$class_arr_for_check."'";
-        $result_class_info_for_check = mysqli_query($connection, $query_class_info_for_check);
-
-        while($row_class_info_for_check = mysqli_fetch_assoc($result_class_info_for_check))
-        {
-          $subject_id = $row_class_info_for_check['subject_id'];
-        }
-
-        // do a check if a student choose a subject with prerequisite
-
-        $subject_has_prerequisite = get_prerequisite_id($subject_id,"",$connection);
-
-        if ($subject_has_prerequisite !== NULL) {
-        $check_if_student_passed = check_if_student_passed($subject_has_prerequisite,$stud_reg_id,"",$connection);
-
-          if ($check_if_student_passed == "no grade") {
-
-            array_push($arrPreId, $subject_id);
-          }
-        }
-      }
-      // end foreach ($arrVal as $class_arr_for_check)
-
-        foreach ($arrVal as $class_id) {
-
-
-          //insert irreg student schedule based on class_id
-
-          $query_class_info = "SELECT * FROM classes WHERE class_id='".$class_id."'";
-          $result_class_info = mysqli_query($connection, $query_class_info);
-
-          while($row_class_info = mysqli_fetch_assoc($result_class_info))
-          {
-            $subject_id = $row_class_info['subject_id'];
-            $teacher_id = $row_class_info['teacher_id'];
-            $current_students = $row_class_info['students_enrolled'];
-          }
-
-            if (count($arrPreId)<=0) {
-                // do these batch of insert commands, dapat zero ang array ng mga pre_id, meaning walang pre requisite na tinamaan yung query sa taas
-
-                //insert irreg student and record his/her schedule
-                $query3   = "INSERT INTO irreg_manual_sched (stud_reg_id, schedule_id, year, term, school_yr) VALUES ('{$stud_reg_id}', '{$class_id}', '{$year}', '{$term}', '{$sy}')";
-                $result3 = mysqli_query($connection, $query3);
-
-                //update all selected schedule block's current students 
-                $current_students = $current_students + 1;
-
-                $query_update_current_students  = "UPDATE classes SET students_enrolled = '{$current_students}' WHERE class_id='".$class_id."' LIMIT 1";
-                $result_update_current_students = mysqli_query($connection, $query_update_current_students);
-
-                //insert irreg student and record his/her subjects/classes
-                $query3  = "INSERT INTO irreg_manual_sched (stud_reg_id, class_id, year, term, school_yr) VALUES ('{$stud_reg_id}', '{$class_id}', '{$year}', '{$term}', '{$sy}')";
-                $result3 = mysqli_query($connection, $query3);
-
-                $query2   = "INSERT INTO irreg_manual_subject (stud_reg_id, subject_id, year, term, school_yr) VALUES ('{$stud_reg_id}', '{$subject_id}', '{$year}', '{$term}', '{$sy}')";
-                $result2 = mysqli_query($connection, $query2);
-
-                //insert irreg student to the grading tables
-                $query   = "INSERT INTO student_grades (stud_reg_id, course_id, subject_id, teacher_id, year, term, sec_id, school_yr,grade_posted) VALUES ('{$stud_reg_id}', '{$course}', '{$subject_id}', '{$teacher_id}', '{$year}', '{$term}','0', '{$sy}', '0')";      
-
-                $result = mysqli_query($connection, $query);
-              }
-            } 
-          // end foreach ($arrVal as $class_id)
-
-        if (count($arrPreId)>=1){
-
-            echo "<div class=\"col-md-12 mt-3\"><div class=\"alert alert-danger\" role=\"alert\">Cannot enroll this student. The following prerequisite has not been fulfilled. " ;
-
-            // create a list displaying all the prerequisite not yet fulfilled
-            // place this in a conditional so it will not appear if everything is succesful
-            echo "<ul>";
-
-
-            foreach ($arrPreId as $pre_id_for_table) {
-            echo "<li>".get_subject_code(get_prerequisite_id($pre_id_for_table,"",$connection),"",$connection)."</li>";
-            }
-
-            echo "</ul>Please contact the registrar.</div></div>";
-
-          }
-          // end if (count($arrPreId)>=1)
 
         if ($result === TRUE) {
           echo "<script type='text/javascript'>";
@@ -279,17 +198,6 @@
       <div class="col-md-12">
       <?php
 
-        $arr_subj_id_in_grades = array();
-
-        $query_get_subj_from_grades = "SELECT subject_id FROM student_grades WHERE stud_reg_id='".$stud_reg_id."'";
-        $result_get_subj_from_grades = mysqli_query($connection, $query_get_subj_from_grades);
-
-        while($row_get_subj_from_grades = mysqli_fetch_assoc($result_get_subj_from_grades)){
-          array_push($arr_subj_id_in_grades, $row_get_subj_from_grades['subject_id']);
-        }
-        
-
-
         echo "<table class=\"table table-bordered mt-3\" id=\"\" width=\"100%\" cellspacing=\"0\" style=\"width: 100%;\">";
         echo " <thead>";
         echo "  <tr>";
@@ -302,14 +210,14 @@
         echo "   <th>&nbsp;</th>";   
         echo "  </tr></thead><tbody>";    
         
-        if (count($arr_subj_id_in_grades)>0) {
-           $query3 = "SELECT DISTINCT class_id, subject_id, teacher_id, sec_id FROM classes WHERE subject_id NOT IN (".implode(",",$arr_subj_id_in_grades).") AND students_enrolled<student_limit";
-        }
-        else{
-           $query3 = "SELECT DISTINCT class_id, subject_id, teacher_id, sec_id FROM classes WHERE students_enrolled<student_limit";
-        }
+    
 
-       
+        if (count($class_array)<1) {
+          $query3 = "SELECT * FROM classes WHERE students_enrolled < student_limit"; 
+        } 
+        else{
+        $query3 = "SELECT * FROM classes WHERE students_enrolled < student_limit AND class_id NOT IN(".implode(",", $class_array).") AND subject_id NOT IN(".implode(",", $subjects_array).")";
+        }
         $result3 = mysqli_query($connection, $query3);
 
         if (mysqli_num_rows($result3)< 1) {
@@ -329,7 +237,7 @@
               echo "<td>".get_teacher_name($row3['teacher_id'],"",$connection)."</td>";
               echo "<td>".get_section_name($row3['sec_id'],"",$connection)."</td>";             
               echo "<td>".get_subject_total_unit($row3['subject_id'],"",$connection)."</td>";
-              echo "<td class=\"subject-wrap\"><a class=\"".get_subject_total_unit($row3['subject_id'],"",$connection)."-".get_subject_code($row3['subject_id'],"",$connection)."\" id=\"".$row3['class_id']."\""." href=\"#\">Add Subject</a> </td>";
+              echo "<td class=\"subject-wrap\"><a class=\"".get_subject_total_unit($row3['subject_id'],"",$connection)."-".get_subject_code($row3['subject_id'],"",$connection)."\" id=\"".$row3['class_id']."\""." href=\"add-subject-to-irreg.php?regid=".$stud_reg_id."&student_num=".urlencode($student_num)."&classid=".$row3['class_id']."&year=".urlencode($year)."&term=".urlencode($term)."&sy=".urlencode($sy)."&course=".$course."&teacherid=".$row3['teacher_id']."\">Add Subject</a> </td>";
               echo "</tr>";
               } 
 

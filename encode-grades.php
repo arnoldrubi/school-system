@@ -77,7 +77,7 @@
         echo "<table id=\"example\" class=\"table table-striped table-bordered dataTable\">";
         echo " <thead>";
         echo "  <tr>";
-        echo "   <th style=\"display:\">Student Reg. ID</th>";
+        echo "   <th style=\"display: none;\">Student Reg. ID</th>";
         echo "   <th>Student Number</th>";
         echo "   <th>Name</th>";
         echo "   <th>Prelim</th>";

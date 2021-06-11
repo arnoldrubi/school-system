@@ -322,6 +322,16 @@ global $sidebar_context;
 
         return $section_id;
     }
+  	function get_teacher_id_by_class($class_id, $teacher_id, $connection){
+		$query_teacher_id_by_class = "SELECT * FROM classes WHERE class_id='".$class_id."' LIMIT 1";
+        $result_teacher_id_by_class = mysqli_query($connection, $query_teacher_id_by_class);
+        while($row_teacher_id_by_class = mysqli_fetch_assoc($result_teacher_id_by_class))
+        {
+          $teacher_id = $row_teacher_id_by_class['teacher_id'];
+        
+        }
+        return $teacher_id;
+    }
     function find_schedule_data($subject_id, $class_id, $connection, $schedule_id){
 		$query_find_schedule_data = "SELECT * FROM schedule_block WHERE class_id='".$class_id."' AND subject_id='".$subject_id."'";
 		$result_find_schedule_data = mysqli_query($connection, $query_find_schedule_data);
@@ -351,6 +361,20 @@ global $sidebar_context;
 
         return $subject_id;
     }
+
+    function get_students_enrolled_in_class($class_id,$students_enrolled,$connection){
+
+			$query_class_info = "SELECT * FROM classes WHERE class_id='".$class_id."'";
+			$result_class_info = mysqli_query($connection, $query_class_info);
+
+			while($row_class_info = mysqli_fetch_assoc($result_class_info))
+			{
+			  $current_students = $row_class_info['students_enrolled'];
+			}
+			return $current_students;
+
+    }
+
  	function get_section_year($sec_id, $section_year, $connection){
 		$query_section_year = "SELECT * FROM sections WHERE sec_id='".$sec_id."' LIMIT 1";
         $result_section_year = mysqli_query($connection, $query_section_year);
