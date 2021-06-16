@@ -36,6 +36,8 @@
       $active_term = $row['active_term'];
       $active_sy = $row['active_sy'];
       $max_units = $row['max_units'];
+      $start_of_class = $row['start_class'];
+      $end_of_class = $row['end_class'];  
     }
  
 ?>
@@ -118,6 +120,18 @@
             </select>
           </div>
         </div>
+        <div class="form-group row">
+          <label class="col-md-2 col-form-label" for="Start of Class">Start of Class</label>
+          <div class="col-md-2">
+              <input type="date" <?php echo "value=\"".$start_of_class."\""; ?> class="form-control" id="start-of-class" name="start_of_class">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-md-2 col-form-label" for="End of Class">End of Class</label>
+          <div class="col-md-2">
+              <input type="date" <?php echo "value=\"".$end_of_class."\""; ?> class="form-control" id="end-of-class" name="end_of_class">
+          </div>
+        </div>
         <div class="form-group">
           <div class="">
            <input type="submit" name="update_enrollment" value="Update Enrollment Settings" class="btn btn-primary" />&nbsp;
@@ -159,14 +173,19 @@
     $phone_number = mysql_prep($_POST["phone_number"]);
     $max_units = $_POST["max_units"];
 
-    if (!isset($school_name) || !isset($school_address) || !isset($phone_number)) {
+
+ // basic check for the start and date of class
+
+
+
+    if (!isset($school_name) || !isset($school_address) || !isset($phone_number) || !isset($start_of_class) || !isset($end_of_class)) {
       die ("<div class=\"alert alert-danger\" role=\"alert\">Error: One or more fields are empty.</div>");
     }
 
     else{
 
       if ($filename = "" || !isset($filename) || $filename == null) {
-        $query  = "UPDATE site_settings SET school_name = '{$school_name}', school_address = '{$school_address}', phone_number = '{$phone_number}', max_units = '{$max_units}' WHERE id = 1 LIMIT 1";
+        $query  = "UPDATE site_settings SET school_name = '{$school_name}', school_address = '{$school_address}', phone_number = '{$phone_number}', max_units = '{$max_units}', start_class = '{$start_of_class}', end_class = '{$end_of_class}' WHERE id = 1 LIMIT 1";
         $result = mysqli_query($connection, $query);
       }
       else{
@@ -219,13 +238,11 @@
       $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
     });
 
-      // var current_sy = $("#current-school-yr").val(); 
-      //  $("#select-deleted").click(function(){
-      //     $("#add-sy").load("add-new-sy.php",{
-      //       current_sy: current_sy
-      //     }); 
-      //  });
-
+    $("#start-of-class,#end-of-class").change(function() {
+      if ($("#end-of-class").val() < $("#start-of-class").val() && $("#start-of-class").val() !== "" && $("#end-of-class").val() !== "") {
+        alert("Error on the dates selected. Check your values (start of class must not be greater than end of class, end of class most not be less than start of class");
+      }
+    });
   });
   </script>
 

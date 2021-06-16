@@ -59,6 +59,28 @@
       </ol>
       <h1>Process Grades for <?php echo $subject_code."(".$subject_name.")"; ?></h1>
       <hr>
+
+
+      <?php
+
+        $today = date("Y-m-d");
+        $deadline = "";
+
+        $query  = "SELECT * FROM site_settings WHERE id = 1";
+        $result = mysqli_query($connection, $query);
+
+        while($row = mysqli_fetch_assoc($result))
+          {
+            $end_of_class = $row['end_class'];
+          }
+
+        if ($today > $end_of_class) {
+          echo "<div class=\"alert alert-warning\" role=\"alert\">
+            Posting of grades has reached past the deadline.
+          </div>";
+          $deadline = 1;
+        }
+      ?>
       
       <input class="form-control" id="myInput" type="text" placeholder="Quick Search">
       <?php
@@ -147,16 +169,36 @@
         if (isset($_GET["grade_saved"])) {
           $grade_saved = $_GET["grade_saved"];
           if ($grade_saved == 1) {
-          echo "<input type=\"submit\" name=\"post\" value=\"Post Grades\" class=\"btn btn-success\" />";
+            if ($deadline == 1) {
+             echo "<input type=\"submit\" name=\"post\" disabled value=\"Post Grades\" class=\"btn btn-success\" />";
+            }
+            else{
+              echo "<input type=\"submit\" name=\"post\" value=\"Post Grades\" class=\"btn btn-success\" />";
+            }          
           }
           elseif ($grade_saved == 2) {
-          echo "<div class=\"alert alert-warning\" role=\"alert\">Grades are now posted. Please contact the registrar if you wish to edit.</div>";      
+            if ($deadline == 1) {
+             echo "<input type=\"submit\" name=\"edit\" value=\"Edit Grades\" disabled class=\"btn btn-warning\" />"; 
+            }
+            else{
+              echo "<input type=\"submit\" name=\"edit\" value=\"Edit Grades\" class=\"btn btn-warning\" />"; 
+            }     
           }
           elseif ($grades_set_lock > 0) {
-          echo "<div class=\"alert alert-warning\" role=\"alert\">Grades are now posted. Please contact the registrar if you wish to edit.</div>"; 
+            if ($deadline == 1) {
+             echo "<input type=\"submit\" name=\"edit\" value=\"Edit Grades\" disbled class=\"btn btn-warning\" />";      
+            }
+            else{
+             echo "<input type=\"submit\" name=\"edit\" value=\"Edit Grades\" class=\"btn btn-warning\" />";
+            }    
           }
           else{
-            echo "<input type=\"submit\" name=\"submit\" value=\"Save Grades\" class=\"btn btn-primary\" />";
+            if ($deadline == 1) {
+             echo "<input type=\"submit\" name=\"submit\" disabled value=\"Save Grades\" class=\"btn btn-primary\" />";
+            }
+            else{
+              echo "<input type=\"submit\" name=\"submit\" value=\"Save Grades\" class=\"btn btn-primary\" />";
+            }
           }
         }
         else{
@@ -164,7 +206,12 @@
           echo "<div class=\"alert alert-warning\" role=\"alert\">Grades are now posted. Please contact the registrar if you wish to edit.</div>";     
           }
           else{
-           echo "<input type=\"submit\" name=\"submit\" value=\"Save Grades\" class=\"btn btn-primary\" />";
+            if ($deadline == 1) {
+             echo "<input type=\"submit\" name=\"submit\" disabled value=\"Save Grades\" class=\"btn btn-primary\" />";
+            }
+            else{
+              echo "<input type=\"submit\" name=\"submit\" value=\"Save Grades\" class=\"btn btn-primary\" />";
+            }
           }
         }
 

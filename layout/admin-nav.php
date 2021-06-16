@@ -90,7 +90,10 @@
     {
       $active_term = $row['active_term'];
       $active_sy = $row['active_sy'];
+      $start_of_class = $row['start_class'];
+      $end_of_class = $row['end_class'];    
       echo "<div class=\"col-md-12\"><p>Current S.Y and Term: <span id=\"active-sy\">".$active_sy."</span>, <span id=\"active-term\">".$active_term."</span></p></div>";
+      echo "<div class=\"col-md-12\"><p>Start of Classes <span id=\"active-sy\">".date("m-d-Y", strtotime($start_of_class))."</span>, End of Classes <span id=\"active-term\">".date("m-d-Y", strtotime($end_of_class))."</span></p></div>";
     }
 ?>
   

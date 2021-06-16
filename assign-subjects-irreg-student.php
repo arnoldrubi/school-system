@@ -123,10 +123,11 @@
               </thead>
             
             <?php
-            // note: create array for pushing class_id
-              $current_units = 0;
+            // note: create array for pushing class_id and subject ID
               $class_array = array();
               $subjects_array = array();
+              $current_units = 0;
+
               $query_subject_info = "SELECT * FROM irreg_manual_sched WHERE stud_reg_id='".$stud_reg_id."'";
               $result_subject_info = mysqli_query($connection, $query_subject_info);
 
@@ -193,6 +194,8 @@
         }
       }
     }
+
+    // tatanggalin na tong part na to
       ?>
 
       <div class="col-md-12">
@@ -237,7 +240,7 @@
               echo "<td>".get_teacher_name($row3['teacher_id'],"",$connection)."</td>";
               echo "<td>".get_section_name($row3['sec_id'],"",$connection)."</td>";             
               echo "<td>".get_subject_total_unit($row3['subject_id'],"",$connection)."</td>";
-              echo "<td class=\"subject-wrap\"><a class=\"".get_subject_total_unit($row3['subject_id'],"",$connection)."-".get_subject_code($row3['subject_id'],"",$connection)."\" id=\"".$row3['class_id']."\""." href=\"add-subject-to-irreg.php?regid=".$stud_reg_id."&student_num=".urlencode($student_num)."&classid=".$row3['class_id']."&year=".urlencode($year)."&term=".urlencode($term)."&sy=".urlencode($sy)."&course=".$course."&teacherid=".$row3['teacher_id']."\">Add Subject</a> </td>";
+              echo "<td class=\"subject-wrap\"><a class=\"".get_subject_total_unit($row3['subject_id'],"",$connection)."-".get_subject_code($row3['subject_id'],"",$connection)." add-subject\" id=\"".$row3['class_id']."\""." href=\"add-subject-to-irreg.php?regid=".$stud_reg_id."&student_num=".urlencode($student_num)."&classid=".$row3['class_id']."&year=".urlencode($year)."&term=".urlencode($term)."&sy=".urlencode($sy)."&course=".$course."&teacherid=".$row3['teacher_id']."\">Add Subject</a> </td>";
               echo "</tr>";
               } 
 
@@ -266,81 +269,20 @@
 
 <script>
 $( document ).ready(function() {
-  var arrval = new Array();
-  var old_units = $("#max-units").val();
-  $('.subject-wrap a').click(function(){
-    var $checker = false;
-    var class_and_unit = $(this).attr('class');
-    var arr_class_and_unit = class_and_unit.split("-");
-    $( "#selected-subjects li:contains('"+ arr_class_and_unit[1] +"')" ).each(function(){
-        alert('Error! This subject is already selected');
-        $checker = true;
-      }
-    );
-    if ($checker === false){
-        if (parseInt($("#current-units").val()) >= parseInt($("#max-units").val())) {
-          alert('Error! Total units is more than the max units allowed for this term.');
-        }
-        else if (parseInt($("#current-units").val()) < parseInt($("#max-units").val())) {
-          var current_units = parseInt($("#current-units").val())+parseInt(arr_class_and_unit[0]);
-          $("#current-units").val(current_units);
-
-          alert (arr_class_and_unit[1]+ " has been selected!");
-          $( "#selected-subjects" ).append( "<li id=\""+$(this).attr('id')+"\">"+arr_class_and_unit[1]+" <a href=\"#\" class=\""+arr_class_and_unit[0]+"\">x</a></li>" );
-          $( "#courses_form" ).append( "<input type=\"text\" name=\""+$(this).attr('id')+"\" value=\""+$(this).attr('id')+"\" style=\"display: none\">" );
-          arrval.push($(this).attr('id'));
-          $("#array_values").val(arrval.join('; '));
-        }
-      
-    }
-    var $count = $("#selected-subjects input").length;
-    console.log(arrval.join('; '));
-
-    $("#selected-subjects li a").click(function(){//remove this and place it under a document on load function
-
-      var confirm_remove = confirm("Do you want to remove a subject from the list?");
-
-      if (confirm_remove == true) {
-        $(this).closest("li").remove();
-        var current_units = parseInt($("#current-units").val())-parseInt($(this).attr('class'));
-        $("#current-units").val(current_units);
-
-        alert ("Subject has been removed!");
-
-        var removeItem = $(this).closest("li").attr("id");
-
-        arrval = jQuery.grep(arrval, function(value) {
-          return value != removeItem;
-        });
-        $("#array_values").val(arrval.join('; '));
-
-        // basic check to make sure current units stays 0 as min value
-        if ($("#current-units").val() < 0) {
-          $("#current-units").val(0);
-        }
-
-      }
-
-    });
-
+  var once = "";
+  $(".add-subject" ).click(function() {
+    alert( "Subject is added!" );
   });
-    
-    $("#myInput").on("keyup", function() {
-      var value = $(this).val().toLowerCase();
-      $("#datatable tbody tr").filter(function() {
-        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-      });
-    });
-    $("#allow-overload").change(function(){
-
-      if ($(this).is(":checked")) {
-        $("#max-units").val(99);
-      }
-      else{
-        $("#max-units").val(old_units);
-      }
-    });
+  $("a.btn.btn-danger.btn-xs" ).click(function() {
+    return confirm( "Remove this subject?" );
   });
+  $("#allow-overload" ).click(function() {
+    if ($("#allow-overload" ).is(":checked") && once !== "true") {
+      $(".add-subject").attr("href", $(".add-subject").attr("href")+"&overload=1")
+      once = "true";
+    } 
+  });
+});
 
 </script>
 
