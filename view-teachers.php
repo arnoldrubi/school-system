@@ -66,12 +66,12 @@
 
         echo "</tbody></table>"; 
       ?>
-  <div id="theModal" class="modal fade text-center">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-      </div>
-    </div>
-  </div>
+        <div id="theModal" class="modal fade text-center">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

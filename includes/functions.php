@@ -16,7 +16,18 @@ global $sidebar_context;
 		$escaped_string = mysqli_real_escape_string($connection, $string);
 		return $escaped_string;
 	}
+//function that computes the age of the student
+	function return_age($birth_date,$age){
 
+  //explode the date to get month, day and year
+  $birth_date = explode("/", date("m-d-Y",$birth_date));
+  //get age from date or birthdate
+  $age = (date("md", date("U", mktime(0, 0, 0, $birth_date[0], $birth_date[1], $birth_date[2]))) > date("md")
+    ? ((date("Y") - $birth_date[2]) - 1)
+    : (date("Y") - $birth_date[2]));
+
+		return $age;
+	}
 //function for converting string Day to numeric day
 	function order_day($day){
 		if ($day == "Monday") {

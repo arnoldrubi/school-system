@@ -44,9 +44,7 @@
         echo "   <th>Address</th>";
         echo "   <th>Email</th>";
         echo "   <th>Phone Number</th>";
-        echo "   <th>Legal Guardian</th>";
-        echo "   <th>Guardian's Phone Number</th>";
-        echo "   <th>Relationship</th>";
+        echo "   <th>Birthday</th>";;
         echo "   <th width=\"12%\">Options</th>";   
         echo "  </tr></thead><tbody>";
         
@@ -64,10 +62,9 @@
         echo "<td>".$row['barangay']." ".$row['municipality'].", ".$row['province']."</td>"; 
         echo "<td>".$row['email']."</td>";      
         echo "<td>".$row['phone_number']."</td>";
-        echo "<td>".$row['guardian_name']."</td>";
-        echo "<td>".$row['guardian_phone_number']."</td>";
-        echo "<td>".$row['guardian_relationship']."</td>";
+        echo "<td>".date("m-d-Y",strtotime($row['birth_date']))."</td>";
         echo "<td style=\"text-align: center;\"><a class=\"btn btn-warning btn-xs\" title=\"Edit\" href=\"edit-student.php?stud_reg_id=".$row['stud_reg_id']."\""."><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a> ";
+        echo "<a class=\"btn btn-success btn-xs a-modal\" title=\"View Student Info\" href=\"print-student-info.php?stud_reg_id=".$row['stud_reg_id']."\"><i class=\"fa fa-user\" aria-hidden=\"true\"></i></a> ";
         echo "<a title=\"Set to Inactive\" class=\"btn btn-danger btn-xs\" href=\"javascript:confirmDelete('delete-student.php?stud_reg_id=".$row['stud_reg_id']."')\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></a></td>";
         //echo "<a href=\"delete-student.php?stud_reg_id=".$row['stud_reg_id']."\""." onclick=\"confirm('Are you sure?')\"> Delete Info</a></td>";
         echo "</tr>";
@@ -76,7 +73,12 @@
         echo "</tbody></table>"; 
       ?>
 
-
+        <div id="theModal" class="modal fade text-center">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+            </div>
+          </div>
+        </div>
      </div>
     </div>
   </div>
@@ -103,4 +105,8 @@ $(document).ready(function(){
     });
   });
 });
+$(".a-modal").on("click", function(e){
+      e.preventDefault();
+      $("#theModal").modal("show").find(".modal-content").load($(this).attr("href"));
+  });
 </script>
