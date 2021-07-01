@@ -74,8 +74,7 @@
         </div>
       </div>
     </form>
-  </div>
- </div> 
+
       <?php 
 
         if (isset($_POST['submit'])) {
@@ -85,6 +84,18 @@
           $lab_units = (int) $_POST["lab_units"];
           $total_units = $lab_units + $lect_units;
           $pre_id = (int) $_POST["pre_id"];
+
+          $row_count = return_duplicate_entry("subjects","subject_name",$subject_name,"",$connection);
+
+          if ($row_count > 0) {
+            die ("<div class=\"alert alert-danger\" role=\"alert\">Error: Subject name: ".$subject_name." already exists.</div>");
+          }
+
+          $row_count = return_duplicate_entry("subjects","subject_code",$subject_code,"",$connection);
+
+          if ($row_count > 0) {
+            die ("<div class=\"alert alert-danger\" role=\"alert\">Error: Subject code: ".$subject_code." already exists.</div>");
+          }
 
           if (!isset($subject_name) || !isset($subject_code) || $subject_name == "" || $subject_code == "") {
             die ("<div class=\"alert alert-danger\" role=\"alert\">Error: One or more fields are empty.</div>");
@@ -112,6 +123,8 @@
         if(isset($connection)){ mysqli_close($connection); }
         //close database connection after an sql command
         ?>
+      </div>
+   </div> 
   <!-- /#wrapper -->
 
 

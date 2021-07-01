@@ -61,15 +61,18 @@
 
         while($row = mysqli_fetch_assoc($result))
           {
+            $old_subject_name = $row['subject_name'];
+            $old_subject_code = $row['subject_code'];
+
             echo  "<div class=\"form-group row\">";
             echo  "<label class=\"col-md-1 col-form-label\" for=\"subject-name\">Subject Name</label>";
             echo  "<div class=\"col-md-3\">";
-            echo "<input id=\"subject-name\" name=\"subject-name\" type=\"text\" placeholder=\"Input Subject Name\" class=\"form-control\" required value=\"".$row['subject_name']."\">";
+            echo "<input id=\"subject-name\" name=\"subject-name\" type=\"text\" placeholder=\"Input Subject Name\" class=\"form-control\" required value=\"".$old_subject_name."\">";
             echo "</div>";
 
             echo  "<label class=\"col-md-1 col-form-label\" for=\"subject-name\">Subject Code</label>";
             echo  "<div class=\"col-md-2\">";
-            echo "<input id=\"subject-code\" name=\"subject-code\" type=\"text\" placeholder=\"Input Subject Code\" class=\"form-control\" required value=\"".$row['subject_code']."\">";
+            echo "<input id=\"subject-code\" name=\"subject-code\" type=\"text\" placeholder=\"Input Subject Code\" class=\"form-control\" required value=\"".$old_subject_code."\">";
             echo "<span class=\"help-block\">Input the code for the subject (example: IT1)</span> ";
             echo "</div>";
 
@@ -111,9 +114,7 @@
         </div>
       </div>
     </form>
-  </div>
- </div> 
-  <!-- /#wrapper -->
+
 <?php
   if (isset($_POST['submit'])) {
     $subject_name = $_POST["subject-name"];
@@ -131,6 +132,22 @@
     }
 
     else{
+
+      if ($old_subject_code !== $subject_code) {
+        $row_count = return_duplicate_entry("subjects","subject_code",$subject_code,"",$connection);
+
+        if ($row_count > 0) {
+          die ("<div class=\"alert alert-danger\" role=\"alert\">Error: Subject code ".$subject_code." already exists.</div>");
+        }
+      }
+      if ($old_subject_name !== $subject_name) {
+        $row_count = return_duplicate_entry("subjects","subject_name",$subject_name,"",$connection);
+
+        if ($row_count > 0) {
+          die ("<div class=\"alert alert-danger\" role=\"alert\">Error: Subject name ".$subject_name." already exists.</div>");
+        }
+      }
+
       $query  = "UPDATE subjects SET subject_name = '{$subject_name}', subject_code = '{$subject_code}', lect_units = '{$lect_units}', lab_units = '{$lab_units}', total_units = '{$total_units}', pre_id = '{$pre_id}' WHERE subject_id = {$subject_id} LIMIT 1";
       $result = mysqli_query($connection, $query);
 
@@ -148,7 +165,9 @@
   }
 
 ?>
-
+  </div>
+ </div> 
+  <!-- /#wrapper -->
   <!-- Scroll to Top Button-->
   <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>

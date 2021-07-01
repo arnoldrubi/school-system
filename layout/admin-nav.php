@@ -1,4 +1,4 @@
-  <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
+  <nav id="page-top" class="navbar navbar-expand navbar-dark bg-dark static-top">
 
     <?php
 

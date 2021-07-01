@@ -86,18 +86,29 @@
             <label class="col-md-6 col-form-label" for="Year">Year: <?php echo $year; ?></label><br>
             <label class="col-md-6 col-form-label" for="Year">Term: <?php echo $term; ?></label><br>
             <div class="form-group">
-<!--               <label class="col-md-2 col-form-label" for="Course">Max Units</label> -->
+              <label class="col-md-2 col-form-label" for="Course">Max Units</label>
               <div class="col-md-3" style="display: inline-grid;">
-                <?php
-                  // echo "<input type=\"text\" id=\"max-units\" name=\"max_units\" class=\"form-control\" value=".return_max_units($connection)." readonly>";
-                  echo "<a class=\"btn btn-warning btn-xs\" title=\"Print Enrollment Form\" target=\"_blank\" href=\"print-enrollment-form.php?student_reg_id=".$stud_reg_id."&irregular=1\"><i class=\"fa fa-print\" aria-hidden=\"true\"></i></a>";
-                ?>
-<!--                 <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="" id="allow-overload">
+
+                <div class="form-check">
+                  <?php
+                    if (isset($_GET['overload'])){
+                      $overload = $_GET['overload'];
+
+                      if ($overload == 1) {
+                       echo "<input class=\"form-check-input\" type=\"checkbox\" checked value=\"1\" id=\"allow-overload\">";
+                      }
+                    }
+                    else{
+                      echo "<input class=\"form-check-input\" type=\"checkbox\" value=\"\" id=\"allow-overload\">";
+                    }
+                  ?>
                   <label class="form-check-label" for="flexCheckIndeterminate">
                   Allow Overload
                   </label>
-                </div> -->
+                </div>
+                <?php                 
+                  echo "<a class=\"btn btn-warning btn-xs\" title=\"Print Enrollment Form\" target=\"_blank\" href=\"print-enrollment-form.php?student_reg_id=".$stud_reg_id."&irregular=1\"><i class=\"fa fa-print\" aria-hidden=\"true\"></i></a>";
+                ?>
               </div>
             </div>
 
@@ -155,48 +166,6 @@
         </div>
 
       </form>
-      <?php
-
-  if (isset($_POST['submit'])) {
-
-    $max_units = $_POST['max_units'];
-    $current_total_units = $_POST['current_units'];
-
-    if ($current_total_units > $max_units || $current_total_units <=0) {
-     echo "<div class=\"col-md-12\"><div class=\"alert alert-danger\" role=\"alert\">Error: Current units exceeds the allotted max units or no subject was selected.</div></div>";
-    }
-
-    else{
-
-      if (mysqli_num_rows($result)>0) {
-        echo "<script type='text/javascript'>";
-        echo "alert('Student has subjects assigned for this year, and term');";
-        echo "</script>";
-
-        $URL="irregular-manual-enrollment.php";
-        echo "<script>location.href='$URL'</script>";
-      }
-
-      else{
-
-
-        if ($result === TRUE) {
-          echo "<script type='text/javascript'>";
-          echo "alert('Create subject set successful!');";
-          echo "</script>";
-
-          $URL="irregular-manual-enrollment.php";
-          echo "<script>location.href='$URL'</script>";
-          } else {
-
-            echo "Error updating record: " . $connection->error;
-          }
-        }
-      }
-    }
-
-    // tatanggalin na tong part na to
-      ?>
 
       <div class="col-md-12">
       <?php
@@ -219,7 +188,7 @@
           $query3 = "SELECT * FROM classes WHERE students_enrolled < student_limit"; 
         } 
         else{
-        $query3 = "SELECT * FROM classes WHERE students_enrolled < student_limit AND class_id NOT IN(".implode(",", $class_array).") AND subject_id NOT IN(".implode(",", $subjects_array).")";
+          $query3 = "SELECT * FROM classes WHERE students_enrolled < student_limit AND class_id NOT IN(".implode(",", $class_array).") AND subject_id NOT IN(".implode(",", $subjects_array).")";
         }
         $result3 = mysqli_query($connection, $query3);
 
@@ -261,7 +230,7 @@
 
   <!-- Scroll to Top Button-->
   <a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
+    <i class="fa fa-angle-up"></i>
   </a>
 
 
@@ -277,11 +246,16 @@ $( document ).ready(function() {
     return confirm( "Remove this subject?" );
   });
   $("#allow-overload" ).click(function() {
-    if ($("#allow-overload" ).is(":checked") && once !== "true") {
+    if ($("#allow-overload" ).is(":checked")) {
       $(".add-subject").attr("href", $(".add-subject").attr("href")+"&overload=1")
-      once = "true";
     } 
+    else {
+      $("a.add-subject").attr("href",$(".add-subject").attr("href").replace("&overload=1",""));
+    }
   });
+  if ($("#allow-overload" ).is(":checked")) {
+      $(".add-subject").attr("href", $(".add-subject").attr("href")+"&overload=1")
+  } 
 });
 
 </script>

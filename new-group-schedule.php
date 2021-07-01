@@ -71,12 +71,21 @@
             echo "<td>".$school_yr."</td>";
             $enrolled_students = get_enrolled_regular_students($row['sec_id'],$term,$school_yr,"",$connection);
             echo "<td>".$enrolled_students."</td>";
-            echo "<td class=\"option-grp\"><a class=\"btn btn-success btn-sm\" href=\"create-schedule-for-class.php?sec_id=".urlencode($row['sec_id'])."&term=".urlencode($term)."&school_yr=".$school_yr."\">Build Schedule</a> <a class=\"btn btn-warning btn-sm\" target=\"_blank\" href=\"preview-print-schedule.php?sec_id=".urlencode($row['sec_id'])."&term=".urlencode($term)."&school_yr=".$school_yr."\">Print Schedule</a>";
+            echo "<td class=\"option-grp\"><a class=\"btn btn-success btn-sm\" href=\"create-schedule-for-class.php?sec_id=".urlencode($row['sec_id'])."&term=".urlencode($term)."&school_yr=".$school_yr."\">Build Schedule</a>";
+            echo "<a class=\"btn btn-success btn-xs a-modal\" title=\"View Schedule\" target=\"_blank\" href=\"preview-print-schedule.php?sec_id=".urlencode($row['sec_id'])."&term=".urlencode($term)."&school_yr=".$school_yr."\"><i class=\"fa fa-clock-o\" aria-hidden=\"true\"></i></a>";
+            echo "<a class=\"btn btn-success btn-xs \" title=\"Print Schedule\" target=\"_blank\" href=\"print-schedule.php?sec_id=".urlencode($row['sec_id'])."&term=".urlencode($term)."&school_yr=".$school_yr."\"><i class=\"fa fa-print\" aria-hidden=\"true\"></i></a>";
             echo "</tr>";
         }
 
         echo "</tbody></table>"; 
       ?>
+
+    <div id="theModal" class="modal fade text-center">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+        </div>
+      </div>
+    </div>
 
     </div>
   </div>
@@ -94,3 +103,10 @@
   //close database connection after an sql command
   ?>
 <?php include 'layout/footer.php';?>
+
+<script type="text/javascript"> 
+$(".a-modal").on("click", function(e){
+      e.preventDefault();
+      $("#theModal").modal("show").find(".modal-content").load($(this).attr("href"));
+  });
+</script>

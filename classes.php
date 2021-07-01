@@ -139,7 +139,7 @@
             for ($i=0; $i < sizeof($missing_subjects); $i++) { 
               echo"<li class=\"list-group-item d-flex justify-content-between align-items-center\">";
               echo get_subject_code($new_array[$i],"",$connection)." (".get_subject_name($new_array[$i],"",$connection).")";
-              echo "<a href=\"add_missing_class?sec_id=".urlencode($sec_id)."&term=".urlencode($term)."&school_yr=".$school_yr."&subject_id=".$new_array[$i]."\" class=\"btn btn-success btn-sm\">Create Class</a>";
+              echo "<a href=\"add_missing_class.php?sec_id=".urlencode($sec_id)."&term=".urlencode($term)."&school_yr=".$school_yr."&subject_id=".$new_array[$i]."\" class=\"btn btn-success btn-sm\">Create Class</a>";
 
             }
         ?>

@@ -96,6 +96,7 @@
   //close database connection after an sql command
   ?>
 <?php include 'layout/footer.php';?>
+
 <script type="text/javascript"> 
 $(document).ready(function(){
   $("#myInput").on("keyup", function() {

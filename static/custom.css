@@ -246,6 +246,10 @@ body {
 h1, h2, h3, h4, h5{
     font-family: 'Roboto';
 }
+/*for icons*/
+a.btn.btn-success.btn-xs.a-modal {
+    margin: 0 .2rem;
+}
 /*custom class to remove the element when the page is printed*/
 @media print
 {    

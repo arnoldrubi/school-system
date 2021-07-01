@@ -61,7 +61,9 @@
 
         while($row = mysqli_fetch_assoc($result))
           {
-            $room_label_arr = explode("-", $row['room_name']);
+            $old_room_name = $row['room_name'];
+
+            $room_label_arr = explode("-", $old_room_name);
 
             echo "<div class=\"form-group row\">";
             echo "<label class=\"col-md-2 col-form-label\" for=\"room-prefix\">Room Prefix</label><div class=\"col-md-2\">";
@@ -116,6 +118,16 @@
       die ("<div class=\"alert alert-danger\" role=\"alert\">Error: One or more fields are empty.</div>");
     }
     else{
+
+      if ($old_room_name !== $room_name) {
+        $row_count = return_duplicate_entry("rooms","room_name",$room_name,"",$connection);
+
+        if ($row_count > 0) {
+          die ("<div class=\"alert alert-danger\" role=\"alert\">Error: Room name ".$room_name." already exists.</div>");
+        }
+      }
+
+
       $query  = "UPDATE rooms SET room_name = '{$room_name}', description = '{$description}' WHERE room_id = {$room_id} LIMIT 1";
       $result = mysqli_query($connection, $query);
 

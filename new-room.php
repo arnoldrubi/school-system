@@ -80,6 +80,14 @@
             die ("<div class=\"alert alert-danger\" role=\"alert\">Error: One or more fields are empty.</div>");
           }
           else{
+
+          $row_count = return_duplicate_entry("rooms","room_name",$room_name,"",$connection);
+
+          if ($row_count > 0) {
+            die ("<div class=\"alert alert-danger\" role=\"alert\">Error: Room name ".$room_name." already exists.</div>");
+          }
+
+
             $query   = "INSERT INTO rooms (room_name, description) VALUES ('{$room_name}', '{$description}')";
             $result = mysqli_query($connection, $query);
 

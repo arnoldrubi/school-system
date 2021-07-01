@@ -57,6 +57,17 @@
           <div id="warning-text-email"></div>
         </div>      
       </div>
+      <div class="form-group row">
+        <div class="col-md-5">
+          <p>Optional*<br><button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+             Faculty Number: Manual Encode
+            </button>
+          </p>
+          <div class="collapse" id="collapseExample">
+            <input type="text" class="form-control" id="manual-encode-faculty-num" name="manual_encode_encode_num" placeholder="xxxx-xxxx">        
+          </div>
+        </div>
+      </div>
       <div class="col-md-5">
         <input type="submit" id="submit" name="submit" value="Add Teacher" class="btn btn-primary" />&nbsp;
         <a class="btn btn-secondary"href="admin-dashboard.php">Cancel</a>
@@ -69,7 +80,7 @@
           $first_name = mysql_prep($_POST["first-name"]);
           $last_name = mysql_prep($_POST["last-name"]);
           $department = mysql_prep($_POST["dapartment"]);
-
+          $manual_faculty_num = mysql_prep($_POST["manual_encode_encode_num"]);
 
           if (!isset($first_name) || !isset($last_name) || !isset($department) || $first_name == "" || $last_name == "" || $department == "") {
             die ("<div class=\"alert alert-danger\" role=\"alert\">Error: One or more fields are empty.</div>");
@@ -82,13 +93,18 @@
             $email = mysql_prep($_POST["email"]);
             $role = mysql_prep("faculty");
 
+            $query_check_user  = "SELECT username FROM users WHERE username='".$manual_faculty_num."'";
+            $result_check_user = mysqli_query($connection, $query_check_user);
 
+            if (mysqli_num_rows($result_check_user)>0) {
+              die ("<br><div class=\"alert alert-danger\" role=\"alert\">Error: Employee Code: ".$manual_faculty_num." is already used</div>");
+            }
 
             $query_check_email  = "SELECT username FROM users WHERE email='".$email."'";
             $result_check_email = mysqli_query($connection, $query_check_email);
 
             if (mysqli_num_rows($result_check_email)>0) {
-              die ("<div class=\"alert alert-danger\" role=\"alert\">Error: Email: ".$email." is already used</div>");
+              die ("<br><div class=\"alert alert-danger\" role=\"alert\">Error: Email: ".$email." is already used</div>");
             }
 
             else{
@@ -99,15 +115,21 @@
 
                 // created a function that generates the emp_code
                 // ran two queries 1. for inserting new teacher info, 2. for updating the emp_code with the auto generated emp_code
+                $teacher_id = mysqli_insert_id($connection); //this is for the new user account creation         
 
-                $teacher_id = mysqli_insert_id($connection); //this is for the new user account creation            
-                $emp_code = generate_emp_code($teacher_id,"");
+                if (isset($manual_faculty_num) && !empty($manual_faculty_num)){
+                  $emp_code = $manual_faculty_num;
 
+                  // do a check here to make sure manually entered emp code is not duplicate
+                }
+                else{                     
+                  $emp_code = generate_emp_code($teacher_id,"");                  
+                }
                 $query   = "UPDATE teachers SET emp_code = '".$emp_code."' WHERE teacher_id = ".$teacher_id;
                 $result = mysqli_query($connection, $query);
 
-                //query check to make sure no duplicate username and emails were added
                 $username = $emp_code;
+                //query check to make sure no duplicate username and emails were added
                 $query_check_user  = "SELECT username FROM users WHERE username='".$username."'";
                 $result_check_user = mysqli_query($connection, $query_check_user);
 

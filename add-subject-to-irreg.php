@@ -41,29 +41,32 @@ else{
 }
 
 // setup the overload value if checked by the user
-if (isset($_GET['overload']) && empty($_GET['overload'])){
+if (isset($_GET['overload'])){
   $overload = $_GET['overload'];
 }
+else{
+  if ($overload !== 1) {
+  // do a check for the total units of the irreg student
 
-// do a check for the total units of the irreg student
+  $max_units = return_max_units($connection);
 
-$max_units = return_max_units($connection);
+  $current_units = 0;
+  $query_subject_info = "SELECT * FROM irreg_manual_sched WHERE stud_reg_id='".$stud_reg_id."'";
+  $result_subject_info = mysqli_query($connection, $query_subject_info);
 
-$current_units = 0;
-$query_subject_info = "SELECT * FROM irreg_manual_sched WHERE stud_reg_id='".$stud_reg_id."'";
-$result_subject_info = mysqli_query($connection, $query_subject_info);
+  while($row_subject_info = mysqli_fetch_assoc($result_subject_info))
+  {
+    $subject_id = get_subject_id_by_class("",$row_subject_info['class_id'],$connection);
+    $current_units = $current_units + get_subject_total_unit($subject_id,"",$connection);
+  } 
 
-while($row_subject_info = mysqli_fetch_assoc($result_subject_info))
-{
-  $subject_id = get_subject_id_by_class("",$row_subject_info['class_id'],$connection);
-  $current_units = $current_units + get_subject_total_unit($subject_id,"",$connection);
-} 
+  if ($current_units + get_subject_total_unit($subject_id,"", $connection) > $max_units) {
+    $success = 0;
+    redirect_to("assign-subjects-irreg-student.php?regid=".$stud_reg_id."&student_num=".urlencode($student_num)."&course=".$course_id."&year=".urlencode($year)."&sy=".urlencode($sy)."&term=".$term."&error=1");
+    }
 
-if ($current_units + get_subject_total_unit($subject_id,"", $connection) > $max_units) {
-  $success == 0;
-  redirect_to("assign-subjects-irreg-student.php?regid=".$stud_reg_id."&student_num=".urlencode($student_num)."&course=".$course_id."&year=".urlencode($year)."&sy=".urlencode($sy)."&term=".$term."&error=1");
   }
-
+}
 
 
 if ($success == 1) {
@@ -88,8 +91,12 @@ if ($success == 1) {
 
   if(isset($connection)){ mysqli_close($connection); }
 
-  $redirect_text = $stud_reg_id."&student_num=".urlencode($student_num)."&course=".$course_id."&year=".urlencode($year)."&sy=".urlencode($sy)."&term=".$term."&success=".$success;
-
+  if ($overload == 1) {
+    $redirect_text = $stud_reg_id."&student_num=".urlencode($student_num)."&course=".$course_id."&year=".urlencode($year)."&sy=".urlencode($sy)."&term=".$term."&success=".$success."&overload=".$overload;  
+  }
+  else{
+    $redirect_text = $stud_reg_id."&student_num=".urlencode($student_num)."&course=".$course_id."&year=".urlencode($year)."&sy=".urlencode($sy)."&term=".$term."&success=".$success;  
+  }
   redirect_to("assign-subjects-irreg-student.php?regid=".$redirect_text);
 }
 

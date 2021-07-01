@@ -534,5 +534,12 @@ global $sidebar_context;
     	 }
     	 return $student_reg_id;
     }
+    function return_duplicate_entry($table,$column,$identifier,$row_count,$connection){
+    	$query_duplicate_entry = "SELECT * FROM ".$table." WHERE ".$column."='".$identifier."'";
+    	$result_duplicate_entry = mysqli_query($connection, $query_duplicate_entry);
+
+    	$row_count=mysqli_num_rows($result_duplicate_entry);
+    	return $row_count;
+    }
  ?>
 

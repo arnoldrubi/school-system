@@ -33,18 +33,26 @@
 
 ?>
 
-<div class="modal-header">
-  <h3>Faculty Information</h3>
-  <button type="button" class="close" data-dismiss="modal">X</button>
-</div>
-<div class="modal-body">
-  <div class="panel panel-default">
-    <div class="panel-body">
-  <div class="row" id="print-schedule-form">
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+
+    <!-- Custom fonts for this template-->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans|Roboto&display=swap" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="static/custom.css">
+</head>
+<body>
+<div class="container-fluid">
+  <div class="row" id="print-enrollment-form">
     <div class="col-md-12">
   
         <h4>Class Info</h4> 
-          <table class="table table-hover text-left">
+          <table class="table table-hover">
             <tbody>
               <tr>
                 <td>Course:</td>
@@ -74,7 +82,7 @@
           </table>
 
           <h4>Course Subjects</h4>
-          <table class="table table-hover small">
+          <table class="table table-hover">
             <thead>
               <tr>
                 <th>Subject Code</th>
@@ -186,7 +194,18 @@
                 </tr>
             </tfoot>
           </table>
-    </div>
+    <center>
+      <button id="preview-print" class="btn btn-primary no-print"><i class="fa fa-print" aria-hidden="true"></i></i></i> Print Schedule</button>
+    </center><br>
   </div>
 </div>
+</body>
+</html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript">
+  
+  $('#preview-print').click(function () {
+    window.print("print-enrollment-form");
+  });
 
+</script>
