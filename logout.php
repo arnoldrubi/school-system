@@ -1,19 +1,17 @@
 <?php 
 
 require_once("includes/session.php");
+require_once("includes/db_connection.php");
 require_once("includes/functions.php");
 
 //note: session already started using the session.php
+//addition for security: delete the rows of the user from usertokens table
 
-	// $_SESSION["user_id"] = null;
-	// $_SESSION["username"] = null;
-	// $_SESSION["role"] = null;
-
-	// redirect_to("index.php");
-
-	//v2: destroy session
-	// assumes nothing else in session to keep
-	session_start();
+    $user_exist = return_duplicate_entry("user_token","username",$_SESSION["username"],"",$connection);
+    if ($user_exist > 0) {
+	    $query  = "DELETE FROM user_token WHERE username='".$_SESSION["username"]."' LIMIT 1";
+	    $result = mysqli_query($connection, $query);
+    }
 	$_SESSION = array();
 	if (isset($_COOKIE[session_name()])) {
 		setcookie(session_name(), '', time()-42000, '/');

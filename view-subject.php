@@ -31,48 +31,49 @@
           Manage Subjects
         </li>
       </ol>
-      <h1>View All Subject</h1>
-      <hr>
-      <input class="form-control" id="myInput" type="text" placeholder="Quick Search">
-      <?php
+      <div class="card mb-3">
+        <div class="card-header">
+          <i class="fa fa-table"></i>
+          View Subjects</div>
+          <div class="card-body">
+            <div class="table-responsive" id="dataTable_wrapper">
+            <?php
 
-        echo "<table id=\"datatable\" class=\"table table-striped table-bordered dataTable\">";
-        echo " <thead>";
-        echo "  <tr>";
-        echo "   <th>Subject Name</th>";
-        echo "   <th>Subject Code</th>";
-        echo "   <th>Lecture Units</th>";
-        echo "   <th>Lab Units</th>";
-        echo "   <th>Total Units</th>";
-        echo "   <th>Prerequisite</th>";
-        echo "   <th>Options</th>";   
-        echo "  </tr></thead><tbody>";
-        
-        
+              echo "<table class=\"table table-bordered dataTable\" id=\"dataTable\" width=\"100%\" role=\"grid\" aria-describedby=\"dataTable_info\" style=\"width: 100%;\">";
+              echo " <thead>";
+              echo "  <tr>";
+              echo "   <th>Subject Name</th>";
+              echo "   <th>Subject Code</th>";
+              echo "   <th>Lecture Units</th>";
+              echo "   <th>Lab Units</th>";
+              echo "   <th>Total Units</th>";
+              echo "   <th>Prerequisite</th>";
+              echo "   <th>Options</th>";   
+              echo "  </tr></thead><tbody>";
+              
+              
 
-        $query  = "SELECT * FROM subjects ORDER BY subject_id ASC";
-        $result = mysqli_query($connection, $query);
+              $query  = "SELECT * FROM subjects ORDER BY subject_id ASC";
+              $result = mysqli_query($connection, $query);
 
-      while($row = mysqli_fetch_assoc($result))
-        {
-        echo "<tr>";
-        echo "<td>".$row['subject_name']."</td>";
-        echo "<td>".$row['subject_code']."</td>";
-        echo "<td>".$row['lect_units']."</td>";
-        echo "<td>".$row['lab_units']."</td>";
-        echo "<td>".$row['total_units']."</td>";
-        echo "<td>".get_subject_name($row['pre_id'],"",$connection)."</td>";
-        echo "<td><a class=\"btn btn-warning btn-xs\" title=\"Edit\" href=\"edit-subject.php?subject_id=".$row['subject_id']."\""."><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a> ";
-        echo "<a title=\"Delete\" class=\"btn btn-danger btn-xs\" href=\"javascript:confirmDelete('delete-subject.php?subject_id=".$row['subject_id']."')\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a></td>";
-        //echo "<a href=\"delete-subject.php?subject_id=".$row['subject_id']."\""." onclick=\"confirm('Are you sure?')\"> Delete Subject</a></td>";
-        echo "</tr>";
-        }
+            while($row = mysqli_fetch_assoc($result))
+              {
+              echo "<tr>";
+              echo "<td>".$row['subject_name']."</td>";
+              echo "<td>".$row['subject_code']."</td>";
+              echo "<td>".$row['lect_units']."</td>";
+              echo "<td>".$row['lab_units']."</td>";
+              echo "<td>".$row['total_units']."</td>";
+              echo "<td>".get_subject_name($row['pre_id'],"",$connection)."</td>";
+              echo "<td class=\"options-td\"><a class=\"btn btn-warning btn-xs a-modal\" title=\"Edit\" href=\"edit-subject.php?subject_id=".$row['subject_id']."\""."><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a> ";
+              echo "<a title=\"Delete\" class=\"btn btn-danger btn-xs a-modal\" href=\"javascript:confirmDelete('delete-subject.php?subject_id=".$row['subject_id']."')\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a></td>";
+              echo "</tr>";
+              }
 
-        echo "</tbody></table>"; 
-      ?>
-
-
-
+              echo "</tbody></table>"; 
+            ?>
+        </div>
+      </div>
     </div>
   </div>
   <!-- /#wrapper -->

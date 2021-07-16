@@ -31,69 +31,74 @@
          Group Scheduling
         </li>
       </ol>
-      <h1>Group Scheduling Dashboard</h1>
+      <div class="card mb-3">
+        <div class="card-header">
+          <i class="fa fa-table"></i>
+          Group Scheduling Dashboard</div>
+          <div class="card-body">
+            <?php
 
-      <?php
+              $term = return_current_term($connection, "");
+              $school_yr = return_current_sy($connection, "");
 
-        $term = return_current_term($connection, "");
-        $school_yr = return_current_sy($connection, "");
+              echo "<table class=\"table table-bordered dataTable\" id=\"dataTable\" role=\"grid\" aria-describedby=\"dataTable_info\" style=\"width: 100%;\">";
+              echo " <thead>";
+              echo "  <tr>";
+              echo "   <th>Courses Name</th>";
+              echo "   <th>Courses Code</th>";
+              echo "   <th>Year</th>";
+              echo "   <th>Section</th>";
+              echo "   <th>Term</th>";
+              echo "   <th>Year</th>";
+              echo "   <th>School Year</th>";
+              echo "   <th>Total Enrollment</th>";
+              echo "   <th>Option</th>";   
+              echo "  </tr></thead><tbody>";
+              
+              
 
-        echo "<table class=\"table table-bordered dataTable\" id=\"dataTable\" role=\"grid\" aria-describedby=\"dataTable_info\" style=\"width: 100%;\">";
-        echo " <thead>";
-        echo "  <tr>";
-        echo "   <th>Courses Name</th>";
-        echo "   <th>Courses Code</th>";
-        echo "   <th>Year</th>";
-        echo "   <th>Section</th>";
-        echo "   <th>Term</th>";
-        echo "   <th>Year</th>";
-        echo "   <th>School Year</th>";
-        echo "   <th>Total Enrollment</th>";
-        echo "   <th>Option</th>";   
-        echo "  </tr></thead><tbody>";
-        
-        
+              $query  = "SELECT sections.sec_id, sections.course_id, sections.sec_name, sections.year, courses.course_id, courses.course_code, courses.course_desc FROM sections INNER JOIN courses ON sections.course_id=courses.course_id ORDER BY courses.course_code;";
+              $result = mysqli_query($connection, $query);
 
-        $query  = "SELECT sections.sec_id, sections.course_id, sections.sec_name, sections.year, courses.course_id, courses.course_code, courses.course_desc FROM sections INNER JOIN courses ON sections.course_id=courses.course_id ORDER BY courses.course_code;";
-        $result = mysqli_query($connection, $query);
+            while($row = mysqli_fetch_assoc($result))
+              {
 
-      while($row = mysqli_fetch_assoc($result))
-        {
+                  echo "<tr>";
 
-            echo "<tr>";
+                  echo "<td>".$row['course_desc']."</td>";
+                  echo "<td>".$row['course_code']."</td>";         
+                  echo "<td>".$row['year']."</td>";
+                  echo "<td>".$row['sec_name']."</td>";
+                  echo "<td>".$term."</td>";
+                  echo "<td>".$row['year']."</td>";
+                  echo "<td>".$school_yr."</td>";
+                  $enrolled_students = get_enrolled_regular_students($row['sec_id'],$term,$school_yr,"",$connection);
+                  echo "<td>".$enrolled_students."</td>";
+                  echo "<td class=\"option-grp\"><a class=\"btn btn-success btn-xs\" title=\"Build Schedule\" href=\"create-schedule-for-class.php?sec_id=".urlencode($row['sec_id'])."&term=".urlencode($term)."&school_yr=".$school_yr."\"><i class=\"fa fa-list-alt\" aria-hidden=\"true\"></i>
+      </a>";
+                  echo "<a class=\"btn btn-success btn-xs a-modal\" title=\"View Schedule\" target=\"_blank\" href=\"preview-print-schedule.php?sec_id=".urlencode($row['sec_id'])."&term=".urlencode($term)."&school_yr=".$school_yr."\"><i class=\"fa fa-clock-o\" aria-hidden=\"true\"></i></a>";
+                  echo "<a class=\"btn btn-success btn-xs \" title=\"Print Schedule\" target=\"_blank\" href=\"print-schedule.php?sec_id=".urlencode($row['sec_id'])."&term=".urlencode($term)."&school_yr=".$school_yr."\"><i class=\"fa fa-print\" aria-hidden=\"true\"></i></a>";
+                  echo "</tr>";
+              }
 
-            echo "<td>".$row['course_desc']."</td>";
-            echo "<td>".$row['course_code']."</td>";         
-            echo "<td>".$row['year']."</td>";
-            echo "<td>".$row['sec_name']."</td>";
-            echo "<td>".$term."</td>";
-            echo "<td>".$row['year']."</td>";
-            echo "<td>".$school_yr."</td>";
-            $enrolled_students = get_enrolled_regular_students($row['sec_id'],$term,$school_yr,"",$connection);
-            echo "<td>".$enrolled_students."</td>";
-            echo "<td class=\"option-grp\"><a class=\"btn btn-success btn-sm\" href=\"create-schedule-for-class.php?sec_id=".urlencode($row['sec_id'])."&term=".urlencode($term)."&school_yr=".$school_yr."\">Build Schedule</a>";
-            echo "<a class=\"btn btn-success btn-xs a-modal\" title=\"View Schedule\" target=\"_blank\" href=\"preview-print-schedule.php?sec_id=".urlencode($row['sec_id'])."&term=".urlencode($term)."&school_yr=".$school_yr."\"><i class=\"fa fa-clock-o\" aria-hidden=\"true\"></i></a>";
-            echo "<a class=\"btn btn-success btn-xs \" title=\"Print Schedule\" target=\"_blank\" href=\"print-schedule.php?sec_id=".urlencode($row['sec_id'])."&term=".urlencode($term)."&school_yr=".$school_yr."\"><i class=\"fa fa-print\" aria-hidden=\"true\"></i></a>";
-            echo "</tr>";
-        }
+              echo "</tbody></table>"; 
+            ?>
 
-        echo "</tbody></table>"; 
-      ?>
-
-    <div id="theModal" class="modal fade text-center">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
+            <div id="theModal" class="modal fade text-center">
+              <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                </div>
+              </div>
+          </div>
         </div>
       </div>
-    </div>
-
     </div>
   </div>
   <!-- /#wrapper -->
 
   <!-- Scroll to Top Button-->
   <a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
+    <i class="fa fa-angle-up"></i>
   </a>
 
   <!-- Logout Modal-->

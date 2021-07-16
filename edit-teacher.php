@@ -40,89 +40,92 @@
           Edit Teacher
         </li>
       </ol>
-      <h1>Edit Teacher Form</h1>
-      <hr>
-     <form action="" method="post" >
-      <h2>Edit Teacher's Info</h2>
-      <?php
+      <div class="card mb-3">
+        <div class="card-header">
+          <i class="fa fa-pencil-square-o"></i>
+          Edit Teacher Info</div>
+          <div class="card-body">
+           <form class="form-horizontal" action="" method="post" >           
+            <?php
 
-        $query  = "SELECT * FROM teachers WHERE teacher_id = ".$teacher_id;
-        $result = mysqli_query($connection, $query);
+              $query  = "SELECT * FROM teachers WHERE teacher_id = ".$teacher_id;
+              $result = mysqli_query($connection, $query);
 
-        if ($result === !TRUE) {
-              echo "<script type='text/javascript'>";
-              echo "alert('No record exists!');";
-              echo "</script>";
+              if ($result === !TRUE) {
+                    echo "<script type='text/javascript'>";
+                    echo "alert('No record exists!');";
+                    echo "</script>";
 
-              $URL="view-teaschers.php";
-              echo "<script>location.href='$URL'</script>";
+                    $URL="view-teaschers.php";
+                    echo "<script>location.href='$URL'</script>";
 
-        }
-
-        while($row = mysqli_fetch_assoc($result))
-          {
-            echo  "<div class=\"form-group row\">";
-            echo  "<label class=\"col-md-2 col-form-label\" for=\"first-name\">First Name</label>";
-            echo  "<div class=\"col-md-2\">";
-            echo "<input id=\"first-name\" name=\"first-name\" type=\"text\" placeholder=\"Input First Name\" class=\"form-control input-md\" required=\"\" value=\"".$row['first_name']."\">";
-            echo "</div>";
-
-            echo  "<label class=\"col-md-2 col-form-label\" for=\"last-name\">Last Name</label>";
-            echo  "<div class=\"col-md-2\">";
-            echo "<input id=\"last-name\" name=\"last-name\" type=\"text\" placeholder=\"Input First Name\" class=\"form-control input-md\" required=\"\" value=\"".$row['last_name']."\">";
-            echo "</div>";
-
-            echo  "<label class=\"col-md-2 col-form-label\" for=\"department\">Department</label>";
-            echo  "<div class=\"col-md-2\">";
-            echo "<input id=\"department\" type=\"text\" name=\"department\" placeholder=\"Input Department\" class=\"form-control input-md\" required=\"\" value=\"".$row['department']."\">";
-            echo "</div></div>";
-
-          }
-
-        if (isset($_POST['submit'])) {
-          $first_name = mysql_prep($_POST["first-name"]);
-          $last_name = mysql_prep($_POST["last-name"]);
-          $department = mysql_prep($_POST["department"]);
-
-          if (!isset($first_name) || !isset($last_name)) {
-            die ("<div class=\"alert alert-danger\" role=\"alert\">Error: One or more fields are empty.</div>");
-          }
-          else{
-            $query  = "UPDATE teachers SET first_name = '{$first_name}', last_name = '{$last_name}', department = '{$department}' WHERE teacher_id = {$teacher_id} LIMIT 1";
-            $result = mysqli_query($connection, $query);
-
-            if ($result === TRUE) {
-              echo "<script type='text/javascript'>";
-              echo "alert('Updating teacher info successful!');";
-              echo "</script>";
-
-              $URL="view-teachers.php";
-              echo "<script>location.href='$URL'</script>";
-              } else {
-                echo "Error updating record: " . $connection->error;
               }
-          }
-        }
-            //removed the redirect function and replaced it with javascript alert above
-            //redirect_to("new-subject.php");
 
-      ?>
+              while($row = mysqli_fetch_assoc($result))
+                {
+                  echo  "<div class=\"form-group row\">";
+                  echo  "<label class=\"col-md-2 col-form-label\" for=\"first-name\">First Name</label>";
+                  echo  "<div class=\"col-md-6\">";
+                  echo "<input id=\"first-name\" name=\"first-name\" type=\"text\" placeholder=\"Input First Name\" class=\"form-control input-md\" required=\"\" value=\"".$row['first_name']."\">";
+                  echo "</div></div>";
 
-      <div class="row">
-        <div class="col-md-12 d-flex justify-content-center">
-          <input type="submit" name="submit" value="Edit Teacher" class="btn btn-primary" />&nbsp;
-          <a class="btn btn-secondary"href="view-teachers.php">Cancel</a>
-        </div>
+                  echo  "<div class=\"form-group row\"><label class=\"col-md-2 col-form-label\" for=\"last-name\">Last Name</label>";
+                  echo  "<div class=\"col-md-6\">";
+                  echo "<input id=\"last-name\" name=\"last-name\" type=\"text\" placeholder=\"Input First Name\" class=\"form-control input-md\" required=\"\" value=\"".$row['last_name']."\">";
+                  echo "</div></div>";
+
+                  echo  "<div class=\"form-group row\"><label class=\"col-md-2 col-form-label\" for=\"department\">Department</label>";
+                  echo  "<div class=\"col-md-6\">";
+                  echo "<input id=\"department\" type=\"text\" name=\"department\" placeholder=\"Input Department\" class=\"form-control input-md\" required=\"\" value=\"".$row['department']."\">";
+                  echo "</div></div>";
+
+                }
+
+              if (isset($_POST['submit'])) {
+                $first_name = mysql_prep($_POST["first-name"]);
+                $last_name = mysql_prep($_POST["last-name"]);
+                $department = mysql_prep($_POST["department"]);
+
+                if (!isset($first_name) || !isset($last_name)) {
+                  die ("<div class=\"alert alert-danger\" role=\"alert\">Error: One or more fields are empty.</div>");
+                }
+                else{
+                  $query  = "UPDATE teachers SET first_name = '{$first_name}', last_name = '{$last_name}', department = '{$department}' WHERE teacher_id = {$teacher_id} LIMIT 1";
+                  $result = mysqli_query($connection, $query);
+
+                  if ($result === TRUE) {
+                    echo "<script type='text/javascript'>";
+                    echo "alert('Updating teacher info successful!');";
+                    echo "</script>";
+
+                    $URL="view-teachers.php";
+                    echo "<script>location.href='$URL'</script>";
+                    } else {
+                      echo "Error updating record: " . $connection->error;
+                    }
+                }
+              }
+                  //removed the redirect function and replaced it with javascript alert above
+                  //redirect_to("new-subject.php");
+
+            ?>
+
+            <div class="row">
+              <div class="col-md-12 d-flex justify-content-center">
+                <input type="submit" name="submit" value="Edit Teacher" class="btn btn-success" />&nbsp;
+                <a class="btn btn-secondary"href="view-teachers.php">Cancel</a>
+              </div>
+            </div>
+          </form>
       </div>
-
-    </form>
+    </div>
   </div>
  </div> 
   <!-- /#wrapper -->
 
   <!-- Scroll to Top Button-->
   <a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
+    <i class="fa fa-angle-up"></i>
   </a>
 
 

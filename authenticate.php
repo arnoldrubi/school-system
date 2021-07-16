@@ -45,6 +45,26 @@ if (isset($_POST['submit'])) {
     $_SESSION["message"] = "";
     $_SESSION["teacher_id"] =  $found_admin["teacher_id"];
 
+// insert codes here for the user token
+
+    $token = getToken(16);
+    $timestamp = date("Y-m-d H:i:s");
+    $user_exist = return_duplicate_entry("user_token","username",$username,"",$connection);
+    // create session token
+    $_SESSION['token'] = $token;
+
+    if ($user_exist > 0) {
+      $query_update_token  = "UPDATE user_token SET token = '{$token}', timemodified = '{$timestamp}' WHERE username ='".$username."' LIMIT 1";
+      $result_update_token = mysqli_query($connection, $query_update_token);
+    }
+    else if ($user_exist < 1) {
+      $query_insert_token  = "INSERT INTO user_token (username, token, timemodified) VALUES ('{$username}', '{$token}', '{$timestamp}')";
+      $result_insert_token = mysqli_query($connection, $query_insert_token);
+    }
+
+
+// end codes for user token
+
     if ($_SESSION["role"] == "faculty") {
       redirect_to("faculty-dashboard.php");
     }

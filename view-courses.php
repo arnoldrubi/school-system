@@ -28,58 +28,60 @@
             View All Courses
         </li>
       </ol>
-      
-      <h1>View All Courses</h1>
-      <hr>
-      <?php
+      <div class="card mb-3">
+        <div class="card-header">
+          <i class="fa fa-table"></i>
+          View All Courses</div>
+          <div class="card-body">
+            <?php
 
-        echo "<table class=\"table table-bordered dataTable\" id=\"dataTable\" width=\"100%\" cellspacing=\"0\" role=\"grid\" aria-describedby=\"dataTable_info\" style=\"width: 100%;\">";
-        echo " <thead>";
-        echo "  <tr>";
-        echo "   <th>Courses Name</th>";
-        echo "   <th>Courses Code</th>";
-        echo "   <th>&nbsp;</th>";   
-        echo "  </tr></thead><tbody>";
-        
-        
+              echo "<table class=\"table table-bordered dataTable\" id=\"dataTable\" width=\"100%\" cellspacing=\"0\" role=\"grid\" aria-describedby=\"dataTable_info\" style=\"width: 100%;\">";
+              echo " <thead>";
+              echo "  <tr>";
+              echo "   <th>Courses Name</th>";
+              echo "   <th>Courses Code</th>";
+              echo "   <th>Options</th>";   
+              echo "  </tr></thead><tbody>";
+              
+              
 
-        $query  = "SELECT * FROM courses WHERE course_deleted = 0  ORDER BY course_code ASC ";
-        $result = mysqli_query($connection, $query);
+              $query  = "SELECT * FROM courses WHERE course_deleted = 0  ORDER BY course_code ASC ";
+              $result = mysqli_query($connection, $query);
 
-      while($row = mysqli_fetch_assoc($result))
-        {
-        echo "<tr>";
-        echo "<td>".$row['course_desc']."</td>";
-        echo "<td>".$row['course_code']."</td>";
-        echo "<td><a href=\"edit-course.php?course_id=".$row['course_id']."\"".">Edit Course</a> | ";
-        echo "<a href=\"javascript:confirmDelete('delete-course.php?course_id=".$row['course_id']."')\"> Delete Course</a></td>";
-        //echo "<a href=\"delete-subject.php?subject_id=".$row['subject_id']."\""." onclick=\"confirm('Are you sure?')\"> Delete Subject</a></td>";
-        echo "</tr>";
-        }
+            while($row = mysqli_fetch_assoc($result))
+              {
+              echo "<tr>";
+              echo "<td>".$row['course_desc']."</td>";
+              echo "<td>".$row['course_code']."</td>";
+              echo "<td class=\"options-td\"><a class=\"btn btn-warning btn-xs a-modal\" title=\"Edit Course\" href=\"edit-course.php?course_id=".$row['course_id']."\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a> ";
+              echo "<a class=\"btn btn-danger btn-xs a-modal\" href=\"javascript:confirmDelete('delete-course.php?course_id=".$row['course_id']."')\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a></td>";
+              echo "</tr>";
+              }
 
-        echo "</tbody></table>"; 
-      ?>
+              echo "</tbody></table>"; 
+            ?>
 
-      <form>
-        <div class="form-group row">
-          <label class="col-md-2 col-form-label" for="ShowDeletedCourses">Show Deleted Courses</label>  
-          <div class="col-md-2">
-            <select id="select-deleted" class="form-control">
-              <option selected disabled>Confirm Selection</option>
-              <option value = "1">Yes</option> 
-              <option value = "0">No</option>              
-            </select>
-          </div>
-        </div> 
-      </form>
-
+            <form>
+              <div class="form-group row">
+                <label class="col-md-2 col-form-label" for="ShowDeletedCourses">Show Deleted Courses</label>  
+                <div class="col-md-2">
+                  <select id="select-deleted" class="form-control">
+                    <option selected disabled>Confirm Selection</option>
+                    <option value = "1">Yes</option> 
+                    <option value = "0">No</option>              
+                  </select>
+                </div>
+              </div> 
+            </form>
+        </div>
+      </div>
     </div>
   </div>
   <!-- /#wrapper -->
 
   <!-- Scroll to Top Button-->
   <a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
+    <i class="fa fa-angle-up"></i>
   </a>
 
   <!-- Logout Modal-->

@@ -1,10 +1,31 @@
 <?php 
+require_once("includes/db_connection.php");
 require_once("includes/functions.php");
 require_once("includes/session.php");
 
   $username = $_SESSION["username"];
   $role =  $_SESSION["role"];
   confirm_logged_in();
+
+if (isset($username)) {
+
+  $user_exist = return_duplicate_entry("user_token","username",$username,"",$connection);
+ 
+  if ($user_exist > 0) {
+    $query  = "SELECT * FROM user_token WHERE username='".$username."' LIMIT 1";
+    $result = mysqli_query($connection, $query);
+ 
+  while($row = mysqli_fetch_assoc($result))
+    {
+      $token = $row['token'];
+    }    
+    if($_SESSION['token'] != $token){
+      session_destroy();
+      redirect_to("index.php?error=1");
+    }
+  }
+}
+
 ?>
 
 <!doctype html>

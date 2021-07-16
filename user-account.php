@@ -33,7 +33,7 @@
         }
       ?>
 
-  <title>Manage Schedule</title>
+  <title>Manage User Account</title>
   </head>
 
   <body>
@@ -45,38 +45,39 @@
   <?php include 'layout/admin-sidebar.php';?>
 
     <div id="content-wrapper" class="col-md">
-      <h1>Manage User info for <?php
-
-
-      echo ucfirst($username);
-
-      ?></h1>
-    <div class="col-md-2 col-md-offset-5">
-      <form action="" method="post">
-        <div class="form-group">
-          <p>Change password:</p>
-          <label for="exampleInputPassword1">Password</label>
-          <input type="password" value="" class="form-control" id="InputPassword1" required name="password1" placeholder="Password">
-          <label for="exampleInputPassword1">Repeat Password</label>
-          <input type="password" value="" class="form-control" id="InputPassword2" required name="password2" placeholder="Repeat Password">
-        </div>
-        <hr>
-        <div class="form-group">
-          <p>Change Email:</p>
-          <label for="exampleInputEmail1">Email address</label>
-          <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="email" value="<?php echo $email; ?>" placeholder="Enter email">
-        </div>
-        <button id="submit" name="submit" type="submit" class="btn btn-primary">Submit</button>
-      </form>
-      <?php if (isset($_SESSION["message"]) && $_SESSION["message"] !== "") {
-        echo "<br><div class=\"alert alert-success\" role=\"alert\">";
-        echo $_SESSION["message"];
-        $_SESSION["message"] = "";
-        echo "</div>";
-      } ?>
-     </div>
+      <div class="card mb-3">
+        <div class="card-header">
+          <i class="fa fa-pencil-square-o"></i>
+          Manage User info for <?php echo ucfirst($username); ?></div>
+          <div class="card-body">
+            <div class="col-md-2 col-md-offset-5">
+              <form action="" method="post">
+                <div class="form-group">
+                  <p>Change password:</p>
+                  <label for="exampleInputPassword1">Password</label>
+                  <input type="password" value="" class="form-control" id="InputPassword1" required name="password1" placeholder="Password">
+                  <label for="exampleInputPassword1">Repeat Password</label>
+                  <input type="password" value="" class="form-control" id="InputPassword2" required name="password2" placeholder="Repeat Password">
+                </div>
+                <hr>
+                <div class="form-group">
+                  <p>Change Email:</p>
+                  <label for="exampleInputEmail1">Email address</label>
+                  <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="email" value="<?php echo $email; ?>" placeholder="Enter email">
+                </div>
+                <button id="submit" name="submit" type="submit" class="btn btn-primary">Submit</button>
+              </form>
+              <?php if (isset($_SESSION["message"]) && $_SESSION["message"] !== "") {
+                echo "<br><div class=\"alert alert-success\" role=\"alert\">";
+                echo $_SESSION["message"];
+                $_SESSION["message"] = "";
+                echo "</div>";
+              } ?>
+             </div>
+            </div>
+          </div>
+      </div>
     </div>
-  </div>
   <!-- /#wrapper -->
 
   <!-- Scroll to Top Button-->

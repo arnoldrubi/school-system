@@ -34,7 +34,7 @@
 ?>
 
 <div class="modal-header">
-  <h3>Faculty Information</h3>
+  <h4>Preview Schedule</h4>
   <button type="button" class="close" data-dismiss="modal">X</button>
 </div>
 <div class="modal-body">

@@ -27,59 +27,66 @@
           New Subject
         </li>
       </ol>
-      <h1>Create New Subject Form</h1>
-      <hr>
-      <!-- Text input-->
-     <form action="" method="post" >
-      <h2>Build Subject Info</h2>
-      <div class="form-group row">
-        <label class="col-md-1 col-form-label" for="subject-name">Subject Name</label>  
-        <div class="col-md-2">
-         <input id="subject-name" name="subject-name" type="text" placeholder="Input Subject Name" class="form-control" required>            
-        </div>
-        <label class="col-md-1 col-form-label" for="subject-code">Subject Code</label>  
-        <div class="col-md-2">
-         <input id="subject-code" name="subject-code" type="text" placeholder="Subject Code" class="form-control" required>
-         <span class="help-block">Input the code for the subject (example: IT1)</span>  
-        </div>
-        <label class="col-md-1 col-form-label" for="subject-name">Lecture Units</label>  
-        <div class="col-md-2">
-         <input id="lect-units" name="lect_units" min="1" max="6" type="number" class="form-control" placeholder="1" required>            
-        </div>
-        <label class="col-md-1 col-form-label" for="subject-code">Lab Units</label>  
-        <div class="col-md-2">
-         <input id="lab-units" name="lab_units" min="0" max="6" type="number" class="form-control" placeholder="0">
-        </div>
-      </div>
-      <div class="form-group row">
-        <label class="col-md-1 col-form-label" for="pre_id">Prerequisite Subject</label>  
-        <div class="col-md-5">
-         <select class="form-control" name="pre_id">
-          <option value="">None</option>
-            <?php
-              $query  = "SELECT * FROM subjects ORDER BY subject_code";
-              $result = mysqli_query($connection, $query);
+      <div class="card mb-3">
+        <div class="card-header">
+          <i class="fa fa-plus-square"></i>
+          New Subject</div>
+          <div class="card-body">
+           <form class="form-horizontal" action="" method="post" >
+            <div class="form-group row">
+              <label class="col-md-2 col-form-label" for="subject-name">Subject Name:</label>  
+              <div class="col-md-10">
+               <input id="subject-name" name="subject-name" type="text" placeholder="Input Subject Name" class="form-control" required>            
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-2 col-form-label" for="subject-code">Subject Code:</label>  
+              <div class="col-md-10">
+               <input id="subject-code" name="subject-code" type="text" placeholder="Subject Code" class="form-control" required>
+               <span class="help-block">Input the code for the subject (example: IT1)</span>  
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-2 col-form-label" for="subject-name">Lecture Units:</label>  
+              <div class="col-md-1">
+               <input id="lect-units" name="lect_units" min="1" max="6" type="number" class="form-control" placeholder="1" required>            
+              </div>
+              <label class="col-md-2 col-form-label" for="subject-code">Lab Units:</label>  
+              <div class="col-md-1">
+               <input id="lab-units" name="lab_units" min="0" max="6" type="number" class="form-control" placeholder="0">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-2 col-form-label" for="pre_id">Prerequisite Subject:</label>  
+              <div class="col-md-5">
+               <select class="form-control" name="pre_id">
+                <option value="">None</option>
+                  <?php
+                    $query  = "SELECT * FROM subjects ORDER BY subject_code";
+                    $result = mysqli_query($connection, $query);
 
-              while($row = mysqli_fetch_assoc($result)){
-                echo "<option value=\"".$row['subject_id']."\">".$row['subject_code'].": ".$row['subject_name']."</option>";
-              }
-            ?>              
-         </select>        
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-12 d-flex justify-content-center">
-        <input type="submit" name="submit" value="Create Subject" class="btn btn-primary" />&nbsp;
-        <a class="btn btn-secondary"href="view-subject.php">Cancel</a>
-        </div>
-      </div>
-    </form>
+                    while($row = mysqli_fetch_assoc($result)){
+                      echo "<option value=\"".$row['subject_id']."\">".$row['subject_code'].": ".$row['subject_name']."</option>";
+                    }
+                  ?>              
+               </select>        
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12 d-flex justify-content-center">
+              <input type="submit" name="submit" value="Create Subject" class="btn btn-success" />&nbsp;
+              <a class="btn btn-secondary"href="view-subject.php">Cancel</a>
+              </div>
+            </div>
+          </form>
 
       <?php 
 
         if (isset($_POST['submit'])) {
-          $subject_name = mysql_prep($_POST["subject-name"]);
-          $subject_code = strtoupper(mysql_prep($_POST["subject-code"]));
+          // character trims are done to make sure the whitespaces at the start and end of string for Subject Name and Code are removed
+          // this will help the validation of duplicat values
+          $subject_name = ltrim(rtrim(mysql_prep($_POST["subject-name"])));
+          $subject_code = ltrim(rtrim(strtoupper(mysql_prep($_POST["subject-code"]))));
           $lect_units = (int) $_POST["lect_units"];
           $lab_units = (int) $_POST["lab_units"];
           $total_units = $lab_units + $lect_units;
@@ -123,15 +130,17 @@
         if(isset($connection)){ mysqli_close($connection); }
         //close database connection after an sql command
         ?>
+        </div>
       </div>
-   </div> 
+    </div>
+ </div> 
   <!-- /#wrapper -->
 
 
 
   <!-- Scroll to Top Button-->
   <a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
+    <i class="fa fa-angle-up"></i>
   </a>
 
 <?php include 'layout/footer.php';?>

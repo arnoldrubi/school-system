@@ -15,12 +15,9 @@
     redirect_to("classes.php");
   }
 ?>
-
   <title>Manage Schedule</title>
   </head>
-
   <body>
-
   <?php include 'layout/admin-nav.php';?>
 
   <div id="wrapper">
@@ -60,76 +57,74 @@
               
             }
       ?>
-      <div class="row">
-        <div class="col-md-8">
-          <h4><i class="fa fa-bell" aria-hidden="true"></i> All Schedule for <?php echo $subject_name." (".$subject_code."), ".$course." ".$sec_year." ".$sec_name; ?></h4>
-        </div>
-        <div class="col-md-4">
+      <div class="card mb-3">
+        <div class="card-header">
+          <i class="fa fa-table"></i>
+          All Schedule for <?php echo $subject_name." (".$subject_code."), ".$course." ".$sec_year." ".$sec_name; ?>
           <div class="button-flt-right">
             <?php
               echo "<a href=\"new-schedule.php?class_id=".urlencode($class_id)."\" class=\"btn btn-success btn-sm\">Add New Schedule</a><br>";
             ?>
           </div>
-        </div>  
+        </div>
+          <div class="card-body">
+            <div class="table-responsive" id="dataTable_wrapper">
+            <?php
+
+              echo "<table class=\"table table-bordered dataTable\" id=\"dataTable\" width=\"100%\" cellspacing=\"0\" role=\"grid\" aria-describedby=\"dataTable_info\" style=\"width: 100%;\">";
+              echo " <thead>";
+              echo "  <tr>";
+              echo "   <th>Subject Code</th>";
+              echo "   <th class=\"skip-filter\">Subject</th>";
+              echo "   <th>Course</th>";
+              echo "   <th>Year</th>";
+              echo "   <th>Term</th>";
+              echo "   <th>Section</th>";
+              echo "   <th class=\"skip-filter\">Room</th>";
+              echo "   <th class=\"skip-filter\">Teacher</th>";
+              echo "   <th class=\"skip-filter\">Day</th>";        
+              echo "   <th class=\"skip-filter\">Time Start</th>";
+              echo "   <th class=\"skip-filter\">Time End</th>";
+              echo "   <th class=\"skip-filter\">Options</th>";   
+              echo "  </tr></thead><tbody>";
+              
+              
+
+              $query  = "SELECT * FROM schedule_block WHERE class_id='".$class_id."' ORDER BY day ASC, time_start ASC";
+              $result = mysqli_query($connection, $query);
+
+            while($row = mysqli_fetch_assoc($result))
+              {
+                $day = number_to_day($row['day']);
+                $teacher_name = get_teacher_name($row['teacher_id'],"",$connection);
+                echo "<tr>";
+                echo "<td>".get_subject_code($row['subject_id'],"",$connection)."</td>"; 
+                echo "<td>".get_subject_name($row['subject_id'],"",$connection)."</td>"; 
+                echo "<td>".get_course_code($row['course_id'],"",$connection)."</td>";
+                echo "<td>".$row['year']."</td>";
+                echo "<td>".$row['term']."</td>";
+                echo "<td>".$sec_name."</td>";
+                echo "<td>".$row['room']."</td>";
+                echo "<td>".$teacher_name."</td>";
+                echo "<td>".$day."</td>";
+                echo "<td>".date("g:i A", strtotime($row['time_start']))."</td>";
+                echo "<td>".date("g:i A", strtotime($row['time_end']))."</td>";
+                echo "<td style=\"text-align: center;\"><a class=\"btn btn-warning btn-xs\" title=\"Edit\" href=\"edit-schedule.php?schedule_id=".$row['schedule_id']."\""."><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a> ";
+                echo "<a title=\"Delete\" class=\"btn btn-danger btn-xs\" href=\"javascript:confirmDelete('delete-schedule.php?schedule_id=".$row['schedule_id']."')\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a></td>";
+                //echo "<a href=\"delete-schedule.php?schedule_id=".$row['schedule_id']."\""." onclick=\"confirm('Are you sure?')\"> Delete Schedule</a></td>";
+                echo "</tr>";
+              }
+
+              echo "</tbody></table>"; 
+            ?>
+            <center>
+                <?php
+                  echo "<a href=\"new-group-schedule.php\" class=\"btn btn-success btn-sm\">Select Another Section</a>";             
+                ?>
+            </center>
+          </div>
+        </div>
       </div>
-      <hr>
-      <div class="table-responsive" id="dataTable_wrapper">
-      <?php
-
-        echo "<table class=\"table table-bordered dataTable\" id=\"dataTable\" width=\"100%\" cellspacing=\"0\" role=\"grid\" aria-describedby=\"dataTable_info\" style=\"width: 100%;\">";
-        echo " <thead>";
-        echo "  <tr>";
-        echo "   <th>Subject Code</th>";
-        echo "   <th class=\"skip-filter\">Subject</th>";
-        echo "   <th>Course</th>";
-        echo "   <th>Year</th>";
-        echo "   <th>Term</th>";
-        echo "   <th>Section</th>";
-        echo "   <th class=\"skip-filter\">Room</th>";
-        echo "   <th class=\"skip-filter\">Teacher</th>";
-        echo "   <th class=\"skip-filter\">Day</th>";        
-        echo "   <th class=\"skip-filter\">Time Start</th>";
-        echo "   <th class=\"skip-filter\">Time End</th>";
-        echo "   <th class=\"skip-filter\">Options</th>";   
-        echo "  </tr></thead><tbody>";
-        
-        
-
-        $query  = "SELECT * FROM schedule_block WHERE class_id='".$class_id."' ORDER BY day ASC, time_start ASC";
-        $result = mysqli_query($connection, $query);
-
-      while($row = mysqli_fetch_assoc($result))
-        {
-          $day = number_to_day($row['day']);
-          $teacher_name = get_teacher_name($row['teacher_id'],"",$connection);
-          echo "<tr>";
-          echo "<td>".get_subject_code($row['subject_id'],"",$connection)."</td>"; 
-          echo "<td>".get_subject_name($row['subject_id'],"",$connection)."</td>"; 
-          echo "<td>".get_course_code($row['course_id'],"",$connection)."</td>";
-          echo "<td>".$row['year']."</td>";
-          echo "<td>".$row['term']."</td>";
-          echo "<td>".$sec_name."</td>";
-          echo "<td>".$row['room']."</td>";
-          echo "<td>".$teacher_name."</td>";
-          echo "<td>".$day."</td>";
-          echo "<td>".date("g:i A", strtotime($row['time_start']))."</td>";
-          echo "<td>".date("g:i A", strtotime($row['time_end']))."</td>";
-          echo "<td style=\"text-align: center;\"><a class=\"btn btn-warning btn-xs\" title=\"Edit\" href=\"edit-schedule.php?schedule_id=".$row['schedule_id']."\""."><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a> ";
-          echo "<a title=\"Delete\" class=\"btn btn-danger btn-xs\" href=\"javascript:confirmDelete('delete-schedule.php?schedule_id=".$row['schedule_id']."')\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a></td>";
-          //echo "<a href=\"delete-schedule.php?schedule_id=".$row['schedule_id']."\""." onclick=\"confirm('Are you sure?')\"> Delete Schedule</a></td>";
-          echo "</tr>";
-        }
-
-        echo "</tbody></table>"; 
-      ?>
-
-
-      <center>
-          <?php
-            echo "<a href=\"new-group-schedule.php\" class=\"btn btn-success btn-sm\">Select Another Section</a>";             
-          ?>
-      </center>
-    </div>
     </div>
   </div>
   <!-- /#wrapper -->

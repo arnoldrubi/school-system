@@ -68,51 +68,50 @@
          Show All Classes for Section
         </li>
       </ol>
-      <div class="row">
-        <div class="col-md-6">
-          <h4><i class="fa fa-bell" aria-hidden="true"></i> All Classes for <?php echo get_course_code($course_id,"",$connection).", ".$year.", Section ".$sec_name; ?></h4>
-        </div> 
-      </div>
-        <hr>
-      <div class="table-responsive" id="dataTable_wrapper">
-      <?php
+      <div class="card mb-3">
+        <div class="card-header">
+          <i class="fa fa-plus-square"></i>
+          All Classes for <?php echo get_course_code($course_id,"",$connection).", ".$year.", Section ".$sec_name; ?></div>
+          <div class="card-body">
+            <div class="table-responsive" id="dataTable_wrapper">
+            <?php
 
-        echo "<table class=\"table table-bordered dataTable\" id=\"dataTable\" width=\"100%\" cellspacing=\"0\" role=\"grid\" aria-describedby=\"dataTable_info\" style=\"width: 100%;\">";
-        echo " <thead>";
-        echo "  <tr>";
-        echo "   <th>Subject</th>";
-        echo "   <th>Course</th>";
-        echo "   <th>Year</th>";
-        echo "   <th>Section</th>";
-        echo "   <th>Teacher</th>";
-        echo "   <th>Students (Current/Limit)</th>";
-        echo "   <th>Option</th>";   
-        echo "  </tr></thead><tbody>";
-        
-        
+              echo "<table class=\"table table-bordered dataTable\" id=\"dataTable\" width=\"100%\" cellspacing=\"0\" role=\"grid\" aria-describedby=\"dataTable_info\" style=\"width: 100%;\">";
+              echo " <thead>";
+              echo "  <tr>";
+              echo "   <th>Subject</th>";
+              echo "   <th>Course</th>";
+              echo "   <th>Year</th>";
+              echo "   <th>Section</th>";
+              echo "   <th>Teacher</th>";
+              echo "   <th>Students (Current/Limit)</th>";
+              echo "   <th>Option</th>";   
+              echo "  </tr></thead><tbody>";
+              
+              
 
-        $query  = "SELECT classes.class_id,classes.sec_id, classes.subject_id, classes.teacher_id, classes.students_enrolled, classes.student_limit, sections.sec_name, sections.year, sections.course_id FROM classes INNER JOIN sections ON classes.sec_id=sections.sec_id WHERE classes.sec_id=".$sec_id." AND classes.term='".$term."' AND classes.school_yr='".$school_yr."'";
-        $result = mysqli_query($connection, $query);
+              $query  = "SELECT classes.class_id,classes.sec_id, classes.subject_id, classes.teacher_id, classes.students_enrolled, classes.student_limit, sections.sec_name, sections.year, sections.course_id FROM classes INNER JOIN sections ON classes.sec_id=sections.sec_id WHERE classes.sec_id=".$sec_id." AND classes.term='".$term."' AND classes.school_yr='".$school_yr."'";
+              $result = mysqli_query($connection, $query);
 
-      while($row = mysqli_fetch_assoc($result))
-        {
-        echo "<tr>";
-        echo "<td>".get_subject_code($row['subject_id'],"",$connection)."</td>";
-        echo "<td>".get_course_code($row['course_id'],"",$connection)."</td>";
-        echo "<td>".$row['year']."</td>";
-        echo "<td>".$row['sec_name']."</td>";
-        echo "<td>".get_teacher_name($row['teacher_id'],"",$connection)."</td>";
-        echo "<td>".$row['students_enrolled']."/".$row['student_limit']."</td>";
-        echo "<td class=\"option-grp\"><a href=\"new-schedule.php?class_id=".$row['class_id']."\" class=\"btn btn-success btn-sm\">Add New Schedule</a></td>";
-        echo "</tr>";
-        }
+            while($row = mysqli_fetch_assoc($result))
+              {
+              echo "<tr>";
+              echo "<td>".get_subject_code($row['subject_id'],"",$connection)."</td>";
+              echo "<td>".get_course_code($row['course_id'],"",$connection)."</td>";
+              echo "<td>".$row['year']."</td>";
+              echo "<td>".$row['sec_name']."</td>";
+              echo "<td>".get_teacher_name($row['teacher_id'],"",$connection)."</td>";
+              echo "<td>".$row['students_enrolled']."/".$row['student_limit']."</td>";
+              echo "<td class=\"options-td\"><a href=\"new-schedule.php?class_id=".$row['class_id']."\" class=\"btn btn-success btn-sm\">Add New Schedule</a></td>";
+              echo "</tr>";
+              }
 
-        echo "</tbody></table>"; 
-      ?>
-
-     </div>
+              echo "</tbody></table>"; 
+            ?>
+           </div>
+          </div>
+        </div>
     </div>
-
   </div>
   <!-- /#wrapper -->
 

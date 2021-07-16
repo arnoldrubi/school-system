@@ -1,3 +1,6 @@
+html{
+    font-size: 12px
+}
 div.login-container{
 	height: 100vh;
 }
@@ -21,12 +24,12 @@ div.login-container{
     padding-left: 26px;
 }
 #login-page{
-    background: url('vincentiu-solomon-ln5drpv_ImI-unsplash.jpg') no-repeat top center;
+    background: url('baim-hanif-pYWuOMhtc6k-unsplash.jpg') no-repeat top center;
     background-size: cover;
 }
 #login-page i.fa.fa-user,#login-page i.fa.fa-unlock-alt {
     position: relative;
-    top: -30px;
+    top: -24px;
     left: 10px;
     color: #495057;
 }
@@ -152,20 +155,6 @@ div#term-sy-indicator {
 .sidebar .nav-item .nav-link:active, .sidebar .nav-item .nav-link:focus, .sidebar .nav-item .nav-link:hover {
   color: rgba(0, 0, 0, 0.9);
 }
-.btn-success {
-    background-color: #7a0d2d;
-    border-color: #48081b;
-}
-.btn-success:hover {
-    background-color: #d05277;
-    border-color: #8c3f56;
-}
-.btn-warning {
-    background-color: #ffe082;
-}
-.btn-warning:hover {
-    background-color: #fff0c4;
-}
 /*additional dashboard items*/
 .dashboard-window { background: #62acec; width: 100%; padding: 20px; color: #FFF; border-radius: 4px; margin-bottom: 1em;}
 .d-w-icon { width: 30%; float: left; margin-right: 5px;}
@@ -222,7 +211,11 @@ div#term-sy-indicator {
   -webkit-animation-name: slideIn;
   animation-name: slideIn;
 }
-/**/
+/*overide table styles*/
+td.options-td {
+    text-align: center;
+    width: 15%;
+}
 /*custom classes to overide and custom position*/
 .button-flt-right{
     float: right;
@@ -231,7 +224,6 @@ div#term-sy-indicator {
 }
 form.form-horizontal .col-form-label {
     text-align: right;
-    font-weight: 700;
 }
 .block-area {
     border: 1px solid #e8e8e8;
@@ -241,13 +233,13 @@ form.form-horizontal .col-form-label {
 /*overide default typography*/
 body {
     font-family: 'Open Sans';
-    font-size: 14px;
+    font-size: 12px;
 }
 h1, h2, h3, h4, h5{
     font-family: 'Roboto';
 }
 /*for icons*/
-a.btn.btn-success.btn-xs.a-modal {
+a.btn.btn-xs.a-modal {
     margin: 0 .2rem;
 }
 /*custom class to remove the element when the page is printed*/

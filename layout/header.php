@@ -1,10 +1,20 @@
 <?php 
+require_once("includes/db_connection.php");
 require_once("includes/functions.php");
 require_once("includes/session.php");
 
   $username = $_SESSION["username"];
   $role =  $_SESSION["role"];
   confirm_logged_in();
+
+if (isset($username)) {
+
+  $user_exist = return_duplicate_entry("user_token","username",$username,"",$connection);
+
+  include("includes/check-token.php"); 
+
+}
+
 
   if ($role == "faculty") {
     redirect_to("logout.php");

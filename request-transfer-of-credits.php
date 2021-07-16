@@ -26,117 +26,121 @@
          Transfer of Credits
         </li>
       </ol>
-      <h1>Transfer of Credits Request</h1>
-      <hr>
-     <form method="post">
-      <h2>Requester's Information</h2> 
-      <div class="form-group row">
-        <label class="col-md-2 col-form-label" for="Student Number">Student Number</label>  
-        <div class="col-md-2">
-        <input id="student-number" value="" name="student_number"  placeholder="Example: 2019-BSCRIM001"  required  class="form-control">
-        </div>
-      </div>
+      <div class="card mb-3">
+        <div class="card-header">
+          <i class="fa fa-th-list"></i>
+          Certificate Transfer of Credits</div>
+          <div class="card-body">
+           <form method="post">
+            <h4>Requester's Information</h4> 
+            <div class="form-group row">
+              <label class="col-md-2 col-form-label" for="Student Number">Student Number</label>  
+              <div class="col-md-2">
+              <input id="student-number" value="" name="student_number"  placeholder="Example: 2019-BSCRIM001"  required  class="form-control">
+              </div>
+            </div>
 
-      <hr>
-      <div class="form-group row">
-        <label class="col-md-2 col-form-label" for="LastName">Subject Name</label>  
-        <div class="col-md-4">
-        <input id="subject-name" name="subject_name" type="text" placeholder="Input Subject Name" class="form-control" required>
-        </div>
+            <hr>
+            <div class="form-group row">
+              <label class="col-md-2 col-form-label" for="LastName">Subject Name</label>  
+              <div class="col-md-4">
+              <input id="subject-name" name="subject_name" type="text" placeholder="Input Subject Name" class="form-control" required>
+              </div>
 
-        <label class="col-md-2 col-form-label" for="FirstName">Subject Description</label>  
-        <div class="col-md-4">
-        <input id="subject-desc" name="subject_description" type="text" placeholder="Input Subject Description" class="form-control" required>
-        </div>
-      </div>
+              <label class="col-md-2 col-form-label" for="FirstName">Subject Description</label>  
+              <div class="col-md-4">
+              <input id="subject-desc" name="subject_description" type="text" placeholder="Input Subject Description" class="form-control" required>
+              </div>
+            </div>
 
-      <div class="form-group row">
-        <label class="col-md-2 col-form-label" for="MiddleName">Name of School</label>  
-        <div class="col-md-4">
-        <input id="school-name" name="school_name" type="text" placeholder="Input Name of School" class="form-control" required>
-        </div>
+            <div class="form-group row">
+              <label class="col-md-2 col-form-label" for="MiddleName">Name of School</label>  
+              <div class="col-md-4">
+              <input id="school-name" name="school_name" type="text" placeholder="Input Name of School" class="form-control" required>
+              </div>
 
-        <label class="col-md-2 col-form-label" for="NameExt">Units</label>  
-        <div class="col-md-1">
-          <input id="units" name="units" type="text" placeholder="Units" class="form-control">
-        </div>
-      </div>
-      <hr>
-      <div class="form-group row">
-        <label class="col-md-2 col-form-label" for="MiddleName">School Year Taken</label>  
-        <div class="col-md-2">
-        <input id="school-year-taken" name="school_yr_taken" type="text" placeholder="Input School Year" class="form-control" required>
-        </div>
+              <label class="col-md-2 col-form-label" for="NameExt">Units</label>  
+              <div class="col-md-1">
+                <input id="units" name="units" type="text" placeholder="Units" class="form-control">
+              </div>
+            </div>
+            <hr>
+            <div class="form-group row">
+              <label class="col-md-2 col-form-label" for="MiddleName">School Year Taken</label>  
+              <div class="col-md-2">
+              <input id="school-year-taken" name="school_yr_taken" type="text" placeholder="Input School Year" class="form-control" required>
+              </div>
 
-        <label class="col-md-2 col-form-label" for="NameExt">Term Taken</label>  
-        <div class="col-md-2">
-          <select id="term-taken" name="term_taken"class="form-control"required>
-            <option readonly>Select Term</option>
-            <option value="1st Semester">1st Semester</option>
-            <option value="2nd Semester">2nd Semester</option>
-            <option value="1st Trimester">1st Trimester</option>
-            <option value="2nd Trimester">2nd Trimester</option>
-            <option value="3rd Trimester">3rd Trimester</option>
-          </select>
-        </div>
-        <label class="col-md-2 col-form-label" for="NameExt">Final Grade</label>  
-        <div class="col-md-2">
-          <input id="final-grade" name="final_grade" type="number" step=".01" placeholder="Final Grade" class="form-control" required>
-        </div>
-      </div>
-      <div class="form-group row">
-        <label class="col-md-2 col-form-label" for="NameExt">Equivalent Subject</label>  
-        <div class="col-md-3">
-          <select class="form-control" name="subject_id" id="subject-id" required>
-            <option readonly>Select Subject</option>
-            <?php
+              <label class="col-md-2 col-form-label" for="NameExt">Term Taken</label>  
+              <div class="col-md-2">
+                <select id="term-taken" name="term_taken"class="form-control"required>
+                  <option readonly>Select Term</option>
+                  <option value="1st Semester">1st Semester</option>
+                  <option value="2nd Semester">2nd Semester</option>
+                  <option value="1st Trimester">1st Trimester</option>
+                  <option value="2nd Trimester">2nd Trimester</option>
+                  <option value="3rd Trimester">3rd Trimester</option>
+                </select>
+              </div>
+              <label class="col-md-2 col-form-label" for="NameExt">Final Grade</label>  
+              <div class="col-md-2">
+                <input id="final-grade" name="final_grade" type="number" step=".01" placeholder="Final Grade" class="form-control" required>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-2 col-form-label" for="NameExt">Equivalent Subject</label>  
+              <div class="col-md-3">
+                <select class="form-control" name="subject_id" id="subject-id" required>
+                  <option readonly>Select Subject</option>
+                  <?php
 
-              $query  = "SELECT * FROM subjects ORDER BY subject_code ASC";
-              $result = mysqli_query($connection, $query);
+                    $query  = "SELECT * FROM subjects ORDER BY subject_code ASC";
+                    $result = mysqli_query($connection, $query);
 
-            while($row = mysqli_fetch_assoc($result))
-              {
-                $subject_units = $row['units'];
-                $subject_code = $row['subject_code'];
+                  while($row = mysqli_fetch_assoc($result))
+                    {
+                      $subject_units = $row['units'];
+                      $subject_code = $row['subject_code'];
 
-                echo "<option value=\"".$row['subject_id']."\">";
-                echo $subject_code;
-                echo "</option>";
-              }
+                      echo "<option value=\"".$row['subject_id']."\">";
+                      echo $subject_code;
+                      echo "</option>";
+                    }
 
-            ?>
-          </select>
-        </div>
-      </div>
+                  ?>
+                </select>
+              </div>
+            </div>
 
-      <div class="row">
-        <div class="col-md-12 d-flex justify-content-center">
-        <input type="submit" name="submit" value="Process Request" class="btn btn-primary" />&nbsp;
-        <a class="btn btn-secondary" href="registrar-services.php">Cancel</a>
-        </div>
-      </div>
-    </form>
-      <div class="form-group row">
-        <div class="col-md-12">
-          <p>Can't remember the Student Number? <br>
-          <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#student-info" aria-expanded="false" aria-controls="student-info">
-            Try searching using his/her name. 
-          </button>
-          </p>
-        </div>
-     </div>
-      <div class="form-group row collapse" id="student-info">
-        <label class="col-md-2 col-form-label" for="Student_LastName">Input Student's Last Name</label>  
-        <div class="col-md-10">
-        <input id="StudentLastName" name="student_lastname" type="text" placeholder="Input Student's Last Name" class="form-control">
-        </div>
-        <label class="col-md-12 col-form-label" for="FirstName">OR </label>  
-        <label class="col-md-2 col-form-label" for="FirstName">Input Student's First Name</label>  
-        <div class="col-md-10">
-        <input id="StudentFirstName" name="student_firstname" type="text" placeholder="Input Student's First Name" class="form-control">
-        </div>
-        <div class="col-md-12" id="student-list">
-            
+            <div class="row">
+              <div class="col-md-12 d-flex justify-content-center">
+              <input type="submit" name="submit" value="Process Request" class="btn btn-success" />&nbsp;
+              <a class="btn btn-secondary" href="registrar-services.php">Cancel</a>
+              </div>
+            </div>
+          </form>
+          <div class="form-group row">
+            <div class="col-md-12">
+              <p>Can't remember the Student Number? <br>
+              <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#student-info" aria-expanded="false" aria-controls="student-info">
+                Try searching using his/her name. 
+              </button>
+              </p>
+            </div>
+         </div>
+          <div class="form-group row collapse" id="student-info">
+            <label class="col-md-2 col-form-label" for="Student_LastName">Input Student's Last Name</label>  
+            <div class="col-md-10">
+            <input id="StudentLastName" name="student_lastname" type="text" placeholder="Input Student's Last Name" class="form-control">
+            </div>
+            <label class="col-md-12 col-form-label" for="FirstName">OR </label>  
+            <label class="col-md-2 col-form-label" for="FirstName">Input Student's First Name</label>  
+            <div class="col-md-10">
+            <input id="StudentFirstName" name="student_firstname" type="text" placeholder="Input Student's First Name" class="form-control">
+            </div>
+            <div class="col-md-12" id="student-list">            
+            </div>
+          </div>
         </div>
       </div>
   </div>

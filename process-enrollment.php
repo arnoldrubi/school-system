@@ -16,7 +16,6 @@
 
   <title>Process Student Enrollment</title>
   </head>
-
   <body>
 
   <?php include 'layout/admin-nav.php';?>
@@ -39,168 +38,171 @@
         <li class="breadcrumb-item active">
           Process Enrollment
         </li>
-    </ol>
-      <h1>Enrollment Process</h1>
-      <hr>
-     <form id="enrollment-form" action="" method="post">
-      <h2>Student Info</h2>
-      <?php
+      </ol>
+      <div class="card mb-3">
+        <div class="card-header">
+          <i class="fa fa-table"></i>
+          Enroll Student</div>
+          <div class="card-body">
+           <form id="enrollment-form" action="" method="post">
+            <h4>Student Info</h4>
+            <?php
 
-        $query  = "SELECT * FROM students_reg WHERE stud_reg_id = '".$stud_reg_id."'";
-        $result = mysqli_query($connection, $query);
-
-        if ($result === !TRUE) {
-              echo "<script type='text/javascript'>";
-              echo "alert('No record exists!');";
-              echo "</script>";
-
-              $URL="enrollment.php";
-              echo "<script>location.href='$URL'</script>";
-
-        }
-
-        while($row = mysqli_fetch_assoc($result))
-          {
-          $reg_id_enroll = $row['stud_reg_id'];//assign student registration ID to a variable to be saved to the enrollment table later
-
-          echo "<div class=\"form-group row\">";
-          echo "<label class=\"col-md-2 col-form-label\" for=\"LastName\">Last Name</label>"; 
-          echo "<div class=\"col-md-4\">";
-          echo "<input id=\"LastName\" name=\"lastname\" type=\"text\" value=\"".$row['last_name']. "\" class=\"form-control\" readonly></div>";
-
-          echo "<label class=\"col-md-2 col-form-label\" for=\"FirstName\">First Name</label>"; 
-          echo "<div class=\"col-md-4\">";
-          echo "<input id=\"FirstName\" name=\"firstname\" type=\"text\" value=\"".$row['first_name']. "\" class=\"form-control\" readonly></div></div>";
-
-          echo "<div class=\"form-group row\">";
-          echo "<label class=\"col-md-2 col-form-label\" for=\"MiddleName\">Middle Name</label>"; 
-          echo "<div class=\"col-md-4\">";
-          echo "<input id=\"MiddleName\" name=\"middlename\" type=\"text\" value=\"".$row['middle_name']. "\" class=\"form-control\" readonly></div>";
-
-          echo "<label class=\"col-md-2 col-form-label\" for=\"NameExt\">Name Extension</label>"; 
-          echo "<div class=\"col-md-2\">";
-          echo "<input id=\"NameExt\" name=\"nameext\" type=\"text\" value=\"".$row['name_ext']. "\" class=\"form-control\" readonly>";
-          echo "</div></div>";
-          echo "<hr><h2>Additional Info</h2>";
-          echo "<div class=\"form-group row\">";
-          echo "<label class=\"col-md-2 col-form-label\" for=\"BirthDay\">Birthday</label>"; 
-          echo "<div class=\"col-md-2\">";
-          echo "<input id=\"BirthDay\" name=\"birthday\" type=\"date\" min=\"1900-01-01\" max=\"2019-12-31\" value=\"".$row['birth_date']. "\" class=\"form-control input-md\" required readonly></div>";
-          echo "<label class=\"col-md-1 col-form-label\" for=\"Address\">Address</label>"; 
-          echo "<div class=\"col-md-3\">";
-          echo "<input id=\"Address\" name=\"barangay\" type=\"text\" placeholder=\"Add Street and barangay...\" class=\"form-control\" required readonly value=\"".$row['barangay']."\"></div>";
-          echo "<div class=\"col-md-2\">";
-          echo "<input id=\"province\" name=\"province\" type=\"text\" placeholder=\"Province...\" class=\"form-control\" value=\"".$row['province']."\" required readonly></div>";
-          echo "<div class=\"col-md-2\">";
-          echo "<input id=\"province\" name=\"province\" type=\"text\" placeholder=\"City/Municipality...\" class=\"form-control\" value=\"".$row['municipality']."\" required readonly></div>"; 
-          echo "</div>";
-
-          echo "<div class=\"form-group row\">";
-          echo "<label class=\"col-md-2 col-form-label\" for=\"PhoneNum\">Phone Number</label>"; 
-          echo "<div class=\"col-md-2\">";
-          echo "<input id=\"PhoneNum\" name=\"phonenum\" type=\"tel\" pattern=\"[0-9]{4}-[0-9]{3}-[0-9]{4}\"  value=\"".$row['phone_number']. "\" class=\"form-control\" readonly>";
-          echo "</div>";
-
-          echo "<label class=\"col-md-2 col-form-label\" for=\"Email\">Email</label>"; 
-          echo "<div class=\"col-md-2\">";
-          echo "<input id=\"Email\" name=\"email\" type=\"email\" value=\"".$row['email']. "\" class=\"form-control\" readonly></div>";
-
-          //File Button -->
-          $current_picture = "http://" . $_SERVER['SERVER_NAME']."/school-system/uploads/".$row['photo_url']; //I hardcoded the url of the site, this should be automatic, much better to use the SERVER_NAME then just hard code the /uploads path
-
-          echo "<div class=\"col-md-4\"><p>Current Photo:</p>";
-          echo "<p style=\"text-align: center\"><img class=\"current-pic\" src=\"".$current_picture."\"></p>";
-          echo "</div></div>";
-          }
-
-          echo "<hr><h2>Enrollment Info</h2><div class=\"form-group row\">";
-          echo "<label class=\"col-md-2 col-form-label\" for=\"Course\">Course</label><div class=\"col-md-2\"><select id=\"course\" class=\"form-control\" name=\"course\">";
-        
-           //this block will load the course name from the database
-              $query  = "SELECT * FROM courses WHERE course_deleted = 0";
+              $query  = "SELECT * FROM students_reg WHERE stud_reg_id = '".$stud_reg_id."'";
               $result = mysqli_query($connection, $query);
 
+              if ($result === !TRUE) {
+                    echo "<script type='text/javascript'>";
+                    echo "alert('No record exists!');";
+                    echo "</script>";
+
+                    $URL="enrollment.php";
+                    echo "<script>location.href='$URL'</script>";
+
+              }
 
               while($row = mysqli_fetch_assoc($result))
                 {
-                  $course_code = $row['course_code'];
-                  echo  "<option value=\"".$row['course_id']."\">".$course_code."</option>";
+                $reg_id_enroll = $row['stud_reg_id'];//assign student registration ID to a variable to be saved to the enrollment table later
+
+                echo "<div class=\"form-group row\">";
+                echo "<label class=\"col-md-2 col-form-label\" for=\"LastName\">Last Name</label>"; 
+                echo "<div class=\"col-md-4\">";
+                echo "<input id=\"LastName\" name=\"lastname\" type=\"text\" value=\"".$row['last_name']. "\" class=\"form-control\" readonly></div>";
+
+                echo "<label class=\"col-md-2 col-form-label\" for=\"FirstName\">First Name</label>"; 
+                echo "<div class=\"col-md-4\">";
+                echo "<input id=\"FirstName\" name=\"firstname\" type=\"text\" value=\"".$row['first_name']. "\" class=\"form-control\" readonly></div></div>";
+
+                echo "<div class=\"form-group row\">";
+                echo "<label class=\"col-md-2 col-form-label\" for=\"MiddleName\">Middle Name</label>"; 
+                echo "<div class=\"col-md-4\">";
+                echo "<input id=\"MiddleName\" name=\"middlename\" type=\"text\" value=\"".$row['middle_name']. "\" class=\"form-control\" readonly></div>";
+
+                echo "<label class=\"col-md-2 col-form-label\" for=\"NameExt\">Name Extension</label>"; 
+                echo "<div class=\"col-md-2\">";
+                echo "<input id=\"NameExt\" name=\"nameext\" type=\"text\" value=\"".$row['name_ext']. "\" class=\"form-control\" readonly>";
+                echo "</div></div>";
+                echo "<hr><h4>Additional Info</h4>";
+                echo "<div class=\"form-group row\">";
+                echo "<label class=\"col-md-2 col-form-label\" for=\"BirthDay\">Birthday</label>"; 
+                echo "<div class=\"col-md-2\">";
+                echo "<input id=\"BirthDay\" name=\"birthday\" type=\"date\" min=\"1900-01-01\" max=\"2019-12-31\" value=\"".$row['birth_date']. "\" class=\"form-control input-md\" required readonly></div>";
+                echo "<label class=\"col-md-1 col-form-label\" for=\"Address\">Address</label>"; 
+                echo "<div class=\"col-md-3\">";
+                echo "<input id=\"Address\" name=\"barangay\" type=\"text\" placeholder=\"Add Street and barangay...\" class=\"form-control\" required readonly value=\"".$row['barangay']."\"></div>";
+                echo "<div class=\"col-md-2\">";
+                echo "<input id=\"province\" name=\"province\" type=\"text\" placeholder=\"Province...\" class=\"form-control\" value=\"".$row['province']."\" required readonly></div>";
+                echo "<div class=\"col-md-2\">";
+                echo "<input id=\"province\" name=\"province\" type=\"text\" placeholder=\"City/Municipality...\" class=\"form-control\" value=\"".$row['municipality']."\" required readonly></div>"; 
+                echo "</div>";
+
+                echo "<div class=\"form-group row\">";
+                echo "<label class=\"col-md-2 col-form-label\" for=\"PhoneNum\">Phone Number</label>"; 
+                echo "<div class=\"col-md-2\">";
+                echo "<input id=\"PhoneNum\" name=\"phonenum\" type=\"tel\" pattern=\"[0-9]{4}-[0-9]{3}-[0-9]{4}\"  value=\"".$row['phone_number']. "\" class=\"form-control\" readonly>";
+                echo "</div>";
+
+                echo "<label class=\"col-md-2 col-form-label\" for=\"Email\">Email</label>"; 
+                echo "<div class=\"col-md-2\">";
+                echo "<input id=\"Email\" name=\"email\" type=\"email\" value=\"".$row['email']. "\" class=\"form-control\" readonly></div>";
+
+                //File Button -->
+                $current_picture = "http://" . $_SERVER['SERVER_NAME']."/school-system/uploads/".$row['photo_url']; //I hardcoded the url of the site, this should be automatic, much better to use the SERVER_NAME then just hard code the /uploads path
+
+                echo "<div class=\"col-md-4\"><p>Current Photo:</p>";
+                echo "<p style=\"text-align: center\"><img class=\"current-pic\" src=\"".$current_picture."\"></p>";
+                echo "</div></div>";
                 }
 
-          echo "</select></div>";
-          echo "<label class=\"col-md-2 col-form-label\" for=\"Course\">School Year</label><div class=\"col-md-2\"><input class=\"form-control\" id=\"current_sy\" name=\"school-year\" type=\"text\" value=\"\" readonly></div>";
+                echo "<hr><h4>Enrollment Info</h4><div class=\"form-group row\">";
+                echo "<label class=\"col-md-2 col-form-label\" for=\"Course\">Course</label><div class=\"col-md-2\"><select id=\"course\" class=\"form-control\" name=\"course\">";
+              
+                 //this block will load the course name from the database
+                    $query  = "SELECT * FROM courses WHERE course_deleted = 0";
+                    $result = mysqli_query($connection, $query);
 
-  ?>
-     <label class="col-md-2 col-form-label" for="Course">Year</label>
-      <div class="col-md-2">
-        <select class="form-control" name="year" id="select-yr">
-          <option value="1st Year">1st Year</option>
-          <option value="2nd Year">2nd Year</option>
-          <option value="3rd Year">3rd Year</option>
-          <option value="4th Year">4th Year</option>  
-        </select>
-      </div>
-      </div>
-    <div class="form-group row">
-      <label class="col-md-2 col-form-label" for="Course">Term</label>
-      <div class="col-md-2">
-        <input class="form-control" type="text" name="term" id="term" value="" readonly="">
-      </div>
-      <label class="col-md-2 col-form-label" for="Course">Regular or Irregular Student?</label>
-      <div class="col-md-2">
-        <div class="form-check">
-          <input class="form-control-md" type="radio" name="regirreg" id="exampleRadios1" value="0" checked>
-          <label class="form-check-label" for="exampleRadios1">
-            Regular
-          </label>
-        </div>
-        <div class="form-check">
-          <input class="form-control-md" type="radio" name="regirreg" id="exampleRadios2" value="1" >
-          <label class="form-check-label" for="exampleRadios2">
-            Irregular
-          </label>
-        </div>
-      </div>
-      <label class="col-md-2 col-form-label" for="Course">Section</label>
-      <div class="col-md-2">
-        <select class="form-control" id="section" name="section">
-          <?php
-            $query_section  = "SELECT * FROM sections ORDER BY sec_name ASC";
-            $result_section = mysqli_query($connection, $query_section);
 
-            while($row_section = mysqli_fetch_assoc($result_section))
-            {
-              echo "<option value=\"".$row_section['sec_name']."\">".$row_section['sec_name']."</option>";
-            }
-          ?>
-        </select>
-      </div>
-     <div id="class-limit" class="col-md-12">
-       
-     </div>
-    </div>
-    <div class="form-group row">
-      <label class="col-md-2 col-form-label" for="Course">Remarks</label>
-      <div class="col-md-6">
-        <textarea class="form-control" rows="5" name="remarks"></textarea>
-      </div>
-      <div class="col-md-4">
-        <p>Optional*<br><button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-           Student Number: Manual Encode
-          </button>
-        </p>
-        <div class="collapse" id="collapseExample">
-          <input type="text" class="form-control" id="manual-encode-student-num" name="manual_encode_student_num" placeholder="xxxx-xxxx">        
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12 d-flex justify-content-center">
-        <input type="submit" name="submit" value="Enroll Student" class="btn btn-primary" />&nbsp;
-        <a class="btn btn-secondary"href="enrollment.php">Cancel</a>
-      </div>
-    </div>
-  </form>
+                    while($row = mysqli_fetch_assoc($result))
+                      {
+                        $course_code = $row['course_code'];
+                        echo  "<option value=\"".$row['course_id']."\">".$course_code."</option>";
+                      }
+
+                echo "</select></div>";
+                echo "<label class=\"col-md-2 col-form-label\" for=\"Course\">School Year</label><div class=\"col-md-2\"><input class=\"form-control\" id=\"current_sy\" name=\"school-year\" type=\"text\" value=\"\" readonly></div>";
+
+        ?>
+           <label class="col-md-2 col-form-label" for="Course">Year</label>
+            <div class="col-md-2">
+              <select class="form-control" name="year" id="select-yr">
+                <option value="1st Year">1st Year</option>
+                <option value="2nd Year">2nd Year</option>
+                <option value="3rd Year">3rd Year</option>
+                <option value="4th Year">4th Year</option>  
+              </select>
+            </div>
+            </div>
+          <div class="form-group row">
+            <label class="col-md-2 col-form-label" for="Course">Term</label>
+            <div class="col-md-2">
+              <input class="form-control" type="text" name="term" id="term" value="" readonly="">
+            </div>
+            <label class="col-md-2 col-form-label" for="Course">Regular or Irregular Student?</label>
+            <div class="col-md-2">
+              <div class="form-check">
+                <input class="form-control-md" type="radio" name="regirreg" id="exampleRadios1" value="0" checked>
+                <label class="form-check-label" for="exampleRadios1">
+                  Regular
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-control-md" type="radio" name="regirreg" id="exampleRadios2" value="1" >
+                <label class="form-check-label" for="exampleRadios2">
+                  Irregular
+                </label>
+              </div>
+            </div>
+            <label class="col-md-2 col-form-label" for="Course">Section</label>
+            <div class="col-md-2">
+              <select class="form-control" id="section" name="section">
+                <?php
+                  $query_section  = "SELECT * FROM sections ORDER BY sec_name ASC";
+                  $result_section = mysqli_query($connection, $query_section);
+
+                  while($row_section = mysqli_fetch_assoc($result_section))
+                  {
+                    echo "<option value=\"".$row_section['sec_name']."\">".$row_section['sec_name']."</option>";
+                  }
+                ?>
+              </select>
+            </div>
+           <div id="class-limit" class="col-md-12">
+             
+           </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-2 col-form-label" for="Course">Remarks</label>
+            <div class="col-md-6">
+              <textarea class="form-control" rows="5" name="remarks"></textarea>
+            </div>
+            <div class="col-md-4">
+              <p>Optional*<br><button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                 Student Number: Manual Encode
+                </button>
+              </p>
+              <div class="collapse" id="collapseExample">
+                <input type="text" class="form-control" id="manual-encode-student-num" name="manual_encode_student_num" placeholder="xxxx-xxxx">        
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12 d-flex justify-content-center">
+              <input type="submit" name="submit" value="Enroll Student" class="btn btn-success" />&nbsp;
+              <a class="btn btn-secondary"href="enrollment.php">Cancel</a>
+            </div>
+          </div>
+        </form>
 <?php
   if (isset($_POST['submit'])) {
 
@@ -420,15 +422,15 @@
     }
   }
       ?>
-
-
+      </div>
+    </div>
   </div>
  </div> 
   <!-- /#wrapper -->
 
   <!-- Scroll to Top Button-->
   <a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
+    <i class="fa fa-angle-up"></i>
   </a>
 
 

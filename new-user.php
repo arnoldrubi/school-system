@@ -2,7 +2,7 @@
 <?php require_once("includes/db_connection.php"); ?>
 
 
-  <title>Add New User</title>
+  <title> Add New User</title>
   </head>
 
   <body>
@@ -14,33 +14,36 @@
   <?php include 'layout/admin-sidebar.php';?>
 
     <div id="content-wrapper" class="col-md">
-
-      <h1>Add New User</h1>
-    <div class="col-md-2 col-md-offset-5">
-      <form action="" method="post">
-        <div class="form-group">
-          <label for="username">Username</label>
-          <input type="text" value="" class="form-control" id="username" required name="username" placeholder="Username">
-          <p id="warning-text"></p>
-          <label for="exampleInputPassword1">Password</label>
-          <input type="password" value="" class="form-control" id="InputPassword1" required name="password1" placeholder="Password">
-          <label for="exampleInputPassword1">Repeat Password</label>
-          <input type="password" value="" class="form-control" id="InputPassword2" required name="password2" placeholder="Repeat Password">
-        </div>
-        <hr>
-        <div class="form-group">
-          <label for="exampleInputEmail1">Email address</label>
-          <input type="email" id="email" class="form-control" id="exampleInputEmail1" required aria-describedby="emailHelp" name="email" value="" placeholder="Enter email">
-          <p id="warning-text-email"></p>
-          <label for="role">Role:</label>
-          <select class="form-control" name="role" required>
-            <option value="administrator">Administrator</option>
-            <option value="registrar">Registrar</option>
-          </select>
-        </div>
-        <button id="submit" name="submit" type="submit" class="btn btn-primary">Submit</button>
-      </form>
-
+      <div class="card mb-3">
+        <div class="card-header">
+          <i class="fa fa-plus-square"></i>
+          New User</div>
+          <div class="card-body">
+            <div class="col-md-2 col-md-offset-5">
+              <form action="" method="post">
+                <div class="form-group">
+                  <label for="username">Username</label>
+                  <input type="text" value="" class="form-control" id="username" required name="username" placeholder="Username">
+                  <p id="warning-text"></p>
+                  <label for="exampleInputPassword1">Password</label>
+                  <input type="password" value="" class="form-control" id="InputPassword1" required name="password1" placeholder="Password">
+                  <label for="exampleInputPassword1">Repeat Password</label>
+                  <input type="password" value="" class="form-control" id="InputPassword2" required name="password2" placeholder="Repeat Password">
+                </div>
+                <hr>
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Email address</label>
+                  <input type="email" id="email" class="form-control" id="exampleInputEmail1" required aria-describedby="emailHelp" name="email" value="" placeholder="Enter email">
+                  <p id="warning-text-email"></p>
+                  <label for="role">Role:</label>
+                  <select class="form-control" name="role" required>
+                    <option value="administrator">Administrator</option>
+                    <option value="registrar">Registrar</option>
+                  </select>
+                </div>
+                <button id="submit" name="submit" type="submit" class="btn btn-primary">Submit</button>
+              </form>
+          </div>
 
   <!-- /#wrapper -->
 
@@ -92,7 +95,7 @@
   if(isset($connection)){ mysqli_close($connection); }
   //close database connection after an sql command
   ?>
-
+      </div>
      </div>
     </div>
   </div>

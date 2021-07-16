@@ -31,202 +31,207 @@
           Assign Subjects to Course
         </li>
       </ol>
-      <h1>Assign Subjects to Course</h1>
-      <hr>
-      <div class="row">
-        <div class="col-md-6">
-          <h3>Course Info</h3>
-          <form id="courses_form" action="" method="post" >
-            <?php
+      <div class="card mb-3">
+        <div class="card-header">
+          <i class="fa fa-table"></i>
+           Assign Subjects to Course</div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6">
+                <h5>Course Info</h5>
+                <form id="courses_form" action="" method="post" >
+                  <?php
 
-              echo "<div class=\"form-group row\">";
-              echo "<label class=\"col-md-2 col-form-label\" for=\"Course\">Course</label><div class=\"col-md-3\"><select class=\"form-control\" name=\"course\">";
-              //this block will load the course name from the database
-              $query  = "SELECT * FROM courses WHERE course_deleted = 0";
-              $result = mysqli_query($connection, $query);
+                    echo "<div class=\"form-group row\">";
+                    echo "<label class=\"col-md-2 col-form-label\" for=\"Course\">Course</label><div class=\"col-md-3\"><select class=\"form-control\" name=\"course\">";
+                    //this block will load the course name from the database
+                    $query  = "SELECT * FROM courses WHERE course_deleted = 0";
+                    $result = mysqli_query($connection, $query);
+
+                    while($row = mysqli_fetch_assoc($result))
+                      {
+                        echo  "<option value=\"".$row['course_id']."\">".$row['course_code']."</option>";
+                      }
+                    echo "</select></div></div>";
+                  ?>
+
+                      <div class="form-group row">
+                        <label class="col-md-2 col-form-label" for="Year">Year</label>
+                        <div class="col-md-3">
+                          <select class="form-control" name="year" id="year">
+                            <option value="1st Year">1st Year</option>
+                            <option value="2nd Year">2nd Year</option>
+                            <option value="3rd Year">3rd Year</option>
+                            <option value="4th Year">4th Year</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div class="form-group row">
+                        <label class="col-md-2 col-form-label" for="Course">Term</label>
+                        <div class="col-md-3">
+                          <select class="form-control" name="semester">
+                            <option value="1st Semester">1st Semester</option>
+                            <option value="2nd Semester">2nd Semester</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div class="form-group row">
+                        <label class="col-md-2 col-form-label" for="School Year">School Year</label>
+                        <div class="col-md-3">
+                          <select class="form-control" name="school_yr">
+                            <?php
+                              $query_school_yr  = "SELECT * FROM school_yr";
+                              $result_school_yr = mysqli_query($connection, $query_school_yr);
+
+                              while($row_school_yr = mysqli_fetch_assoc($result_school_yr))
+                                {
+                                  echo  "<option value=\"".$row_school_yr['school_yr']."\">".$row_school_yr['school_yr']."</option>";
+                                }
+                            ?>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label class="col-md-2 col-form-label" for="Course">Max Units</label>
+                        <div class="col-md-3">
+                          <?php
+                            echo "<input type=\"text\" id=\"max-units\" name=\"max_units\" class=\"form-control\" value=".return_max_units($connection)." readonly>";
+                          ?>
+                          
+                        </div>
+                      </div>
+
+                      <div class="col-md-6">
+                        <input type="submit" id="submit" name="submit" value="Build Course Subjects" class="btn btn-success" /><br> <br>
+                      </div>   
+                    <!--Hidden input box to be populated by user interaction-->
+                    <input type="text" name="array_values" id="array_values" style="display: none">
+       
+
+              
+
+              </div>
+
+            <div class="col-md-6">
+                <h5>Selected Subjects</h5>
+                <ul id="selected-subjects">
+                </ul>
+                <div class="form-group row">
+                  <label class="col-md-2 col-form-label" for="Course">Current Units</label>
+                  <div class="col-md-3">
+                    <input type="text" name="current_units" class="form-control" id="current-units" value="0" readonly="">                    
+                  </div>
+                </div>
+            </div>
+            </form>
+              <?php 
+                // // get the subject id from #selected-subjects li
+                // // create a loop for the sql insert command
+                // // use the count of li elements under #selected-subjects as the max loop
+                // insert course id, subject id, year, and term
+                if (isset($_POST['submit'])) {
+
+                  $max_units = $_POST['max_units'];
+                  $current_total_units = $_POST['current_units'];
+
+                  if ($current_total_units > $max_units || $current_total_units <=0) {
+                   echo "<div class=\"col-md-12\"><div class=\"alert alert-danger\" role=\"alert\">Error: Current units exceeds the allotted max units or no subject was selected.</div></div>";
+                  }
+
+                  else{
+                    $data = $_POST['array_values'];
+                    $arrVal = explode(";",$data);
+                    $arrLength = count($arrVal);
+
+
+                    $course = $_POST["course"];
+                    $year = mysql_prep($_POST["year"]);
+                    $semester = mysql_prep($_POST["semester"]);
+                    $school_yr = mysql_prep($_POST["school_yr"]);
+
+                    $query  = "SELECT * FROM course_subjects WHERE course_id = '".$course."' AND year = '".$year."' AND term = '".$semester."'";
+                    $result = mysqli_query($connection, $query);
+
+                    if (mysqli_num_rows($result)>0) {
+                      echo "<script type='text/javascript'>";
+                      echo "alert('Subject set already exists for this course, year and term.');";
+                      echo "</script>";
+
+                      $URL="manage-course-subjects.php";
+                      echo "<script>location.href='$URL'</script>";
+                    }
+
+                    else{
+
+                      foreach ($arrVal as $subjects) {
+                      $query   = "INSERT INTO course_subjects (course_id, subject_id, year, term, school_yr) VALUES ('{$course}', '{$subjects}', '{$year}', '{$semester}', '{$school_yr}')";
+                      $result = mysqli_query($connection, $query);
+
+                      }
+
+                    }
+
+                      if ($result === TRUE) {
+                        echo "<script type='text/javascript'>";
+                        echo "alert('Create subject set successful!');";
+                        echo "</script>";
+
+                        $URL="manage-course-subjects.php";
+                        echo "<script>location.href='$URL'</script>";
+
+                        } else {
+                          echo "Error updating record: " . $connection->error;
+                        }
+                    }
+
+                  }
+
+
+                ?>
+          <div class="col-md-12">
+            <h3>Available Subjects</h3>
+            <input class="form-control" id="myInput" type="text" placeholder="Quick Search">
+              <?php
+
+                echo "<table id=\"datatable\" class=\"table table-striped table-bordered dataTable\">";
+                echo " <thead>";
+                echo "  <tr>";
+                echo "   <th>Subject Name</th>";
+                echo "   <th>Subject Code</th>";
+                echo "   <th>Prerequisite</th>";
+                echo "   <th>Lecture Units</th>";
+                echo "   <th>Lab Units</th>";
+                echo "   <th>Total Units</th>";
+                echo "   <th>&nbsp;</th>";   
+                echo "  </tr></thead><tbody>";
+                
+                
+
+                $query  = "SELECT * FROM subjects ORDER BY subject_id ASC";
+                $result = mysqli_query($connection, $query);
 
               while($row = mysqli_fetch_assoc($result))
                 {
-                  echo  "<option value=\"".$row['course_id']."\">".$row['course_code']."</option>";
+                echo "<tr>";
+                echo "<td>".$row['subject_name']."</td>";
+                echo "<td>".$row['subject_code']."</td>";
+                echo "<td>".get_subject_code($row['pre_id'],"",$connection)."</td>";
+                echo "<td>".$row['lect_units']."</td>";
+                echo "<td>".$row['lab_units']."</td>";
+                echo "<td class=\"".$row['total_units']."\" id=\"class\">".$row['total_units']."</td>";
+                echo "<td class=\"subject-wrap\"><a class=\"".$row['total_units']."-".$row['subject_code']."\" id=\"".$row['subject_id']."\""." href=\"#\">Add Subject</a> </td>";
+                echo "</tr>";
                 }
-              echo "</select></div></div>";
-            ?>
 
-                <div class="form-group row">
-                  <label class="col-md-2 col-form-label" for="Year">Year</label>
-                  <div class="col-md-3">
-                    <select class="form-control" name="year" id="year">
-                      <option value="1st Year">1st Year</option>
-                      <option value="2nd Year">2nd Year</option>
-                      <option value="3rd Year">3rd Year</option>
-                      <option value="4th Year">4th Year</option>
-                    </select>
-                  </div>
-                </div>
+                echo "</tbody></table>"; 
 
-                <div class="form-group row">
-                  <label class="col-md-2 col-form-label" for="Course">Term</label>
-                  <div class="col-md-3">
-                    <select class="form-control" name="semester">
-                      <option value="1st Semester">1st Semester</option>
-                      <option value="2nd Semester">2nd Semester</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div class="form-group row">
-                  <label class="col-md-2 col-form-label" for="School Year">School Year</label>
-                  <div class="col-md-3">
-                    <select class="form-control" name="school_yr">
-                      <?php
-                        $query_school_yr  = "SELECT * FROM school_yr";
-                        $result_school_yr = mysqli_query($connection, $query_school_yr);
-
-                        while($row_school_yr = mysqli_fetch_assoc($result_school_yr))
-                          {
-                            echo  "<option value=\"".$row_school_yr['school_yr']."\">".$row_school_yr['school_yr']."</option>";
-                          }
-                      ?>
-                    </select>
-                  </div>
-                </div>
-                <div class="form-group row">
-                  <label class="col-md-2 col-form-label" for="Course">Max Units</label>
-                  <div class="col-md-3">
-                    <?php
-                      echo "<input type=\"text\" id=\"max-units\" name=\"max_units\" class=\"form-control\" value=".return_max_units($connection)." readonly>";
-                    ?>
-                    
-                  </div>
-                </div>
-
-                <div class="col-md-6">
-                  <input type="submit" id="submit" name="submit" value="Build Course Subjects" class="btn btn-primary" /><br> <br>
-                </div>   
-              <!--Hidden input box to be populated by user interaction-->
-              <input type="text" name="array_values" id="array_values" style="display: none">
- 
-
-        
-
-        </div>
-
-      <div class="col-md-6">
-          <h3>Selected Subjects</h3>
-          <ul id="selected-subjects">
-          </ul>
-          <div class="form-group row">
-            <label class="col-md-2 col-form-label" for="Course">Current Units</label>
-            <div class="col-md-3">
-              <input type="text" name="current_units" class="form-control" id="current-units" value="0" readonly="">                    
-            </div>
+                if(isset($connection)){ mysqli_close($connection); }
+                //close database connection after an sql command   
+              ?>
           </div>
-      </div>
-      </form>
-      <?php 
-        // // get the subject id from #selected-subjects li
-        // // create a loop for the sql insert command
-        // // use the count of li elements under #selected-subjects as the max loop
-        // insert course id, subject id, year, and term
-        if (isset($_POST['submit'])) {
-
-          $max_units = $_POST['max_units'];
-          $current_total_units = $_POST['current_units'];
-
-          if ($current_total_units > $max_units || $current_total_units <=0) {
-           echo "<div class=\"col-md-12\"><div class=\"alert alert-danger\" role=\"alert\">Error: Current units exceeds the allotted max units or no subject was selected.</div></div>";
-          }
-
-          else{
-            $data = $_POST['array_values'];
-            $arrVal = explode(";",$data);
-            $arrLength = count($arrVal);
-
-
-            $course = $_POST["course"];
-            $year = mysql_prep($_POST["year"]);
-            $semester = mysql_prep($_POST["semester"]);
-            $school_yr = mysql_prep($_POST["school_yr"]);
-
-            $query  = "SELECT * FROM course_subjects WHERE course_id = '".$course."' AND year = '".$year."' AND term = '".$semester."'";
-            $result = mysqli_query($connection, $query);
-
-            if (mysqli_num_rows($result)>0) {
-              echo "<script type='text/javascript'>";
-              echo "alert('Subject set already exists for this course, year and term.');";
-              echo "</script>";
-
-              $URL="manage-course-subjects.php";
-              echo "<script>location.href='$URL'</script>";
-            }
-
-            else{
-
-              foreach ($arrVal as $subjects) {
-              $query   = "INSERT INTO course_subjects (course_id, subject_id, year, term, school_yr) VALUES ('{$course}', '{$subjects}', '{$year}', '{$semester}', '{$school_yr}')";
-              $result = mysqli_query($connection, $query);
-
-              }
-
-            }
-
-              if ($result === TRUE) {
-                echo "<script type='text/javascript'>";
-                echo "alert('Create subject set successful!');";
-                echo "</script>";
-
-                $URL="manage-course-subjects.php";
-                echo "<script>location.href='$URL'</script>";
-
-                } else {
-                  echo "Error updating record: " . $connection->error;
-                }
-            }
-
-          }
-
-
-        ?>
-      <div class="col-md-12">
-        <h3>Available Subjects</h3>
-        <input class="form-control" id="myInput" type="text" placeholder="Quick Search">
-      <?php
-
-        echo "<table id=\"datatable\" class=\"table table-striped table-bordered dataTable\">";
-        echo " <thead>";
-        echo "  <tr>";
-        echo "   <th>Subject Name</th>";
-        echo "   <th>Subject Code</th>";
-        echo "   <th>Prerequisite</th>";
-        echo "   <th>Lecture Units</th>";
-        echo "   <th>Lab Units</th>";
-        echo "   <th>Total Units</th>";
-        echo "   <th>&nbsp;</th>";   
-        echo "  </tr></thead><tbody>";
-        
-        
-
-        $query  = "SELECT * FROM subjects ORDER BY subject_id ASC";
-        $result = mysqli_query($connection, $query);
-
-      while($row = mysqli_fetch_assoc($result))
-        {
-        echo "<tr>";
-        echo "<td>".$row['subject_name']."</td>";
-        echo "<td>".$row['subject_code']."</td>";
-        echo "<td>".get_subject_code($row['pre_id'],"",$connection)."</td>";
-        echo "<td>".$row['lect_units']."</td>";
-        echo "<td>".$row['lab_units']."</td>";
-        echo "<td class=\"".$row['total_units']."\" id=\"class\">".$row['total_units']."</td>";
-        echo "<td class=\"subject-wrap\"><a class=\"".$row['total_units']."-".$row['subject_code']."\" id=\"".$row['subject_id']."\""." href=\"#\">Add Subject</a> </td>";
-        echo "</tr>";
-        }
-
-        echo "</tbody></table>"; 
-
-        if(isset($connection)){ mysqli_close($connection); }
-        //close database connection after an sql command   
-      ?>
+        </div>
       </div>
     </div>
   </div>
@@ -235,7 +240,7 @@
 
   <!-- Scroll to Top Button-->
   <a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
+    <i class="fa fa-angle-up"></i>
   </a>
 
 
@@ -312,25 +317,3 @@ $( document ).ready(function() {
   });
 
 </script>
-
-
-
-<!--   <script>
-  $(document).ready(function() {
-    $(".subject-btn").click(function(){
-      var current_units = $("#current_units").val();
-      var subject_id = $(this).attr("id");
-      $.post("add_new_subject_to_course.php",
-        {
-          subject_id: subject_id
-        }
-        ,function(data,status){
-        $("#selected-subjects").html(data);
-      });
-      console.log(current_units);
-      $("#current-units").val(current_units);
-      total_units = $("#current-units").val() + current_units;
-      
-    });
-  });
-  </script> -->

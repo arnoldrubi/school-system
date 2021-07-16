@@ -63,149 +63,150 @@
           Edit Class
         </li>
       </ol>
-          <h4><i class="fa fa-bell" aria-hidden="true"></i> Edit Class</h4> 
-          <hr>
-
-      <form class="form-horizontal block-area" action="" method="post">
-        <div class="form-group row">
-          <label class="col-sm-2 col-form-label control-label" for="Course">Course:</label>
-          <div class="col-sm-10">
-            <select id="course" class="form-control" name="course">
-              <?php
-              //this block will load the course name from the database
-              $query  = "SELECT * FROM courses WHERE course_deleted = 0";
-              $result = mysqli_query($connection, $query);
-
-
-              while($row = mysqli_fetch_assoc($result))
-                {
-                  $course_code = $row['course_code'];
-                  if ($row['course_id'] == $course_id) {
-                   echo  "<option value=\"".$row['course_id']."\" readonly selected>".$course_code."</option>";
-                  }
-
-                }
-              ?>
-            </select>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-sm-2 col-form-label control-label" for="Year">Year:</label>
-          <div class="col-sm-10">
-            <select id="select-yr" class="form-control" name="year">
-              <?php
-              echo "<option value=\"".$year."\" readonly selected>".$year."</option>";
-              ?>
-            </select>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-sm-2 col-form-label control-label" for="Term">Term:</label>
-          <div class="col-sm-10">
-            <select id="term" readonly class="form-control" name="term">
-                <?php
-                  $term = return_current_term($connection,"");
-                  echo  "<option readonly selected value=\"".$term."\">".$term."</option>";
-              ?>
-            </select>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-sm-2 col-form-label control-label" for="Year">School Year:</label>
-          <div class="col-sm-10">
-            <select readonly id="school_yr" class="form-control" name="school_yr">
-              <?php
-                  $sy = return_current_sy($connection,"");
-                  echo  "<option readonly selected value=\"".$sy."\">".$sy."</option>";
-              ?>
-            </select>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-sm-2 col-form-label control-label" for="Section">Section:</label>
-          <div class="col-sm-10">
-            <select id="section" class="form-control" name="section">
-              <?php
-                  $section_name = get_section_name($sec_id,"",$connection);
-                  echo  "<option readonly selected value=\"".$sec_id."\">".$section_name."</option>";
-              ?>
-            </select>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-sm-2 col-form-label control-label" for="Section">Subject:</label>
-          <div class="col-sm-10">
-            <select id="subject" class="form-control" name="subject">
-              <?php
-                $school_yr = return_current_sy($connection,"");
-                $query  = "SELECT * FROM course_subjects WHERE course_id=".$course_id." AND year='".$year."' AND term='".$term."' AND school_yr='".$school_yr."'";
-                $result = mysqli_query($connection, $query);
-
-                if (mysqli_num_rows($result)< 1) {
-                  echo "<option value=\"N/A\">No Section Created Yet Under This Course and Year</option>";
-                }
-                else{
-                   while($row = mysqli_fetch_assoc($result))
-                    { 
-                     if ($subject_id == $row['subject_id']) {
-                      echo "<option selected value=\"".$row['subject_id']."\">".get_subject_code($row['subject_id'],"",$connection).": ".get_subject_name($row['subject_id'],"",$connection)."</option>";
-                     }
-                     else{
-                      echo "<option value=\"".$row['subject_id']."\">".get_subject_code($row['subject_id'],"",$connection).": ".get_subject_name($row['subject_id'],"",$connection)."</option>";
-                     }
-                    }
-                }
-              ?>
-            </select>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-sm-2 col-form-label control-label" for="Section">Teacher:</label>
-          <div class="col-sm-10">
-            <select id="teacher" class="form-control" name="teacher">
-              <?php
-              //this block will load the course name from the database
-              $query  = "SELECT * FROM teachers";
-              $result = mysqli_query($connection, $query);
+      <div class="card mb-3">
+        <div class="card-header">
+          <i class="fa fa-pencil-square-o"></i>
+          Edit Student Info</div>
+          <div class="card-body">
+            <form class="form-horizontal block-area" action="" method="post">
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label control-label" for="Course">Course:</label>
+                <div class="col-sm-10">
+                  <select id="course" class="form-control" name="course">
+                    <?php
+                    //this block will load the course name from the database
+                    $query  = "SELECT * FROM courses WHERE course_deleted = 0";
+                    $result = mysqli_query($connection, $query);
 
 
-              while($row = mysqli_fetch_assoc($result))
-                {
-                  if ($row['teacher_id'] == $teacher_id) {
-                  echo  "<option selected value=\"".$row['teacher_id']."\">".get_teacher_name($row['teacher_id'],"",$connection)."</option>";
-                  }
-                  else{
-                  echo  "<option value=\"".$row['teacher_id']."\">".get_teacher_name($row['teacher_id'],"",$connection)."</option>";
-                  }
-                }
-              ?>
-            </select>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-sm-2 col-form-label control-label" for="Section">Max Students:</label>
-          <div class="col-sm-2">
-          <?php        
-            echo "<input id=\"max-students\" name=\"max_students\" type=\"number\" min=\"1\" max=\"99\" value=\"".$current_limit."\" placeholder=\"Max: 99\" class=\"form-control\" required>";
-          ?>            
-          </div>
-        </div>
-        <div class="form-group row">
-          <div class="col-md-6 offset-md-3">
-            <button id="submit" name="submit" type="submit" class="btn btn-success form-control btn-sm">Submit</button>
-          </div>
-        </div>
-      </form>
+                    while($row = mysqli_fetch_assoc($result))
+                      {
+                        $course_code = $row['course_code'];
+                        if ($row['course_id'] == $course_id) {
+                         echo  "<option value=\"".$row['course_id']."\" readonly selected>".$course_code."</option>";
+                        }
 
-     </div>
+                      }
+                    ?>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label control-label" for="Year">Year:</label>
+                <div class="col-sm-10">
+                  <select id="select-yr" class="form-control" name="year">
+                    <?php
+                    echo "<option value=\"".$year."\" readonly selected>".$year."</option>";
+                    ?>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label control-label" for="Term">Term:</label>
+                <div class="col-sm-10">
+                  <select id="term" readonly class="form-control" name="term">
+                      <?php
+                        $term = return_current_term($connection,"");
+                        echo  "<option readonly selected value=\"".$term."\">".$term."</option>";
+                    ?>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label control-label" for="Year">School Year:</label>
+                <div class="col-sm-10">
+                  <select readonly id="school_yr" class="form-control" name="school_yr">
+                    <?php
+                        $sy = return_current_sy($connection,"");
+                        echo  "<option readonly selected value=\"".$sy."\">".$sy."</option>";
+                    ?>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label control-label" for="Section">Section:</label>
+                <div class="col-sm-10">
+                  <select id="section" class="form-control" name="section">
+                    <?php
+                        $section_name = get_section_name($sec_id,"",$connection);
+                        echo  "<option readonly selected value=\"".$sec_id."\">".$section_name."</option>";
+                    ?>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label control-label" for="Section">Subject:</label>
+                <div class="col-sm-10">
+                  <select id="subject" class="form-control" name="subject">
+                    <?php
+                      $school_yr = return_current_sy($connection,"");
+                      $query  = "SELECT * FROM course_subjects WHERE course_id=".$course_id." AND year='".$year."' AND term='".$term."' AND school_yr='".$school_yr."'";
+                      $result = mysqli_query($connection, $query);
+
+                      if (mysqli_num_rows($result)< 1) {
+                        echo "<option value=\"N/A\">No Section Created Yet Under This Course and Year</option>";
+                      }
+                      else{
+                         while($row = mysqli_fetch_assoc($result))
+                          { 
+                           if ($subject_id == $row['subject_id']) {
+                            echo "<option selected value=\"".$row['subject_id']."\">".get_subject_code($row['subject_id'],"",$connection).": ".get_subject_name($row['subject_id'],"",$connection)."</option>";
+                           }
+                           else{
+                            echo "<option value=\"".$row['subject_id']."\">".get_subject_code($row['subject_id'],"",$connection).": ".get_subject_name($row['subject_id'],"",$connection)."</option>";
+                           }
+                          }
+                      }
+                    ?>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label control-label" for="Section">Teacher:</label>
+                <div class="col-sm-10">
+                  <select id="teacher" class="form-control" name="teacher">
+                    <?php
+                    //this block will load the course name from the database
+                    $query  = "SELECT * FROM teachers";
+                    $result = mysqli_query($connection, $query);
+
+
+                    while($row = mysqli_fetch_assoc($result))
+                      {
+                        if ($row['teacher_id'] == $teacher_id) {
+                        echo  "<option selected value=\"".$row['teacher_id']."\">".get_teacher_name($row['teacher_id'],"",$connection)."</option>";
+                        }
+                        else{
+                        echo  "<option value=\"".$row['teacher_id']."\">".get_teacher_name($row['teacher_id'],"",$connection)."</option>";
+                        }
+                      }
+                    ?>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label control-label" for="Section">Max Students:</label>
+                <div class="col-sm-2">
+                <?php        
+                  echo "<input id=\"max-students\" name=\"max_students\" type=\"number\" min=\"1\" max=\"99\" value=\"".$current_limit."\" placeholder=\"Max: 99\" class=\"form-control\" required>";
+                ?>            
+                </div>
+              </div>
+              <div class="form-group row">
+                <div class="col-md-6 offset-md-3">
+                  <button id="submit" name="submit" type="submit" class="btn btn-success form-control btn-sm">Submit</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
     </div>
-
   </div>
   <!-- /#wrapper -->
 
   <!-- Scroll to Top Button-->
   <a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
+    <i class="fa fa-angle-up"></i>
   </a>
 
     <?php
@@ -221,7 +222,7 @@
           $sec_name = get_section_name($section,"",$connection);
 
           $max_students_enrolled = (int)$_POST["max_students"];
-          $current_students = get_enrolled_regular_students($connection,"",$course_id,$year,$term,$sec_name,$school_yr);
+          $current_students = get_enrolled_regular_students($sec_id,$term,$sy,"",$connection);
 
           if (!isset($course_id) || !isset($section) || !isset($subject) || !isset($teacher)) {
             die ("<div class=\"alert alert-danger\" role=\"alert\">Error: One or more fields are empty.</div>");
@@ -235,7 +236,7 @@
             echo "alert('Class is now updated!');";
             echo "</script>";
 
-            $URL="classes.php";
+            $URL="classes.php?sec_id=".$sec_id."&term=".urlencode($term)."&school_yr=".urlencode($school_yr);
             echo "<script>location.href='$URL'</script>";
             } else {
             echo "Error updating record: " . $connection->error;

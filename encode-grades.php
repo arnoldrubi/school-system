@@ -58,128 +58,137 @@
          Process Grades
         </li>
       </ol>
-      <h1>Process Grades for <?php echo $subject_code."(".$subject_name.")"; ?></h1>
+      <h1></h1>
       <hr>
-      
-      <input class="form-control" id="myInput" type="text" placeholder="Quick Search">
-      <?php
-      if (isset($_GET["grade_saved"])) {
-        $url_grade_save = $_GET["grade_saved"];
-        $form_url = "process-grades.php?subject_id=".$subject_id."&term=".urlencode($term)."&school_yr=".urlencode($school_yr)."&course_id=".urlencode($course_id)."&year=".urlencode($year)."&section=".urlencode($section)."&teacher_id=".urlencode($teacher_id)."&grade_saved=".$url_grade_save;
-      }
-      else{
-      $form_url = "process-grades.php?subject_id=".$subject_id."&term=".urlencode($term)."&school_yr=".urlencode($school_yr)."&course_id=".urlencode($course_id)."&year=".urlencode($year)."&section=".urlencode($section)."&teacher_id=".urlencode($teacher_id);
-      }
-      ?>
-      <form action="<?php echo $form_url;?>" method="post">
-      <?php
+      <div class="card mb-3">
+        <div class="card-header">
+          <i class="fa fa-table"></i>
+          Process Grades for <?php echo $subject_code."(".$subject_name.")"; ?></div>
+          <div class="card-body">
+            <input class="form-control" id="myInput" type="text" placeholder="Quick Search">
+            <?php
+            if (isset($_GET["grade_saved"])) {
+              $url_grade_save = $_GET["grade_saved"];
+              $form_url = "process-grades.php?subject_id=".$subject_id."&term=".urlencode($term)."&school_yr=".urlencode($school_yr)."&course_id=".urlencode($course_id)."&year=".urlencode($year)."&section=".urlencode($section)."&teacher_id=".urlencode($teacher_id)."&grade_saved=".$url_grade_save;
+            }
+            else{
+            $form_url = "process-grades.php?subject_id=".$subject_id."&term=".urlencode($term)."&school_yr=".urlencode($school_yr)."&course_id=".urlencode($course_id)."&year=".urlencode($year)."&section=".urlencode($section)."&teacher_id=".urlencode($teacher_id);
+            }
+            ?>
+            <form action="<?php echo $form_url;?>" method="post">
+            <?php
 
-        echo "<table id=\"example\" class=\"table table-striped table-bordered dataTable\">";
-        echo " <thead>";
-        echo "  <tr>";
-        echo "   <th style=\"display: none;\">Student Reg. ID</th>";
-        echo "   <th>Student Number</th>";
-        echo "   <th>Name</th>";
-        echo "   <th>Prelim</th>";
-        echo "   <th>Midterm</th>";
-        echo "   <th>Semis</th>";
-        echo "   <th>Finals</th>";
-        echo "   <th>Final Grade</th>";
-        echo "   <th>Remarks</th>";
-        echo "   <th>&nbsp;</th>";
-        echo "  </tr></thead><tbody>";
-        
-        $remarks_value = 0;
+              echo "<table id=\"table-grades\" class=\"table table-striped table-bordered dataTable\">";
+              echo " <thead>";
+              echo "  <tr>";
+              echo "   <th style=\"display: none;\">Student Reg. ID</th>";
+              echo "   <th>Student Number</th>";
+              echo "   <th>Name</th>";
+              echo "   <th>Prelim</th>";
+              echo "   <th>Midterm</th>";
+              echo "   <th>Semis</th>";
+              echo "   <th>Finals</th>";
+              echo "   <th>Final Grade</th>";
+              echo "   <th>Remarks</th>";
+              echo "   <th>&nbsp;</th>";
+              echo "  </tr></thead><tbody>";
+              
+              $remarks_value = 0;
 
-        $query = "SELECT student_grades.stud_reg_id, student_grades.prelim, student_grades.midterm, student_grades.semis, student_grades.finals, student_grades.final_grade,student_grades.remarks, student_grades.grade_posted,students_reg.first_name, students_reg.middle_name, students_reg.last_name FROM student_grades INNER JOIN students_reg ON student_grades.stud_reg_id = students_reg.stud_reg_id WHERE student_grades.subject_id ='".$subject_id."' AND student_grades.sec_id ='".$section."' AND term='".$term."' AND school_yr='".$school_yr."' ORDER BY students_reg.last_name";
-        
-        $result = mysqli_query($connection, $query);
+              $query = "SELECT student_grades.stud_reg_id, student_grades.prelim, student_grades.midterm, student_grades.semis, student_grades.finals, student_grades.final_grade,student_grades.remarks, student_grades.grade_posted,students_reg.first_name, students_reg.middle_name, students_reg.last_name FROM student_grades INNER JOIN students_reg ON student_grades.stud_reg_id = students_reg.stud_reg_id WHERE student_grades.subject_id ='".$subject_id."' AND student_grades.sec_id ='".$section."' AND term='".$term."' AND school_yr='".$school_yr."' ORDER BY students_reg.last_name";
+              
+              $result = mysqli_query($connection, $query);
 
-      while($row = mysqli_fetch_assoc($result))
-        {
-          $grade_posted = $row['grade_posted'];
-          $lock_grade = "";
-          $checkboxDisabled = "";
-          if ($grade_posted == 1) {
-            $lock_grade = "readonly style=\"background: #e9ecef;\"";
-            $checkboxDisabled = "disabled";
-          }
-        echo "<tr>";
-          echo "<td><input class=\"student-id-box\" type=\"number\" name=\"stud_reg_id[]\" min=\"1\" style=\"display: none\" max=\"100\" value=\"".$row['stud_reg_id']."\"><input class=\"student-id-box\" type=\"text\" disabled name=\"stud_id[]\" value=\"".get_student_number($row['stud_reg_id'],$connection)."\"></td>";
-          echo "<td>".$row['last_name'].", ".$row['first_name'].", ".substr($row['middle_name'], 0,1).".</td>";
-          echo "<td><input class=\"grade-box\" step=\".25\" type=\"number\" maxlength =\"3\" name=\"prelim[]\" min=\"1\" max=\"5\" ".$lock_grade." value=\"".$row['prelim']."\"></td>";
-          echo "<td><input class=\"grade-box\" step=\".25\" type=\"number\" maxlength =\"3\" name=\"midterm[]\" min=\"1\" max=\"5\" ".$lock_grade." value=\"".$row['midterm']."\"></td>";
-          echo "<td><input class=\"grade-box\" step=\".25\" type=\"number\" maxlength =\"3\" name=\"semis[]\" min=\"1\" max=\"5\" ".$lock_grade." value=\"".$row['semis']."\"></td>";
-          echo "<td><input class=\"grade-box\" step=\".25\" type=\"number\" maxlength =\"3\" name=\"finals[]\" min=\"1\" max=\"5\" ".$lock_grade." value=\"".$row['finals']."\"></td>";
+            while($row = mysqli_fetch_assoc($result))
+              {
+                $grade_posted = $row['grade_posted'];
+                $lock_grade = "";
+                $checkboxDisabled = "";
+                if ($grade_posted == 1) {
+                  $lock_grade = "readonly style=\"background: #e9ecef;\"";
+                  $checkboxDisabled = "disabled";
+                }
+              echo "<tr>";
+                echo "<td><input class=\"student-id-box\" type=\"number\" name=\"stud_reg_id[]\" min=\"1\" style=\"display: none\" max=\"100\" value=\"".$row['stud_reg_id']."\"><input class=\"student-id-box\" type=\"text\" disabled name=\"stud_id[]\" value=\"".get_student_number($row['stud_reg_id'],$connection)."\"></td>";
+                echo "<td>".$row['last_name'].", ".$row['first_name'].", ".substr($row['middle_name'], 0,1).".</td>";
+                echo "<td><input class=\"grade-box\" step=\".25\" type=\"number\" maxlength =\"3\" name=\"prelim[]\" min=\"1\" max=\"5\" ".$lock_grade." value=\"".$row['prelim']."\"></td>";
+                echo "<td><input class=\"grade-box\" step=\".25\" type=\"number\" maxlength =\"3\" name=\"midterm[]\" min=\"1\" max=\"5\" ".$lock_grade." value=\"".$row['midterm']."\"></td>";
+                echo "<td><input class=\"grade-box\" step=\".25\" type=\"number\" maxlength =\"3\" name=\"semis[]\" min=\"1\" max=\"5\" ".$lock_grade." value=\"".$row['semis']."\"></td>";
+                echo "<td><input class=\"grade-box\" step=\".25\" type=\"number\" maxlength =\"3\" name=\"finals[]\" min=\"1\" max=\"5\" ".$lock_grade." value=\"".$row['finals']."\"></td>";
 
-          echo "<td><input class=\"final-computed-grade\" step=\".25\" maxlength =\"3\" type=\"number\" name=\"final_grade[]\"  min=\"0.00\" max=\"5.00\" readonly value=\"".$row['final_grade']."\"></td>";
+                echo "<td><input class=\"final-computed-grade\" step=\".25\" maxlength =\"3\" type=\"number\" name=\"final_grade[]\"  min=\"0.00\" max=\"5.00\" readonly value=\"".$row['final_grade']."\"></td>";
 
-          echo "<td>";
-          echo  "<input class=\"remarks form-control\" name=\"remarks[]\" value=\"".$row['remarks']."\" readonly />";
-          echo "</td>";
-          echo "<td>";
-          if ($row['remarks'] == "Incomplete") {
-            $remarks_value = "checked=\"checked\"";
-          }
-          else{
-            $remarks_value = "";
-          }
-          echo  "<div class=\"form-check\"><input class=\"form-check-input MarkIncomplete\" type=\"checkbox\" ".$remarks_value." ".$checkboxDisabled."><label class=\"form-check-label\ for=\"MarkIncomplete\">Mark as Incomplete</label></div>";
-          echo "</td>";
-        echo "</tr>";
-        }
+                echo "<td>";
+                echo  "<input class=\"remarks form-control\" name=\"remarks[]\" value=\"".$row['remarks']."\" readonly />";
+                echo "</td>";
+                echo "<td>";
+                if ($row['remarks'] == "Incomplete") {
+                  $remarks_value = "checked=\"checked\"";
+                }
+                else{
+                  $remarks_value = "";
+                }
+                echo  "<div class=\"form-check\"><input class=\"form-check-input MarkIncomplete\" type=\"checkbox\" ".$remarks_value." ".$checkboxDisabled."><label class=\"form-check-label\ for=\"MarkIncomplete\">Mark as Incomplete</label></div>";
+                echo "</td>";
+              echo "</tr>";
+              }
 
-        echo "</tbody></table>"; 
+              echo "</tbody></table>"; 
 
-        echo "<div class=\"col-md-4\">";
+              echo "<div class=\"col-md-4\">";
 
-        //query check to make sure the grades are locked before proceeding, if not, the buttons will be set to default
+              //query check to make sure the grades are locked before proceeding, if not, the buttons will be set to default
 
-        $grades_set_lock = "";
+              $grades_set_lock = "";
 
-        $query_check = "SELECT grade_posted FROM student_grades WHERE subject_id ='".$subject_id."' AND sec_id ='".$section."' AND teacher_id = '".$teacher_id."' AND term='".$term."' AND school_yr='".$school_yr."' LIMIT 1";
-        $result_check = mysqli_query($connection, $query_check);
-        while($row_check = mysqli_fetch_assoc($result_check))
-        {
-          $grades_set_lock = $row_check['grade_posted'];
-        }
-          
-        if (isset($_GET["grade_saved"])) {
-          $grade_saved = $_GET["grade_saved"];
-          if ($grade_saved == 1) {
-          echo "<input type=\"submit\" name=\"post\" value=\"Post Grades\" class=\"btn btn-success\" />";
-          }
-          elseif ($grade_saved == 2) {
-          echo "<input type=\"submit\" name=\"edit\" value=\"Edit Grades\" class=\"btn btn-warning\" />";      
-          }
-          elseif ($grades_set_lock > 0) {
-          echo "<input type=\"submit\" name=\"edit\" value=\"Edit Grades\" class=\"btn btn-warning\" />";      
-          }
-          else{
-            echo "<input type=\"submit\" name=\"submit\" value=\"Save Grades\" class=\"btn btn-primary\" />";
-          }
-        }
-        else{
-          if ($grades_set_lock == 1) {
-            echo "<input type=\"submit\" name=\"edit\" value=\"Edit Grades\" class=\"btn btn-warning\" />";      
-          }
-          else{
-           echo "<input type=\"submit\" name=\"submit\" value=\"Save Grades\" class=\"btn btn-primary\" />";
-          }
-        }
+              $query_check = "SELECT grade_posted FROM student_grades WHERE subject_id ='".$subject_id."' AND sec_id ='".$section."' AND teacher_id = '".$teacher_id."' AND term='".$term."' AND school_yr='".$school_yr."' LIMIT 1";
+              $result_check = mysqli_query($connection, $query_check);
+              while($row_check = mysqli_fetch_assoc($result_check))
+              {
+                $grades_set_lock = $row_check['grade_posted'];
+              }
+                
+              if (isset($_GET["grade_saved"])) {
+                $grade_saved = $_GET["grade_saved"];
+                if ($grade_saved == 1) {
+                echo "<input type=\"submit\" name=\"post\" value=\"Post Grades\" class=\"btn btn-success\" />";
+                }
+                elseif ($grade_saved == 2) {
+                echo "<input type=\"submit\" name=\"edit\" value=\"Edit Grades\" class=\"btn btn-warning\" />";      
+                }
+                elseif ($grades_set_lock > 0) {
+                echo "<input type=\"submit\" name=\"edit\" value=\"Edit Grades\" class=\"btn btn-warning\" />";      
+                }
+                else{
+                  echo "<input type=\"submit\" name=\"submit\" value=\"Save Grades\" class=\"btn btn-primary\" />";
+                }
+              }
+              else{
+                if ($grades_set_lock == 1) {
+                  echo "<input type=\"submit\" name=\"edit\" value=\"Edit Grades\" class=\"btn btn-warning\" />";      
+                }
+                else{
+                 echo "<input type=\"submit\" name=\"submit\" value=\"Save Grades\" class=\"btn btn-primary\" />";
+                }
+              }
 
-        echo "&nbsp;<a class=\"btn btn-secondary\" href=\"grading-portal.php\">Cancel</a></div>";
-      ?>
+              echo "&nbsp;<a class=\"btn btn-secondary\" href=\"grading-portal.php\">Cancel</a></div>";
+            ?>
 
-      <center>
-             <?php echo "<a id=\"preview-print\" style=\"color: #fff;\" class=\"btn btn-primary hidden-print\" href=\"preview-print-grades-all.php?subject_id=".$subject_id."&term=".urlencode($term)."&course_id=".urlencode($course_id)."&year=".urlencode($year)."&section=".urlencode($section)."&teacher_id=".urlencode($teacher_id)."\"><i class=\"fa fa-table\" aria-hidden=\"true\"></i> Preview Summary</a>";
-             ?>
-      <center><br>     
-      <div class="alert alert-success" role="alert">
-        Make sure you "Post" the grades first before clicking preview to get the latest data on the grades.
+            <center>
+                   <?php echo "<a id=\"preview-print\" style=\"color: #fff;\" class=\"btn btn-primary hidden-print\" href=\"preview-print-grades-all.php?subject_id=".$subject_id."&term=".urlencode($term)."&course_id=".urlencode($course_id)."&year=".urlencode($year)."&section=".urlencode($section)."&teacher_id=".urlencode($teacher_id)."\"><i class=\"fa fa-table\" aria-hidden=\"true\"></i> Preview Summary</a>";
+                   ?>
+<!--                    <button id="excel-export" style="color: #fff;"  onclick="exportTableToExcel('table-grades','students-grades')" class="btn btn-success hidden-print"><i class="fa fa-table" aria-hidden="true"></i> Export to Excel</button> -->
+            </center><br>     
+            <div class="alert alert-success" role="alert">
+              Make sure you "Post" the grades first before clicking preview to get the latest data on the grades.
+            </div>
+          </form>
+        </div>
       </div>
-    </form>
+    </div>
   </div>
+
   <!-- /#wrapper -->
 
   <!-- Scroll to Top Button-->
@@ -234,7 +243,7 @@ $(document).ready(function(){
 
   $("#myInput").on("keyup", function() {
     var value = $(this).val().toLowerCase();
-    $("#example tbody tr").filter(function() {
+    $("#table-grades tbody tr").filter(function() {
       $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
     });
   });
@@ -293,19 +302,49 @@ $(document).ready(function(){
   
 </script>
 
-  <script type="text/javascript">
-    $(document).ready(function(){
+<script type="text/javascript">
+  $(document).ready(function(){
 
-       $("#select-deleted").change(function(){
-        show_deleted = $("#select-deleted").val();
-        $("#datatable").load("include-deleted-courses.php",{
-          show_deleted: show_deleted
-        });
+     $("#select-deleted").change(function(){
+      show_deleted = $("#select-deleted").val();
+      $("#datatable").load("include-deleted-courses.php",{
+        show_deleted: show_deleted
+      });
 
-       });
+     });
+    }
+  );
+  function exportTableToExcel(tableID, filename = ''){
+      var downloadLink;
+      var dataType = 'application/vnd.ms-excel';
+      var tableSelect = document.getElementById(tableID);
+      var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
+      
+      // Specify file name
+      filename = filename?filename+'.xls':'excel_data.xls';
+      
+      // Create download link element
+      downloadLink = document.createElement("a");
+      
+      document.body.appendChild(downloadLink);
+      
+      if(navigator.msSaveOrOpenBlob){
+          var blob = new Blob(['\ufeff', tableHTML], {
+              type: dataType
+          });
+          navigator.msSaveOrOpenBlob( blob, filename);
+      }else{
+          // Create a link to the file
+          downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+      
+          // Setting the file name
+          downloadLink.download = filename;
+          
+          //triggering the function
+          downloadLink.click();
       }
-    );
-  </script>
+  }
+</script>
 
 
 

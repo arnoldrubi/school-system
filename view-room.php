@@ -31,36 +31,41 @@
           Manage Rooms
         </li>
       </ol>
-      <h1>View All Rooms</h1>
-      <hr>
-      <div class="table-responsive" id="dataTable_wrapper">
-      <?php
+      <div class="card mb-3">
+        <div class="card-header">
+          <i class="fa fa-table"></i>
+          View All Rooms</div>
+          <div class="card-body">
+            <div class="table-responsive" id="dataTable_wrapper">
+            <?php
 
-        echo "<table class=\"table table-bordered dataTable\" id=\"dataTable\" width=\"100%\" cellspacing=\"0\" role=\"grid\" aria-describedby=\"dataTable_info\" style=\"width: 100%;\">";
-        echo " <thead>";
-        echo "  <tr>";
-        echo "   <th>Room Name</th>";
-        echo "   <th>Description</th>";
-        echo "   <th>Options</th>";   
-        echo "  </tr></thead><tbody>";
-        
-        
+              echo "<table class=\"table table-bordered dataTable\" id=\"dataTable\" width=\"100%\" cellspacing=\"0\" role=\"grid\" aria-describedby=\"dataTable_info\" style=\"width: 100%;\">";
+              echo " <thead>";
+              echo "  <tr>";
+              echo "   <th>Room Name</th>";
+              echo "   <th>Description</th>";
+              echo "   <th>Options</th>";   
+              echo "  </tr></thead><tbody>";
+              
+              
 
-        $query  = "SELECT * FROM rooms ORDER BY room_id ASC";
-        $result = mysqli_query($connection, $query);
+              $query  = "SELECT * FROM rooms ORDER BY room_id ASC";
+              $result = mysqli_query($connection, $query);
 
-      while($row = mysqli_fetch_assoc($result))
-        {
-        echo "<tr>";
-        echo "<td>".$row['room_name']."</td>";
-        echo "<td>".$row['description']."</td>";
-        echo "<td style=\"text-align: center;\"><a class=\"btn btn-warning btn-xs\" title=\"Edit\" href=\"edit-room.php?room_id=".$row['room_id']."\""."><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a> ";
-        echo "<a title=\"Delete\" class=\"btn btn-danger btn-xs\" href=\"javascript:confirmDelete('delete-room.php?room_id=".$row['room_id']."')\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a></td>";
-        echo "</tr>";
-        }
+            while($row = mysqli_fetch_assoc($result))
+              {
+              echo "<tr>";
+              echo "<td>".$row['room_name']."</td>";
+              echo "<td>".$row['description']."</td>";
+              echo "<td class=\"options-td\"><a class=\"btn btn-warning btn-xs a-modal\" title=\"Edit\" href=\"edit-room.php?room_id=".$row['room_id']."\""."><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a> ";
+              echo "<a title=\"Delete\" class=\"btn btn-danger btn-xs a-modal\" href=\"javascript:confirmDelete('delete-room.php?room_id=".$row['room_id']."')\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a></td>";
+              echo "</tr>";
+              }
 
-        echo "</tbody></table>"; 
-      ?>
+              echo "</tbody></table>"; 
+            ?>
+          </div>
+        </div>
      </div>
     </div>
   </div>
@@ -68,7 +73,7 @@
 
   <!-- Scroll to Top Button-->
   <a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
+    <i class="fa fa-angle-up"></i>
   </a>
 
   <!-- Logout Modal-->

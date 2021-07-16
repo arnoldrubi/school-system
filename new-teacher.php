@@ -27,52 +27,56 @@
          New Teacher
         </li>
       </ol>
-      <h1>Add New Teacher Form</h1>
-      <hr>
-      <!-- Text input-->
-     <form action="" method="post" >
-      <h2>Teacher's Info</h2>
-      <div class="form-group row">
-        <label class="col-sm-1 col-form-label" for="first-name">First Name</label>  
-        <div class="col-sm-3">
-          <input id="first-name" name="first-name" type="text" placeholder="Input First Name" class="form-control input-md" required="">
-        </div>
-      </div>
-      <div class="form-group row">
-        <label class="col-sm-1 col-form-label" for="last-name">Last Name</label>
-        <div class="col-sm-3">   
-          <input id="last-name" name="last-name" type="text" placeholder="Input Last Name" class="form-control input-md" required="">
-        </div>
-      </div>
-      <div class="form-group row">
-        <label class="col-sm-1 col-form-label" for="department">Department</label>  
-        <div class="col-sm-3">
-          <input id="department" name="dapartment" type="text" placeholder="Input Department" class="form-control input-md" required="">
-        </div>
-      </div>
-      <div class="form-group row">
-        <label class="col-sm-1 col-form-label" for="exampleInputEmail1">Email address</label>
-        <div class="col-sm-3">
-          <input type="email" id="email-faculty" class="form-control" id="exampleInputEmail1" required aria-describedby="emailHelp" name="email" value="" placeholder="Enter email">
-          <div id="warning-text-email"></div>
-        </div>      
-      </div>
-      <div class="form-group row">
-        <div class="col-md-5">
-          <p>Optional*<br><button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-             Faculty Number: Manual Encode
-            </button>
-          </p>
-          <div class="collapse" id="collapseExample">
-            <input type="text" class="form-control" id="manual-encode-faculty-num" name="manual_encode_encode_num" placeholder="xxxx-xxxx">        
-          </div>
-        </div>
-      </div>
-      <div class="col-md-5">
-        <input type="submit" id="submit" name="submit" value="Add Teacher" class="btn btn-primary" />&nbsp;
-        <a class="btn btn-secondary"href="admin-dashboard.php">Cancel</a>
-      </div>
-    </form>
+      <div class="card mb-3">
+        <div class="card-header">
+          <i class="fa fa-plus-square"></i>
+          New Teacher</div>
+          <div class="card-body">
+           <form class="form-horizontal" action="" method="post" >
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label" for="first-name">First Name</label>  
+              <div class="col-sm-6">
+                <input id="first-name" name="first-name" type="text" placeholder="Input First Name" class="form-control input-md" required="">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label" for="last-name">Last Name</label>
+              <div class="col-sm-6">   
+                <input id="last-name" name="last-name" type="text" placeholder="Input Last Name" class="form-control input-md" required="">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label" for="department">Department</label>  
+              <div class="col-sm-6">
+                <input id="department" name="dapartment" type="text" placeholder="Input Department" class="form-control input-md" required="">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label" for="exampleInputEmail1">Email address</label>
+              <div class="col-sm-6">
+                <input type="email" id="email-faculty" class="form-control" id="exampleInputEmail1" required aria-describedby="emailHelp" name="email" value="" placeholder="Enter email">
+                <div id="warning-text-email"></div>
+              </div>      
+            </div>
+            <div class="form-group row">
+              <label class="col-sm-2 col-form-label"><button class="btn btn-info" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                   Faculty Number: Manual Encode
+                  </button>
+                Optional*
+              </label>
+              <div class="col-sm-6">               
+                <div class="collapse" id="collapseExample">
+                  <input type="text" class="form-control" id="manual-encode-faculty-num" name="manual_encode_encode_num" placeholder="xxxx-xxxx">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12 d-flex justify-content-center">
+                <input type="submit" name="submit" value="New Teacher" class="btn btn-success" />&nbsp;
+                <a class="btn btn-secondary"href="view-room.php">Cancel</a>
+              </div>
+            </div> 
+          </form>
 
       <?php 
 
@@ -177,6 +181,8 @@
         if(isset($connection)){ mysqli_close($connection); }
         //close database connection after an sql command
         ?>
+      </div>
+    </div>
   </div>
  </div> 
   <!-- /#wrapper -->
@@ -185,7 +191,7 @@
 
   <!-- Scroll to Top Button-->
   <a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
+    <i class="fa fa-angle-up"></i>
   </a>
 
 <?php include 'layout/footer.php';?>

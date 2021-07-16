@@ -28,64 +28,68 @@
           <a href="view-courses.php">View Courses</a>
         </li>
         <li class="breadcrumb-item active">
-          Manage Subjects Groups
+          Manage Subjects Group
         </li>
       </ol>
-      <h1>Manage Courses Subjects</h1>
-      <hr>
-      <?php
+      <div class="card mb-3">
+        <div class="card-header">
+          <i class="fa fa-table"></i>
+           Manage Subjects Group</div>
+          <div class="card-body">
+            <?php
 
-        echo "<table id=\"example\" class=\"table table-striped table-bordered dataTable\">";
-        echo " <thead>";
-        echo "  <tr>";
-        echo "   <th>Course</th>";
-        echo "   <th>Year</th>";
-        echo "   <th>Term</th>";
-        echo "   <th>Options</th>";   
-        echo "  </tr></thead><tbody>";
-        
-        
+              echo "<table id=\"example\" class=\"table table-striped table-bordered dataTable\">";
+              echo " <thead>";
+              echo "  <tr>";
+              echo "   <th>Course</th>";
+              echo "   <th>Year</th>";
+              echo "   <th>Term</th>";
+              echo "   <th>Options</th>";   
+              echo "  </tr></thead><tbody>";
+              
+              
 
-        $query  = "SELECT DISTINCT course_id, year, term, school_yr from course_subjects ORDER BY year ASC, term ASC";
-        $result = mysqli_query($connection, $query);
+              $query  = "SELECT DISTINCT course_id, year, term, school_yr from course_subjects ORDER BY year ASC, term ASC";
+              $result = mysqli_query($connection, $query);
 
-      while($row = mysqli_fetch_assoc($result))
-        {
-        echo "<tr>";
+            while($row = mysqli_fetch_assoc($result))
+              {
+              echo "<tr>";
 
-        $course_id = $row['course_id'];
-        $query2 = "SELECT course_code FROM courses WHERE course_id='".$course_id."'";
-        $result2 = mysqli_query($connection, $query2);
-        while($row2 = mysqli_fetch_assoc($result2))
-        {
-          echo "<td>".$row2['course_code']."</td>";
-        }
+              $course_id = $row['course_id'];
+              $query2 = "SELECT course_code FROM courses WHERE course_id='".$course_id."'";
+              $result2 = mysqli_query($connection, $query2);
+              while($row2 = mysqli_fetch_assoc($result2))
+              {
+                echo "<td>".$row2['course_code']."</td>";
+              }
 
-        echo "<td>".$row['year']."</td>";     
-        echo "<td>".$row['term']."</td>";
+              echo "<td>".$row['year']."</td>";     
+              echo "<td>".$row['term']."</td>";
 
-        $yearurl = urlencode($row['year']);
-        $termurl = urlencode($row['term']); 
-        $school_yr = urlencode($row['school_yr']); 
-        echo "<td><a class=\"btn btn-warning btn-xs\" href=\"edit-course-subjects.php?course_id=".$row['course_id']."&year=".$yearurl."&term=".$termurl."&school_yr=".$school_yr."\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\" title=\"Edit\"></i></a>  ";
-        echo "<a title=\"Delete\" class=\"btn btn-danger btn-xs\" href=\"javascript:confirmDelete('delete-course-subjects.php?course_id=".$row['course_id']."&year=".$yearurl."&term=".$termurl."&school_yr=".$school_yr."')\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></a>";
-        echo "</tr>";
-        }
+              $yearurl = urlencode($row['year']);
+              $termurl = urlencode($row['term']); 
+              $school_yr = urlencode($row['school_yr']); 
+              echo "<td class=\"options-td\"><a class=\"btn btn-warning btn-xs a-modal\" href=\"edit-course-subjects.php?course_id=".$row['course_id']."&year=".$yearurl."&term=".$termurl."&school_yr=".$school_yr."\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\" title=\"Edit\"></i></a>  ";
+              echo "<a title=\"Delete\" class=\"btn btn-danger btn-xs a-modal\" href=\"javascript:confirmDelete('delete-course-subjects.php?course_id=".$row['course_id']."&year=".$yearurl."&term=".$termurl."&school_yr=".$school_yr."')\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></a>";
+              echo "</tr>";
+              }
 
-        echo "</tbody></table>"; 
-      ?>
+              echo "</tbody></table>"; 
+            ?>
 
-      <div class="alert alert-primary" role="alert">
-        Attention: Deleting info will remove all subjects associated with the selected subject and its associated year and term.
+            <div class="alert alert-warning" role="alert">
+              Attention: Deleting info will remove all subjects associated with the selected subject and its associated year and term.
+            </div>
+        </div>
       </div>
-
     </div>
   </div>
   <!-- /#wrapper -->
 
   <!-- Scroll to Top Button-->
   <a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
+    <i class="fa fa-angle-up"></i>
   </a>
 
   <!-- Logout Modal-->

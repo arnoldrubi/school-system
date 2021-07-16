@@ -40,107 +40,110 @@
           Edit Student Info
         </li>
       </ol>
-      <h1>Edit Student Info Form</h1>
-      <hr>
-      <form action="" method="post" enctype="multipart/form-data">
-        <h2>Basic Info</h2>
-      <?php
+      <div class="card mb-3">
+        <div class="card-header">
+          <i class="fa fa-pencil-square-o"></i>
+          Edit Student Info</div>
+          <div class="card-body">
+            <form action="" method="post" class="form-horizontal" enctype="multipart/form-data">
+              <h4>Basic Info</h4>
+            <?php
 
-        $query  = "SELECT * FROM students_reg WHERE stud_reg_id = '".$stud_reg_id."'";
-        $result = mysqli_query($connection, $query);
+              $query  = "SELECT * FROM students_reg WHERE stud_reg_id = '".$stud_reg_id."'";
+              $result = mysqli_query($connection, $query);
 
-        if ($result === !TRUE) {
-              echo "<script type='text/javascript'>";
-              echo "alert('No record exists!');";
-              echo "</script>";
+              if ($result === !TRUE) {
+                    echo "<script type='text/javascript'>";
+                    echo "alert('No record exists!');";
+                    echo "</script>";
 
-              $URL="view-subject.php";
-              echo "<script>location.href='$URL'</script>";
+                    $URL="view-subject.php";
+                    echo "<script>location.href='$URL'</script>";
 
-        }
+              }
 
-        while($row = mysqli_fetch_assoc($result))
-          {
+              while($row = mysqli_fetch_assoc($result))
+                {
 
-          echo "<div class=\"form-group row\">";
-          echo "<label class=\"col-md-2 col-form-label\" for=\"LastName\">Last Name</label>"; 
-          echo "<div class=\"col-md-4\">";
-          echo "<input id=\"LastName\" name=\"lastname\" type=\"text\" value=\"".$row['last_name']. "\" class=\"form-control input-md\" required></div>";
+                echo "<div class=\"form-group row\">";
+                echo "<label class=\"col-md-2 col-form-label\" for=\"LastName\">Last Name</label>"; 
+                echo "<div class=\"col-md-4\">";
+                echo "<input id=\"LastName\" name=\"lastname\" type=\"text\" value=\"".$row['last_name']. "\" class=\"form-control input-md\" required></div>";
 
-          echo "<label class=\"col-md-2 col-form-label\" for=\"FirstName\">First Name</label>"; 
-          echo "<div class=\"col-md-4\">";
-          echo "<input id=\"FirstName\" name=\"firstname\" type=\"text\" value=\"".$row['first_name']. "\" class=\"form-control input-md\" required></div></div>";
+                echo "<label class=\"col-md-2 col-form-label\" for=\"FirstName\">First Name</label>"; 
+                echo "<div class=\"col-md-4\">";
+                echo "<input id=\"FirstName\" name=\"firstname\" type=\"text\" value=\"".$row['first_name']. "\" class=\"form-control input-md\" required></div></div>";
 
-          echo "<div class=\"form-group row\">";
-          echo "<label class=\"col-md-2 col-form-label\" for=\"MiddleName\">Middle Name</label>"; 
-          echo "<div class=\"col-md-4\">";
-          echo "<input id=\"MiddleName\" name=\"middlename\" type=\"text\" value=\"".$row['middle_name']. "\" class=\"form-control input-md\" required></div>";
+                echo "<div class=\"form-group row\">";
+                echo "<label class=\"col-md-2 col-form-label\" for=\"MiddleName\">Middle Name</label>"; 
+                echo "<div class=\"col-md-4\">";
+                echo "<input id=\"MiddleName\" name=\"middlename\" type=\"text\" value=\"".$row['middle_name']. "\" class=\"form-control input-md\" required></div>";
 
-          echo "<label class=\"col-md-2 col-form-label\" for=\"NameExt\">Name Extension</label>"; 
-          echo "<div class=\"col-md-1\">";
-          echo "<input id=\"NameExt\" placeholder=\"Name Ext.\" name=\"nameext\" type=\"text\" value=\"".$row['name_ext']. "\" class=\"form-control input-md\">";
-          echo "</div><label class=\"col-md-1 col-form-label\" for=\"NameExt\">Gender</label>  ";
-          echo "<div class=\"col-md-2\">";
-          echo "<select class=\"form-control\" name=\"gender\">";
-          echo "<option value=\"Male\">Male</option>";
-          echo " <option value=\"Female\">Female</option></select></div></div>";
+                echo "<label class=\"col-md-2 col-form-label\" for=\"NameExt\">Name Extension</label>"; 
+                echo "<div class=\"col-md-1\">";
+                echo "<input id=\"NameExt\" placeholder=\"Name Ext.\" name=\"nameext\" type=\"text\" value=\"".$row['name_ext']. "\" class=\"form-control input-md\">";
+                echo "</div><label class=\"col-md-1 col-form-label\" for=\"NameExt\">Gender</label>  ";
+                echo "<div class=\"col-md-2\">";
+                echo "<select class=\"form-control\" name=\"gender\">";
+                echo "<option value=\"Male\">Male</option>";
+                echo " <option value=\"Female\">Female</option></select></div></div>";
 
-          echo "<hr><h2>Additional Info</h2>";
+                echo "<hr><h4>Additional Info</h4>";
 
-          echo "<div class=\"form-group row\">";
-          echo "<label class=\"col-md-2 col-form-label\" for=\"BirthDay\">Birthday</label>"; 
-          echo "<div class=\"col-md-2\">";
-          echo "<input id=\"BirthDay\" name=\"birthday\" type=\"date\" min=\"1900-01-01\" max=\"2019-12-31\" value=\"".$row['birth_date']. "\" class=\"form-control input-md\" required></div>";
-          echo "<label class=\"col-md-1 col-form-label\" for=\"Address\">Address</label>"; 
-          echo "<div class=\"col-md-3\">";
-          echo "<input id=\"Address\" name=\"Barangay\" type=\"text\" placeholder=\"Add Street and/or Barangay...\" class=\"form-control\" value=\"".$row['barangay']."\"></div>";
-          echo "<div class=\"col-md-2\">";
-          echo "<select class=\"form-control\" name=\"city\" id=\"city\" required></select></div>";
-          echo "<input id=\"current_city\" name=\"municipality\" style=\"display: none;\" type=\"text\" placeholder=\"City/Municipality...\" class=\"form-control\" value=\"".$row['municipality']."\" required>";
-          echo "<div class=\"col-md-2\">";
-          echo "<select class=\"form-control\" name=\"province\" id=\"province\" required></select></div>";
-          echo "<input id=\"current_province\" type=\"text\" style=\"display: none;\" placeholder=\"Province...\" class=\"form-control\" value=\"".$row['province']."\" required>";
-          echo "</div>";
-          echo "<div class=\"form-group row\">";
-          echo "<label class=\"col-md-2 col-form-label\" for=\"PhoneNum\">Phone Number</label>"; 
-          echo "<div class=\"col-md-2\">";
-          echo "<input id=\"PhoneNum\" name=\"phonenum\" type=\"tel\" pattern=\"[0-9]{4}-[0-9]{3}-[0-9]{4}\"  value=\"".$row['phone_number']. "\" class=\"form-control input-md\" >";
-          echo "<span class=\"help-block\">Format: 09xx-xxx-xxxx</span></div>";
+                echo "<div class=\"form-group row\">";
+                echo "<label class=\"col-md-2 col-form-label\" for=\"BirthDay\">Birthday</label>"; 
+                echo "<div class=\"col-md-2\">";
+                echo "<input id=\"BirthDay\" name=\"birthday\" type=\"date\" min=\"1900-01-01\" max=\"2019-12-31\" value=\"".$row['birth_date']. "\" class=\"form-control input-md\" required></div>";
+                echo "<label class=\"col-md-1 col-form-label\" for=\"Address\">Address</label>"; 
+                echo "<div class=\"col-md-3\">";
+                echo "<input id=\"Address\" name=\"Barangay\" type=\"text\" placeholder=\"Add Street and/or Barangay...\" class=\"form-control\" value=\"".$row['barangay']."\"></div>";
+                echo "<div class=\"col-md-2\">";
+                echo "<select class=\"form-control\" name=\"city\" id=\"city\" required></select></div>";
+                echo "<input id=\"current_city\" name=\"municipality\" style=\"display: none;\" type=\"text\" placeholder=\"City/Municipality...\" class=\"form-control\" value=\"".$row['municipality']."\" required>";
+                echo "<div class=\"col-md-2\">";
+                echo "<select class=\"form-control\" name=\"province\" id=\"province\" required></select></div>";
+                echo "<input id=\"current_province\" type=\"text\" style=\"display: none;\" placeholder=\"Province...\" class=\"form-control\" value=\"".$row['province']."\" required>";
+                echo "</div>";
+                echo "<div class=\"form-group row\">";
+                echo "<label class=\"col-md-2 col-form-label\" for=\"PhoneNum\">Phone Number</label>"; 
+                echo "<div class=\"col-md-2\">";
+                echo "<input id=\"PhoneNum\" name=\"phonenum\" type=\"tel\" pattern=\"[0-9]{4}-[0-9]{3}-[0-9]{4}\"  value=\"".$row['phone_number']. "\" class=\"form-control input-md\" >";
+                echo "<span class=\"help-block\">Format: 09xx-xxx-xxxx</span></div>";
 
-          echo "<label class=\"col-md-1 col-form-label\" for=\"Email\">Email</label>"; 
-          echo "<div class=\"col-md-2\">";
-          echo "<input id=\"Email\" name=\"email\" type=\"email\" value=\"".$row['email']. "\" class=\"form-control input-md\"></div>";
+                echo "<label class=\"col-md-1 col-form-label\" for=\"Email\">Email</label>"; 
+                echo "<div class=\"col-md-2\">";
+                echo "<input id=\"Email\" name=\"email\" type=\"email\" value=\"".$row['email']. "\" class=\"form-control input-md\"></div>";
 
-          //File Button -->
-          $current_picture = "http://" . $_SERVER['SERVER_NAME']."/school-system/uploads/".$row['photo_url']; //I hardcoded the url of the site, this should be automatic, much better to use the SERVER_NAME then just hard code the /uploads path
-          $old_filename = $row['photo_url'];
-          echo "<label class=\"col-md-2 col-form-label\" for=\"photoupload\">Upload Photo</label>";
-          echo "<div class=\"col-md-2\"><input id=\"photoupload\" name=\"photoupload\" class=\"input-file\" type=\"file\" accept=\"file_extension/.gif, .jpg, .png, image/*\"></div></div>";
+                //File Button -->
+                $current_picture = "http://" . $_SERVER['SERVER_NAME']."/school-system/uploads/".$row['photo_url']; //I hardcoded the url of the site, this should be automatic, much better to use the SERVER_NAME then just hard code the /uploads path
+                $old_filename = $row['photo_url'];
+                echo "<label class=\"col-md-2 col-form-label\" for=\"photoupload\">Upload Photo</label>";
+                echo "<div class=\"col-md-2\"><input id=\"photoupload\" name=\"photoupload\" class=\"input-file\" type=\"file\" accept=\"file_extension/.gif, .jpg, .png, image/*\"></div></div>";
 
-          echo "<div class=\"form-group row\">";
-          echo "<div class=\"offset-md-8 col-md-4\"><p>Current Photo:</p>";
-          echo "<p style=\"text-align: center\"><img class=\"current-pic\" src=\"".$current_picture."\"></p>";
-          echo "<div class=\"alert alert-primary\" role=\"alert\">Warning: Uploading a new file will replace the current photo.</div>";
-          echo "</div></div>";
-          echo "<div class=\"form-group row\">";
-          echo "<label class=\"col-md-2 col-form-label\" for=\"guardian_name\">Guardian's Name</label>";
-          echo "<div class=\"col-md-2\">";
-          echo "<input id=\"guardian_name\" name=\"guardian_name\" value=\"".$row['guardian_name']."\" type=\"text\" class=\"form-control\" required></div>";            
-          echo "<label class=\"col-md-1 col-form-label\" for=\"guardian_phone_number\">Guardian's Phone Number</label>";
-          echo "<div class=\"col-md-2\">";
-          echo "<input id=\"guardian_phone_number\" name=\"guardian_phone_number\" value=\"".$row['guardian_phone_number']."\" type=\text\" type=\"tel\" pattern=\"[0-9]{4}-[0-9]{3}-[0-9]{4}\" class=\"form-control\">";
-          echo "<span class=\"help-block\">Format: 09xx-xxx-xxxx</span></div>";
-          echo "<label class=\"col-md-2 col-form-label\" for=\"guardian_relationship\">Guardian's Relationship</label><div class=\"col-md-2\">";  
-          echo "<input id=\"guardian_relationship\" name=\"guardian_relationship\" value=\"".$row['guardian_relationship']."\" type=\"text\" class=\"form-control\" required></div></div>";    
-          }
-  ?>
-      <div class="row">
-        <div class="col-md-12 d-flex justify-content-center">
-        <input type="submit" name="submit" value="Update Student Info" class="btn btn-primary" />&nbsp;
-        <a class="btn btn-secondary"href="view-registered-students.php">Cancel</a>
-        </div>
-      </div>
-    </form>
+                echo "<div class=\"form-group row\">";
+                echo "<div class=\"offset-md-8 col-md-4\"><p>Current Photo:</p>";
+                echo "<p style=\"text-align: center\"><img class=\"current-pic\" src=\"".$current_picture."\"></p>";
+                echo "<div class=\"alert alert-primary\" role=\"alert\">Warning: Uploading a new file will replace the current photo.</div>";
+                echo "</div></div>";
+                echo "<div class=\"form-group row\">";
+                echo "<label class=\"col-md-2 col-form-label\" for=\"guardian_name\">Guardian's Name</label>";
+                echo "<div class=\"col-md-2\">";
+                echo "<input id=\"guardian_name\" name=\"guardian_name\" value=\"".$row['guardian_name']."\" type=\"text\" class=\"form-control\" required></div>";            
+                echo "<label class=\"col-md-1 col-form-label\" for=\"guardian_phone_number\">Guardian's Phone Number</label>";
+                echo "<div class=\"col-md-2\">";
+                echo "<input id=\"guardian_phone_number\" name=\"guardian_phone_number\" value=\"".$row['guardian_phone_number']."\" type=\text\" type=\"tel\" pattern=\"[0-9]{4}-[0-9]{3}-[0-9]{4}\" class=\"form-control\">";
+                echo "<span class=\"help-block\">Format: 09xx-xxx-xxxx</span></div>";
+                echo "<label class=\"col-md-2 col-form-label\" for=\"guardian_relationship\">Guardian's Relationship</label><div class=\"col-md-2\">";  
+                echo "<input id=\"guardian_relationship\" name=\"guardian_relationship\" value=\"".$row['guardian_relationship']."\" type=\"text\" class=\"form-control\" required></div></div>";    
+                }
+        ?>
+            <div class="row">
+              <div class="col-md-12 d-flex justify-content-center">
+              <input type="submit" name="submit" value="Update Student Info" class="btn btn-success" />&nbsp;
+              <a class="btn btn-secondary"href="view-registered-students.php">Cancel</a>
+              </div>
+            </div>
+          </form>
 <?php
   if (isset($_POST['submit'])) {
     // File upload path, for uploading image
@@ -222,8 +225,8 @@
             //redirect_to("new-subject.php");
 
       ?>
-
-
+      </div>
+    </div>
   </div>
  </div> 
   <!-- /#wrapper -->
