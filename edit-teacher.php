@@ -63,15 +63,18 @@
 
               while($row = mysqli_fetch_assoc($result))
                 {
+                  $old_first_name = $row['first_name'];
+                  $old_last_name = $row['last_name'];
+
                   echo  "<div class=\"form-group row\">";
                   echo  "<label class=\"col-md-2 col-form-label\" for=\"first-name\">First Name</label>";
                   echo  "<div class=\"col-md-6\">";
-                  echo "<input id=\"first-name\" name=\"first-name\" type=\"text\" placeholder=\"Input First Name\" class=\"form-control input-md\" required=\"\" value=\"".$row['first_name']."\">";
+                  echo "<input id=\"first-name\" name=\"first-name\" type=\"text\" placeholder=\"Input First Name\" class=\"form-control input-md\" required=\"\" value=\"".$old_first_name."\">";
                   echo "</div></div>";
 
                   echo  "<div class=\"form-group row\"><label class=\"col-md-2 col-form-label\" for=\"last-name\">Last Name</label>";
                   echo  "<div class=\"col-md-6\">";
-                  echo "<input id=\"last-name\" name=\"last-name\" type=\"text\" placeholder=\"Input First Name\" class=\"form-control input-md\" required=\"\" value=\"".$row['last_name']."\">";
+                  echo "<input id=\"last-name\" name=\"last-name\" type=\"text\" placeholder=\"Input First Name\" class=\"form-control input-md\" required=\"\" value=\"".$old_last_name."\">";
                   echo "</div></div>";
 
                   echo  "<div class=\"form-group row\"><label class=\"col-md-2 col-form-label\" for=\"department\">Department</label>";
@@ -79,17 +82,33 @@
                   echo "<input id=\"department\" type=\"text\" name=\"department\" placeholder=\"Input Department\" class=\"form-control input-md\" required=\"\" value=\"".$row['department']."\">";
                   echo "</div></div>";
 
+                    $query  = "SELECT * FROM users where teacher_id='".$teacher_id."' LIMIT 1";
+                    $result = mysqli_query($connection, $query);
+                    while($row = mysqli_fetch_assoc($result))
+                    {
+                      $user_id = $row["user_id"];
+                    }
+
                 }
 
               if (isset($_POST['submit'])) {
-                $first_name = mysql_prep($_POST["first-name"]);
-                $last_name = mysql_prep($_POST["last-name"]);
+                $first_name = rtrim(ltrim(mysql_prep($_POST["first-name"])));
+                $last_name = rtrim(ltrim(mysql_prep($_POST["last-name"])));
                 $department = mysql_prep($_POST["department"]);
 
                 if (!isset($first_name) || !isset($last_name)) {
                   die ("<div class=\"alert alert-danger\" role=\"alert\">Error: One or more fields are empty.</div>");
                 }
                 else{
+
+                  // run a query to check if the faculty name is already in the system
+                  $query_check_faculty  = "SELECT * FROM teachers WHERE last_name='".$last_name."' AND first_name='".$first_name."'";
+                  $result_check_faculty = mysqli_query($connection, $query_check_faculty);
+
+                  if (mysqli_num_rows($result_check_faculty)>0 && $old_last_name !== $last_name && $old_first_name !== $first_name) {
+                   echo "<div class=\"alert alert-danger\" role=\"alert\">Error: ".$first_name." ".$last_name." is already in the system.</div>";
+                  }
+                  else{
                   $query  = "UPDATE teachers SET first_name = '{$first_name}', last_name = '{$last_name}', department = '{$department}' WHERE teacher_id = {$teacher_id} LIMIT 1";
                   $result = mysqli_query($connection, $query);
 
@@ -103,6 +122,7 @@
                     } else {
                       echo "Error updating record: " . $connection->error;
                     }
+                  }
                 }
               }
                   //removed the redirect function and replaced it with javascript alert above
@@ -115,6 +135,11 @@
                 <input type="submit" name="submit" value="Edit Teacher" class="btn btn-success" />&nbsp;
                 <a class="btn btn-secondary"href="view-teachers.php">Cancel</a>
               </div>
+            <?php
+                echo  "<div class=\"col-md-12 text-center mt-5\">";
+                echo "<a href=\"edit-user.php?user_id=".$user_id."\">Change User Password or Email</a>";
+                echo "</div>";
+            ?>
             </div>
           </form>
       </div>

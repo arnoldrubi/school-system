@@ -81,8 +81,8 @@
       <?php 
 
         if (isset($_POST['submit'])) {
-          $first_name = mysql_prep($_POST["first-name"]);
-          $last_name = mysql_prep($_POST["last-name"]);
+          $first_name = rtrim(ltrim(mysql_prep($_POST["first-name"])));
+          $last_name = rtrim(ltrim(mysql_prep($_POST["last-name"])));
           $department = mysql_prep($_POST["dapartment"]);
           $manual_faculty_num = mysql_prep($_POST["manual_encode_encode_num"]);
 
@@ -113,6 +113,14 @@
 
             else{
 
+              // run a query to check if the faculty name is already in the system
+              $query_check_faculty  = "SELECT * FROM teachers WHERE last_name='".$last_name."' AND first_name='".$first_name."'";
+              $result_check_faculty = mysqli_query($connection, $query_check_faculty);
+
+              if (mysqli_num_rows($result_check_faculty)>0) {
+               echo "<div class=\"alert alert-danger\" role=\"alert\">Error: ".$first_name." ".$last_name." is already in the system.</div>";
+              }
+              else{
 
                 $query  = "INSERT INTO teachers (last_name, first_name, department) VALUES ('{$last_name}','{$first_name}', '{$department}')";
                 $result = mysqli_query($connection, $query);
@@ -172,6 +180,9 @@
                   else{
                   echo "Error updating record: " . $connection->error;
                 }
+
+              }
+
             }
             //end create new user
 

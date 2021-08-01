@@ -12,27 +12,36 @@
     redirect_to("view-subject.php");
   }
 
-    $query  = "DELETE FROM subjects WHERE subject_id = {$subject_id} LIMIT 1";
-    $result = mysqli_query($connection, $query);
+  $data_exist = return_duplicate_entry("course_subjects","subject_id",$subject_id,"",$connection);
 
-
-  //close database connection after an sql command
-
-  if ($result === TRUE) {
+  if ($data_exist > 0) {
     echo "<script type='text/javascript'>";
-    echo "alert('Delete subject successful!');";
+    echo "alert('Error! Cannot delete subject info. This subject is added to a course(es).');";
     echo "</script>";
-
     $URL="view-subject.php";
     echo "<script>location.href='$URL'</script>";
-  } else {
-    echo "Error updating record: " . $connection->error;
   }
-            //removed the redirect function and replaced it with javascript alert above
-            //still need to use the redirect function in case javascript is turned off
-            //redirect_to("new-subject.php");
 
-  if(isset($connection)){ mysqli_close($connection); }
+  else{
+      $query  = "DELETE FROM subjects WHERE subject_id = {$subject_id} LIMIT 1";
+      $result = mysqli_query($connection, $query);
+
+
+      //close database connection after an sql command
+
+      if ($result === TRUE) {
+        echo "<script type='text/javascript'>";
+        echo "alert('Delete subject successful!');";
+        echo "</script>";
+
+        $URL="view-subject.php";
+        echo "<script>location.href='$URL'</script>";
+      } else {
+        echo "Error updating record: " . $connection->error;
+      }
+
+    if(isset($connection)){ mysqli_close($connection); }
+  }
 
 ?>
 

@@ -22,6 +22,15 @@
 
               $role = $_SESSION["role"];
 
+              
+              if(isset($_SESSION["message"]) && $_SESSION["message"] !== ""){
+                
+                echo "<div class=\"alert alert-success alert-dismissible fade show\" role=\"alert\">";
+                echo $_SESSION["message"];
+                echo "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button></div>";
+
+                $_SESSION["message"] = "";
+              }
               if ($role == "administrator") {
 
                 echo "<table class=\"table table-bordered dataTable\" id=\"dataTable\" width=\"100%\" cellspacing=\"0\" role=\"grid\" aria-describedby=\"dataTable_info\" style=\"width: 100%;\">";

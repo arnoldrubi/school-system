@@ -29,7 +29,7 @@
       <div class="card mb-3">
         <div class="card-header">
           <i class="fa fa-th-list"></i>
-          Certificate Transfer of Credits</div>
+          Transfer of Credits</div>
           <div class="card-body">
            <form method="post">
             <h4>Requester's Information</h4> 
@@ -42,14 +42,14 @@
 
             <hr>
             <div class="form-group row">
-              <label class="col-md-2 col-form-label" for="LastName">Subject Name</label>  
+              <label class="col-md-2 col-form-label" for="LastName">Subject Code</label>  
               <div class="col-md-4">
-              <input id="subject-name" name="subject_name" type="text" placeholder="Input Subject Name" class="form-control" required>
+              <input id="subject-name" name="subject_name" type="text" placeholder="Example: IT01" class="form-control" required>
               </div>
 
               <label class="col-md-2 col-form-label" for="FirstName">Subject Description</label>  
               <div class="col-md-4">
-              <input id="subject-desc" name="subject_description" type="text" placeholder="Input Subject Description" class="form-control" required>
+              <input id="subject-desc" name="subject_description" type="text" placeholder="Example: Introduction to Information Technology" class="form-control" required>
               </div>
             </div>
 
@@ -159,7 +159,7 @@
     $units = (int) $_POST["units"];
     $school_yr_taken = mysql_prep($_POST["school_yr_taken"]);
     $term_taken = mysql_prep($_POST["term_taken"]);   
-    $final_grade = (int) $_POST["final_grade"];
+    $final_grade = mysql_prep($_POST["final_grade"]);
     $equivalent_subject_id = (int) $_POST["subject_id"];
 
     $query   = "INSERT INTO transfer_of_credits (stud_reg_id, student_number, subject_desc, subject_name, school_name, term_taken, year_taken, equivalent_subject_id, final_grade) VALUES ('{$student_reg_id}', '{$student_number}', '{$subject_desc}', '{$subject_name}', '{$school_name}', '{$term_taken}', '{$school_yr_taken}', '{$equivalent_subject_id}', '{$final_grade}')";

@@ -98,7 +98,6 @@
         echo "<table id=\"example\" class=\"table table-striped table-bordered dataTable\">";
         echo " <thead>";
         echo "  <tr>";
-        echo "   <th>Student Reg. ID</th>";
         echo "   <th>Student Number</th>";
         echo "   <th>Name</th>";
         echo "   <th>Prelim</th>";
@@ -126,7 +125,7 @@
             $checkboxDisabled = "disabled";
           }
         echo "<tr>";
-          echo "<td><input class=\"student-id-box\" type=\"number\" name=\"stud_reg_id[]\" min=\"1\" style=\"display: none\" max=\"100\" value=\"".$row['stud_reg_id']."\"><input class=\"student-id-box\" type=\"number\" disabled name=\"stud_id[]\" min=\"0\" max=\"5\" value=\"".$row['stud_reg_id']."\"></td>";
+          echo "<td style=\"display: none;\"><input class=\"student-id-box\" type=\"number\" name=\"stud_reg_id[]\" min=\"1\" style=\"display: none\" max=\"100\" value=\"".$row['stud_reg_id']."\"><input class=\"student-id-box\" type=\"number\" disabled name=\"stud_id[]\" min=\"0\" max=\"5\" value=\"".$row['stud_reg_id']."\"></td>";
           echo "<td><input class=\"student-id-box\" type=\"text\" disabled name=\"stud_id[]\" value=\"".get_student_number($row['stud_reg_id'],$connection)."\"></td>";
           echo "<td>".$row['last_name'].", ".$row['first_name'].", ".substr($row['middle_name'], 0,1).".</td>";
           echo "<td><input class=\"grade-box\" step=\".25\" type=\"number\" maxlength =\"3\" name=\"prelim[]\" min=\"1\" max=\"5\" ".$lock_grade." value=\"".$row['prelim']."\"></td>";
@@ -219,7 +218,7 @@
       ?>
 
   
-      <div class="alert alert-success" role="alert">
+      <div class="alert alert-success mt-3" role="alert">
         Make sure you "Post" the grades first before clicking preview to get the latest data on the grades.
       </div>
     </form>

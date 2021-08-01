@@ -51,7 +51,6 @@
               echo "   <th>Term</th>";
               echo "   <th>Year</th>";
               echo "   <th>School Year</th>";
-              echo "   <th>Total Enrollment</th>";
               echo "   <th>Option</th>";   
               echo "  </tr></thead><tbody>";
               
@@ -72,8 +71,6 @@
                   echo "<td>".$term."</td>";
                   echo "<td>".$row['year']."</td>";
                   echo "<td>".$school_yr."</td>";
-                  $enrolled_students = get_enrolled_regular_students($row['sec_id'],$term,$school_yr,"",$connection);
-                  echo "<td>".$enrolled_students."</td>";
                   echo "<td class=\"option-grp\"><a class=\"btn btn-success btn-xs\" title=\"Build Schedule\" href=\"create-schedule-for-class.php?sec_id=".urlencode($row['sec_id'])."&term=".urlencode($term)."&school_yr=".$school_yr."\"><i class=\"fa fa-list-alt\" aria-hidden=\"true\"></i>
       </a>";
                   echo "<a class=\"btn btn-success btn-xs a-modal\" title=\"View Schedule\" target=\"_blank\" href=\"preview-print-schedule.php?sec_id=".urlencode($row['sec_id'])."&term=".urlencode($term)."&school_yr=".$school_yr."\"><i class=\"fa fa-clock-o\" aria-hidden=\"true\"></i></a>";

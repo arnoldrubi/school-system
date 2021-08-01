@@ -12,6 +12,16 @@
     redirect_to("view-teachers.php");
   }
 
+  $data_exist = return_duplicate_entry("classes","teacher_id",$teacher_id,"",$connection);
+
+  if ($data_exist > 0) {
+    echo "<script type='text/javascript'>";
+    echo "alert('Error! Cannot delete teacher info. This teacher is added to classes.');";
+    echo "</script>";
+    $URL="view-teachers.php";
+    echo "<script>location.href='$URL'</script>";
+  }
+  else{
     $query  = "DELETE FROM teachers WHERE teacher_id = {$teacher_id} LIMIT 1";
     $result = mysqli_query($connection, $query);
 
@@ -19,21 +29,22 @@
     $result = mysqli_query($connection, $query);
 
 
-  //close database connection after an sql command
+    //close database connection after an sql command
 
-  if ($result === TRUE) {
-    echo "<script type='text/javascript'>";
-    echo "alert('Delete teacher info successful!');";
-    echo "</script>";
+    if ($result === TRUE) {
+      echo "<script type='text/javascript'>";
+      echo "alert('Delete teacher info successful!');";
+      echo "</script>";
 
-    $URL="view-teachers.php";
-    echo "<script>location.href='$URL'</script>";
-  } else {
-    echo "Error updating record: " . $connection->error;
+      $URL="view-teachers.php";
+      echo "<script>location.href='$URL'</script>";
+    } else {
+      echo "Error updating record: " . $connection->error;
+    }
+
   }
-            //removed the redirect function and replaced it with javascript alert above
-            //still need to use the redirect function in case javascript is turned off
-            //redirect_to("new-subject.php");
+
+
 
   if(isset($connection)){ mysqli_close($connection); }
 

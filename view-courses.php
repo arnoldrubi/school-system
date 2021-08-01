@@ -53,7 +53,7 @@
               echo "<tr>";
               echo "<td>".$row['course_desc']."</td>";
               echo "<td>".$row['course_code']."</td>";
-              echo "<td class=\"options-td\"><a class=\"btn btn-warning btn-xs a-modal\" title=\"Edit Course\" href=\"edit-course.php?course_id=".$row['course_id']."\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a> ";
+              echo "<td class=\"options-td\"><a class=\"btn btn-warning btn-xs a-modal\" title=\"Edit Course\" href=\"edit-course.php?course_id=".$row['course_id']."\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a><a class=\"btn btn-success btn-xs \" title=\"Print Course Subjects\" target=\"_blank\" href=\"print-course-subjects.php?course_id=".urlencode($row['course_id'])."\"><i class=\"fa fa-print\" aria-hidden=\"true\"></i></a>";
               echo "<a class=\"btn btn-danger btn-xs a-modal\" href=\"javascript:confirmDelete('delete-course.php?course_id=".$row['course_id']."')\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a></td>";
               echo "</tr>";
               }

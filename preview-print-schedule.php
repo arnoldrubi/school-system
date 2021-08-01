@@ -1,3 +1,9 @@
+  <style type="text/css">
+    span.hide-date:nth-child(2),span.hide-date:nth-child(3),span.hide-date:nth-child(4),span.hide-date:nth-child(5) {
+      display: none;
+  }
+  </style>
+
 <?php
  require_once("includes/session.php");
  require_once("includes/functions.php");
@@ -138,7 +144,7 @@
                               $day = $day.substr(number_to_day($row_check_schedule_data['day']),0,3)."/";
                             }
                             if ($row_check_schedule_data['time_start'] !== $prev_time_start_check && $row_check_schedule_data['time_end'] !== $prev_time_end_check)  {
-                              $time = $time."/".date("g:i A", strtotime($row_check_schedule_data['time_start']))."-".date("g:i A", strtotime($row_check_schedule_data['time_end']));
+                              $time = $time." <span class=\"hide-date\">".date("g:i A", strtotime($row_check_schedule_data['time_start']))."-".date("g:i A", strtotime($row_check_schedule_data['time_end']))."</span>";
                             }
                             if ($prev_room_check !== $row_check_schedule_data['room']) {
                               $room = $room.$row_check_schedule_data['room']."/";

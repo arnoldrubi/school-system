@@ -84,7 +84,7 @@
         $site_logo = $row['site_logo'];
       }
       ?>
-      		<div style="text-align: center;" class="justify-content-center">
+      <div style="text-align: center;" class="justify-content-center">
       			<img width="100" class="site-logo" src="uploads/<?php echo  $site_logo." " ?>">
 				<h2><?php echo $school_name ?></h2> 
 				<address>

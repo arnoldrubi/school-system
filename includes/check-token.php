@@ -13,9 +13,12 @@ if (isset($_SESSION['username'])) {
   while($row = mysqli_fetch_assoc($result))
     {
       $token = $row['token'];
+      $username = $row['username'];
     }    
 
-    if($_SESSION['token'] != $token){
+  // kailangan ko i expand to dapat pag hindi match ang token at match ang username saka lang mag tri-trigger tong session destroy
+
+    if($_SESSION['token'] != $token && $_SESSION['username'] == $username){
       session_destroy();
       redirect_to("index.php?error=1");
     }

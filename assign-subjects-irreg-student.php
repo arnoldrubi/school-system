@@ -150,7 +150,7 @@
                       $teacher_class_delete = get_teacher_id_by_class($row_subject_info['class_id'],"",$connection);
 
                       $subject_id = get_subject_id_by_class("",$row_subject_info['class_id'],$connection);
-                      echo "<tr><td>".get_subject_name($subject_id,"",$connection)."</td><td>".get_subject_code($subject_id,"",$connection)."</td><td style=\"text-align: center\"><a title=\"Delete Subject\" class=\"btn btn-danger btn-xs\" href=\"delete-irreg-subjects.php?regid=".$stud_reg_id."&student_num=".urlencode($student_num)."&classid=".$row_subject_info['class_id']."&year=".urlencode($year)."&term=".urlencode($term)."&sy=".urlencode($sy)."&course=".$course."&teacherid=".$teacher_class_delete."\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a></td></tr>";
+                      echo "<tr><td>".get_subject_name($subject_id,"",$connection)."</td><td>".get_subject_code($subject_id,"",$connection)."</td><td style=\"text-align: center\"><a title=\"Delete Subject\" class=\"btn btn-danger btn-xs delete-subject\" href=\"delete-irreg-subjects.php?regid=".$stud_reg_id."&student_num=".urlencode($student_num)."&classid=".$row_subject_info['class_id']."&year=".urlencode($year)."&term=".urlencode($term)."&sy=".urlencode($sy)."&course=".$course."&teacherid=".$teacher_class_delete."\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a></td></tr>";
                       $current_units = $current_units + get_subject_total_unit($subject_id,"",$connection);
 
                       array_push($class_array,$row_subject_info['class_id']);
@@ -173,15 +173,18 @@
             <div class="col-md-12">
             <?php
 
-              echo "<table class=\"table table-bordered mt-3\" id=\"\" width=\"100%\" cellspacing=\"0\" style=\"width: 100%;\">";
+              echo "<table class=\"table table-bordered dataTable\" id=\"dataTable\" width=\"100%\" role=\"grid\" aria-describedby=\"dataTable_info\" style=\"width: 100%;\">";
               echo " <thead>";
               echo "  <tr>";
               echo "   <th>Subject Name</th>";
               echo "   <th>Subject Code</th>";
               echo "   <th>Prerequisite</th>";
-              echo "   <th>Teacher</th>";
+              echo "   <th>Course</th>";
+              echo "   <th>Year</th>";
               echo "   <th>Section</th>";
+              echo "   <th>Teacher</th>";
               echo "   <th>Units</th>";
+              echo "   <th>Student Enrolled</th>";
               echo "   <th>Options</th>";   
               echo "  </tr></thead><tbody>";    
               
@@ -209,9 +212,12 @@
                     echo "<td>".get_subject_name($row3['subject_id'],"",$connection)."</td>";
                     echo "<td>".get_subject_code($row3['subject_id'],"",$connection)."</td>";
                     echo "<td>".get_subject_code(get_prerequisite_id($row3['subject_id'],"",$connection),"",$connection)."</td>";
-                    echo "<td>".get_teacher_name($row3['teacher_id'],"",$connection)."</td>";
-                    echo "<td>".get_section_name($row3['sec_id'],"",$connection)."</td>";             
+                    echo "<td>".get_course_code(get_course_id_from_section($row3['sec_id'],"",$connection),"",$connection)."</td>";
+                    echo "<td>".get_section_year($row3['sec_id'],"",$connection)."</td>";
+                    echo "<td>".get_section_name($row3['sec_id'],"",$connection)."</td>";
+                    echo "<td>".get_teacher_name($row3['teacher_id'],"",$connection)."</td>";             
                     echo "<td>".get_subject_total_unit($row3['subject_id'],"",$connection)."</td>";
+                    echo "<td>".$row3['students_enrolled']."/".$row3['student_limit']."</td>";
                     echo "<td class=\"subject-wrap options-td\"><a class=\"".get_subject_total_unit($row3['subject_id'],"",$connection)."-".get_subject_code($row3['subject_id'],"",$connection)." add-subject btn btn-success btn-sm\" id=\"".$row3['class_id']."\""." href=\"add-subject-to-irreg.php?regid=".$stud_reg_id."&student_num=".urlencode($student_num)."&classid=".$row3['class_id']."&year=".urlencode($year)."&term=".urlencode($term)."&sy=".urlencode($sy)."&course=".$course."&teacherid=".$row3['teacher_id']."\">Add Subject</a> </td>";
                     echo "</tr>";
                     } 
@@ -252,14 +258,17 @@ $( document ).ready(function() {
   });
   $("#allow-overload" ).click(function() {
     if ($("#allow-overload" ).is(":checked")) {
-      $(".add-subject").attr("href", $(".add-subject").attr("href")+"&overload=1")
+      $(".add-subject").attr("href", $(".add-subject").attr("href")+"&overload=1");
+      $(".delete-subject").attr("href", $(".delete-subject").attr("href")+"&overload=1");
     } 
     else {
       $("a.add-subject").attr("href",$(".add-subject").attr("href").replace("&overload=1",""));
+      $("a.delete-subject").attr("href", $(".delete-subject").attr("href").replace("&overload=1",""));
     }
   });
   if ($("#allow-overload" ).is(":checked")) {
-      $(".add-subject").attr("href", $(".add-subject").attr("href")+"&overload=1")
+      $(".add-subject").attr("href", $(".add-subject").attr("href")+"&overload=1");
+      $(".delete-subject").attr("href", $(".delete-subject").attr("href")+"&overload=1");
   } 
 });
 

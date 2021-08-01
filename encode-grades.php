@@ -278,24 +278,39 @@ $(document).ready(function(){
 
   //automatically do some scripts and changes when a student is marked as incomplete
 
-  $( ".MarkIncomplete" ).click(function() {
-    if ($(this).closest("tr").find(".remarks").val() == "Incomplete") {
 
-    if ($(this).closest("tr").find(".final-computed-grade").val() <=3 && $(this).closest("tr").find(".final-computed-grade").val() !="") {
-        $(this).closest("tr").find(".remarks").val("Passed");
-      }
-    else if ( $(this).closest("tr").find(".final-computed-grade").val() > 3 && $(this).closest("tr").find(".final-computed-grade").val() != "") {
-      $(this).closest("tr").find(".remarks").val("Failed");
+ 
+
+  $( ".MarkIncomplete" ).click(function() {
+    if ($(this).closest("tr").find(".remarks").val() !== "Incomplete") {
+      $(this).closest("tr").find(".remarks").val("Incomplete");
+      $(this).closest("tr").find(".grade-box, .final-computed-grade").val("");
     }
     else{
       $(this).closest("tr").find(".remarks").val("");
+      $(this).closest("tr").find(".grade-box").val("");   
     }
-  }
-    else if($(this).closest("tr").find(".remarks").val() !== "Incomplete" || $(this).closest("tr").find(".remarks").val() == ""){
-    $(this).closest("tr").find("td .grade-box").removeAttr("required");
-    $(this).closest("tr").find(".remarks").val("Incomplete");
-    }
-});
+
+  });
+
+  // $( ".MarkIncomplete" ).click(function() {
+  //   if ($(this).closest("tr").find(".remarks").val() == "Incomplete") {
+
+  //   if ($(this).closest("tr").find(".final-computed-grade").val() <=3 && $(this).closest("tr").find(".final-computed-grade").val() !="") {
+  //       $(this).closest("tr").find(".remarks").val("Passed");
+  //     }
+  //   else if ( $(this).closest("tr").find(".final-computed-grade").val() > 3 && $(this).closest("tr").find(".final-computed-grade").val() != "") {
+  //     $(this).closest("tr").find(".remarks").val("Failed");
+  //   }
+  //   else{
+  //     $(this).closest("tr").find(".remarks").val("");
+  //   }
+  // }
+  //   else if($(this).closest("tr").find(".remarks").val() !== "Incomplete" || $(this).closest("tr").find(".remarks").val() == ""){
+  //   $(this).closest("tr").find("td .grade-box").removeAttr("required");
+  //   $(this).closest("tr").find(".remarks").val("Incomplete");
+  //   }
+  // });
 
 });
 

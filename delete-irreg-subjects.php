@@ -14,6 +14,12 @@
     $teacher_id= $_GET["teacherid"];
     $course_id = $_GET["course"];
     $success = 0;
+
+    // setup the overload value if checked by the user
+    if (isset($_GET['overload'])){
+      $overload = $_GET['overload'];
+    }
+
   }
  else{
   redirect_to('irregular-manual-enrollment.php');
@@ -44,11 +50,15 @@ $current_students = get_students_enrolled_in_class($class_id,"",$connection) - 1
 $query_update_current_students  = "UPDATE classes SET students_enrolled = '{$current_students}' WHERE class_id='".$class_id."' LIMIT 1";
 $result_update_current_students = mysqli_query($connection, $query_update_current_students);
 
-if(isset($connection)){ mysqli_close($connection); }
+if(isset($connection)){mysqli_close($connection); }
 
-redirect_to("assign-subjects-irreg-student.php?regid=".$stud_reg_id."&student_num=".urlencode($student_num)."&course=".$course_id."&year=".urlencode($year)."&sy=".urlencode($sy)."&term=".$term."&success=".$success);
-
-
+if ($overload == 1) {
+  $redirect_text = $stud_reg_id."&student_num=".urlencode($student_num)."&course=".$course_id."&year=".urlencode($year)."&sy=".urlencode($sy)."&term=".$term."&success=".$success."&overload=".$overload;  
+}
+else{
+  $redirect_text = $stud_reg_id."&student_num=".urlencode($student_num)."&course=".$course_id."&year=".urlencode($year)."&sy=".urlencode($sy)."&term=".$term."&success=".$success;  
+}
+redirect_to("assign-subjects-irreg-student.php?regid=".$redirect_text);
 
 ?>
 

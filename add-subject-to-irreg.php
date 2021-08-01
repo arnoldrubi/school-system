@@ -45,7 +45,7 @@ if (isset($_GET['overload'])){
   $overload = $_GET['overload'];
 }
 else{
-  if ($overload !== 1) {
+  if (isset($overload) !== 1) {
   // do a check for the total units of the irreg student
 
   $max_units = return_max_units($connection);
@@ -83,15 +83,17 @@ if ($success == 1) {
   $query3   = "INSERT INTO irreg_manual_sched (stud_reg_id, class_id, year, term, school_yr) VALUES ('{$stud_reg_id}', '{$class_id}', '{$year}', '{$term}', '{$sy}')";
   $result3 = mysqli_query($connection, $query3);
 
+  
+
   //#4 Update current students count
 
   $current_students = get_students_enrolled_in_class($class_id,"",$connection) + 1;
   $query_update_current_students  = "UPDATE classes SET students_enrolled = '{$current_students}' WHERE class_id='".$class_id."' LIMIT 1";
   $result_update_current_students = mysqli_query($connection, $query_update_current_students);
-
+  echo $current_students;
   if(isset($connection)){ mysqli_close($connection); }
 
-  if ($overload == 1) {
+  if (isset($overload) == 1) {
     $redirect_text = $stud_reg_id."&student_num=".urlencode($student_num)."&course=".$course_id."&year=".urlencode($year)."&sy=".urlencode($sy)."&term=".$term."&success=".$success."&overload=".$overload;  
   }
   else{

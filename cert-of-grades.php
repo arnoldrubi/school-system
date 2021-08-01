@@ -150,12 +150,14 @@ else{
 									echo "</tbody></table></div>";								
 								 }
 
+								}
+
 								$query_student_credited_subjects = "SELECT * FROM transfer_of_credits WHERE stud_reg_id='".$stud_reg_id."'";
 								$result_student_credited_subjects = mysqli_query($connection, $query_student_credited_subjects);
 
 								if (mysqli_num_rows($result_student_credited_subjects) > 0) {
 									echo "<h5>Credits</h5>";
-									echo "<table class=\"table table-bordered table-hover table-sm\"> <thead><tr><th width=\"20%\">Subject Description</th><th width=\"30%\">Subject Name</th><th width=\"15%\">School</th><th width=\"15%\">Term Taken</th><th width=\"5%\">Year Taken</th><th width=\"5%\">Final Grade</th><th width=\"15%\">Equivalent Subject</th></tr></thead><tbody>";
+									echo "<table class=\"table table-bordered table-hover table-sm\"> <thead><tr><th width=\"20%\">Subject Code</th><th width=\"30%\">Subject Name</th><th width=\"15%\">School</th><th width=\"15%\">Term Taken</th><th width=\"5%\">Year Taken</th><th width=\"5%\">Final Grade</th><th width=\"15%\">Equivalent Subject</th></tr></thead><tbody>";
 									while($row_student_credited_subjects = mysqli_fetch_assoc($result_student_credited_subjects))
 									{
 										echo "<tr>";
@@ -169,8 +171,6 @@ else{
 										echo "</tr>";
 									}
 									echo "</tbody></table>";	
-								}
-
 
 								 echo "<p>This certification is being issued to ".$requesters_name." for whatever purpose it may serve him best.</p>";
 							 }

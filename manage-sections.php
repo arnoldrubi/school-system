@@ -78,26 +78,36 @@
             <?php 
 
               if (isset($_POST['submit'])) {
-                $section_name = mysql_prep($_POST["section_name"]);
+                $section_name = ltrim(rtrim(mysql_prep($_POST["section_name"])));
                 $year = mysql_prep($_POST["year"]);
                 $course = $_POST["course"];
 
-                  $query   = "INSERT INTO sections (sec_name, course_id, year) VALUES ('{$section_name}','{$course}','{$year}')";
+
+                  $query  = "SELECT * FROM sections WHERE sec_name='".$section_name."' AND year='".$year."' AND course_id='".$course."'";
                   $result = mysqli_query($connection, $query);
 
-
-                  if ($result === TRUE) {
-                    echo "<script type='text/javascript'>";
-                    echo "alert('Create section successful!');";
-                    echo "</script>";
-
-                    $URL="manage-sections.php";
-                    echo "<script>location.href='$URL'</script>";
-                  } else {
-                      echo "Error updating record: " . $connection->error;
-                      print_r($query);
+                  if (mysqli_num_rows($result) > 0) {
+                    echo "<div class=\"alert alert-danger mt-1\" role=\"alert\">Error: Section Name ".$section_name." under ".$year." ".get_course_code($course,"",$connection)."  already exists.</div>";
                   }
-                
+
+                  else{
+
+                    $query   = "INSERT INTO sections (sec_name, course_id, year) VALUES ('{$section_name}','{$course}','{$year}')";
+                    $result = mysqli_query($connection, $query);
+
+
+                    if ($result === TRUE) {
+                      echo "<script type='text/javascript'>";
+                      echo "alert('Create section successful!');";
+                      echo "</script>";
+
+                      $URL="manage-sections.php";
+                      echo "<script>location.href='$URL'</script>";
+                    } else {
+                        echo "Error updating record: " . $connection->error;
+                        print_r($query);
+                    }
+                } 
               }
 
               ?>
@@ -131,7 +141,7 @@
             echo "<td>".$row['sec_name']."</td>";
             echo "<td>".get_course_code($row['course_id'],"",$connection)."</td>";
             echo "<td>".$row['year']."</td>";
-            echo "<td style=\"text-align: center;\"><a class=\"btn btn-danger btn-xs\" href=\"javascript:confirmDelete('delete-section.php?sec_id=".$row['sec_id']."')\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a></td>";
+            echo "<td class=\"options-td\"><a class=\"btn btn-warning btn-xs a-modal\" title=\"Edit\" href=\"edit-section.php?sec_id=".$row['sec_id']."\""."><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a><a class=\"btn btn-danger btn-xs a-modal\" href=\"javascript:confirmDelete('delete-section.php?sec_id=".$row['sec_id']."')\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a></td>";
             echo "</tr>";
             }
 
