@@ -74,6 +74,18 @@
             else{
             $form_url = "process-grades.php?subject_id=".$subject_id."&term=".urlencode($term)."&school_yr=".urlencode($school_yr)."&course_id=".urlencode($course_id)."&year=".urlencode($year)."&section=".urlencode($section)."&teacher_id=".urlencode($teacher_id);
             }
+            if (isset($_GET["grade_posted"]) && !empty($_GET["grade_posted"])) {
+              $grade_posted = $_GET["grade_posted"];
+              if ($grade_posted == 1) {
+                echo "<div class=\"alert alert-success mt-3\" role=\"alert\">";
+                echo "Grades are posted.</div>";   
+              }
+              if($grade_posted == 0){
+                echo "<div class=\"alert alert-warning mt-3\" role=\"alert\">";
+                echo "Cannot post grades. Make sure all fields are not empty. Only students with \"Incomplete\" remarks are allowed to be empty.</div>";        
+              }
+            }
+                  
             ?>
             <form action="<?php echo $form_url;?>" method="post">
             <?php
@@ -108,13 +120,21 @@
                   $lock_grade = "readonly style=\"background: #e9ecef;\"";
                   $checkboxDisabled = "disabled";
                 }
+              if ($row['remarks'] == "Incomplete") {
+                $remarks_value = "checked=\"checked\"";
+                $extra_class_jquery = "incomplete";
+              }
+              else{
+                $remarks_value = "";
+                $extra_class_jquery = "allowed";
+              }
               echo "<tr>";
                 echo "<td><input class=\"student-id-box\" type=\"number\" name=\"stud_reg_id[]\" min=\"1\" style=\"display: none\" max=\"100\" value=\"".$row['stud_reg_id']."\"><input class=\"student-id-box\" type=\"text\" disabled name=\"stud_id[]\" value=\"".get_student_number($row['stud_reg_id'],$connection)."\"></td>";
                 echo "<td>".$row['last_name'].", ".$row['first_name'].", ".substr($row['middle_name'], 0,1).".</td>";
-                echo "<td><input class=\"grade-box\" step=\".25\" type=\"number\" maxlength =\"3\" name=\"prelim[]\" min=\"1\" max=\"5\" ".$lock_grade." value=\"".$row['prelim']."\"></td>";
-                echo "<td><input class=\"grade-box\" step=\".25\" type=\"number\" maxlength =\"3\" name=\"midterm[]\" min=\"1\" max=\"5\" ".$lock_grade." value=\"".$row['midterm']."\"></td>";
-                echo "<td><input class=\"grade-box\" step=\".25\" type=\"number\" maxlength =\"3\" name=\"semis[]\" min=\"1\" max=\"5\" ".$lock_grade." value=\"".$row['semis']."\"></td>";
-                echo "<td><input class=\"grade-box\" step=\".25\" type=\"number\" maxlength =\"3\" name=\"finals[]\" min=\"1\" max=\"5\" ".$lock_grade." value=\"".$row['finals']."\"></td>";
+                echo "<td><input class=\"grade-box ".$extra_class_jquery."\" step=\".25\" type=\"number\" maxlength =\"3\" name=\"prelim[]\" min=\"1\" max=\"5\" ".$lock_grade." value=\"".$row['prelim']."\"></td>";
+                echo "<td><input class=\"grade-box ".$extra_class_jquery."\" step=\".25\" type=\"number\" maxlength =\"3\" name=\"midterm[]\" min=\"1\" max=\"5\" ".$lock_grade." value=\"".$row['midterm']."\"></td>";
+                echo "<td><input class=\"grade-box ".$extra_class_jquery."\" step=\".25\" type=\"number\" maxlength =\"3\" name=\"semis[]\" min=\"1\" max=\"5\" ".$lock_grade." value=\"".$row['semis']."\"></td>";
+                echo "<td><input class=\"grade-box ".$extra_class_jquery."\" step=\".25\" type=\"number\" maxlength =\"3\" name=\"finals[]\" min=\"1\" max=\"5\" ".$lock_grade." value=\"".$row['finals']."\"></td>";
 
                 echo "<td><input class=\"final-computed-grade\" step=\".25\" maxlength =\"3\" type=\"number\" name=\"final_grade[]\"  min=\"0.00\" max=\"5.00\" readonly value=\"".$row['final_grade']."\"></td>";
 
@@ -122,12 +142,7 @@
                 echo  "<input class=\"remarks form-control\" name=\"remarks[]\" value=\"".$row['remarks']."\" readonly />";
                 echo "</td>";
                 echo "<td>";
-                if ($row['remarks'] == "Incomplete") {
-                  $remarks_value = "checked=\"checked\"";
-                }
-                else{
-                  $remarks_value = "";
-                }
+  
                 echo  "<div class=\"form-check\"><input class=\"form-check-input MarkIncomplete\" type=\"checkbox\" ".$remarks_value." ".$checkboxDisabled."><label class=\"form-check-label\ for=\"MarkIncomplete\">Mark as Incomplete</label></div>";
                 echo "</td>";
               echo "</tr>";
@@ -148,32 +163,39 @@
                 $grades_set_lock = $row_check['grade_posted'];
               }
                 
-              if (isset($_GET["grade_saved"])) {
-                $grade_saved = $_GET["grade_saved"];
-                if ($grade_saved == 1) {
-                echo "<input type=\"submit\" name=\"post\" value=\"Post Grades\" class=\"btn btn-success\" />";
+              if (isset($_GET["grade_posted"]) && !empty($_GET["grade_posted"])) {
+                if ($grade_posted == 1) {
+                 echo "<input type=\"submit\" name=\"submit\" disabled value=\"Save Grades\" class=\"btn btn-primary\" />";  
+                 echo "&nbsp;<input id=\"post-grades\" type=\"submit\" disabled name=\"post\" value=\"Post Grades\" class=\"btn btn-success\" />";
+                 echo "&nbsp;<input type=\"submit\" name=\"edit\" value=\"Edit Grades\" class=\"btn btn-warning\" />";   
                 }
-                elseif ($grade_saved == 2) {
-                echo "<input type=\"submit\" name=\"edit\" value=\"Edit Grades\" class=\"btn btn-warning\" />";      
+                else if($grade_posted == 0){
+                  echo "<div class=\"alert alert-warning mt-3\" role=\"alert\">";
+                  echo "Cannot post grades. Make sure all fields are not empty. Only students with \"Incomplete\" remarks are allowed to be empty.</div>"; 
+
+                 echo "<input type=\"submit\" name=\"submit\"  value=\"Save Grades\" class=\"btn btn-primary\" />";  
+                 echo "&nbsp;<input id=\"post-grades\" type=\"submit\" name=\"post\" value=\"Post Grades\" class=\"btn btn-success\" />";
+                 echo "&nbsp;<input type=\"submit\" disabled name=\"edit\" value=\"Edit Grades\" class=\"btn btn-warning\" />";  
+
                 }
-                elseif ($grades_set_lock > 0) {
-                echo "<input type=\"submit\" name=\"edit\" value=\"Edit Grades\" class=\"btn btn-warning\" />";      
+
+              }
+            else{
+                if ($grade_posted == 1) {
+                 echo "<input type=\"submit\" name=\"submit\" disabled value=\"Save Grades\" class=\"btn btn-primary\" />";  
+                 echo "&nbsp;<input id=\"post-grades\" type=\"submit\" disabled name=\"post\" value=\"Post Grades\" class=\"btn btn-success\" />";
+                 echo "&nbsp;<input type=\"submit\" name=\"edit\" value=\"Edit Grades\" class=\"btn btn-warning\" />";   
                 }
                 else{
-                  echo "<input type=\"submit\" name=\"submit\" value=\"Save Grades\" class=\"btn btn-primary\" />";
+                  echo "<input type=\"submit\" name=\"submit\"  value=\"Save Grades\" class=\"btn btn-primary\" />";  
+                  echo "&nbsp;<input id=\"post-grades\" type=\"submit\" name=\"post\" value=\"Post Grades\" class=\"btn btn-success\" />";
+                  echo "&nbsp;<input type=\"submit\" disabled name=\"edit\" value=\"Edit Grades\" class=\"btn btn-warning\" />";        
                 }
-              }
-              else{
-                if ($grades_set_lock == 1) {
-                  echo "<input type=\"submit\" name=\"edit\" value=\"Edit Grades\" class=\"btn btn-warning\" />";      
-                }
-                else{
-                 echo "<input type=\"submit\" name=\"submit\" value=\"Save Grades\" class=\"btn btn-primary\" />";
-                }
-              }
+         
+            }
 
               echo "&nbsp;<a class=\"btn btn-secondary\" href=\"grading-portal.php\">Cancel</a></div>";
-            ?>
+          ?>
 
             <center>
                    <?php echo "<a id=\"preview-print\" style=\"color: #fff;\" class=\"btn btn-primary hidden-print\" href=\"preview-print-grades-all.php?subject_id=".$subject_id."&term=".urlencode($term)."&course_id=".urlencode($course_id)."&year=".urlencode($year)."&section=".urlencode($section)."&teacher_id=".urlencode($teacher_id)."\"><i class=\"fa fa-table\" aria-hidden=\"true\"></i> Preview Summary</a>";
@@ -266,9 +288,11 @@ $(document).ready(function(){
 
     if (parseFloat(computed_grades) <= 3.50 && computed_grades != "") {
       $(this).closest("tr").find(".remarks").val("Passed");
+      $(this).closest("tr").find(".MarkIncomplete").prop("checked",false);
     }
     else if (parseFloat(computed_grades) > 3.50 && computed_grades != "") {
       $(this).closest("tr").find(".remarks").val("Failed");
+      $(this).closest("tr").find(".MarkIncomplete").prop("checked",false);
     }
     else if($(this).closest("tr").find(".final-computed-grade") == ""){
       $(this).closest("tr").find(".remarks").val("");
@@ -285,81 +309,23 @@ $(document).ready(function(){
     if ($(this).closest("tr").find(".remarks").val() !== "Incomplete") {
       $(this).closest("tr").find(".remarks").val("Incomplete");
       $(this).closest("tr").find(".grade-box, .final-computed-grade").val("");
+      $(this).closest("tr").find(".allowed").removeClass( "allowed" ).addClass( "incomplete" );
     }
     else{
       $(this).closest("tr").find(".remarks").val("");
-      $(this).closest("tr").find(".grade-box").val("");   
+      $(this).closest("tr").find(".grade-box").val("");
+      $(this).closest("tr").find(".incomplete").removeClass( "incomplete" ).addClass( "allowed" );
     }
 
   });
 
-  // $( ".MarkIncomplete" ).click(function() {
-  //   if ($(this).closest("tr").find(".remarks").val() == "Incomplete") {
-
-  //   if ($(this).closest("tr").find(".final-computed-grade").val() <=3 && $(this).closest("tr").find(".final-computed-grade").val() !="") {
-  //       $(this).closest("tr").find(".remarks").val("Passed");
-  //     }
-  //   else if ( $(this).closest("tr").find(".final-computed-grade").val() > 3 && $(this).closest("tr").find(".final-computed-grade").val() != "") {
-  //     $(this).closest("tr").find(".remarks").val("Failed");
-  //   }
-  //   else{
-  //     $(this).closest("tr").find(".remarks").val("");
-  //   }
-  // }
-  //   else if($(this).closest("tr").find(".remarks").val() !== "Incomplete" || $(this).closest("tr").find(".remarks").val() == ""){
-  //   $(this).closest("tr").find("td .grade-box").removeAttr("required");
-  //   $(this).closest("tr").find(".remarks").val("Incomplete");
-  //   }
-  // });
-
 });
+  $("#post-grades").click(function() {
+    $(".grade-box").each(function(i, obj) {     
+         $(".allowed").prop("required", true);
+         $(".incomplete").prop("required", false);    
+    });
 
+  });
   
 </script>
-
-<script type="text/javascript">
-  $(document).ready(function(){
-
-     $("#select-deleted").change(function(){
-      show_deleted = $("#select-deleted").val();
-      $("#datatable").load("include-deleted-courses.php",{
-        show_deleted: show_deleted
-      });
-
-     });
-    }
-  );
-  function exportTableToExcel(tableID, filename = ''){
-      var downloadLink;
-      var dataType = 'application/vnd.ms-excel';
-      var tableSelect = document.getElementById(tableID);
-      var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
-      
-      // Specify file name
-      filename = filename?filename+'.xls':'excel_data.xls';
-      
-      // Create download link element
-      downloadLink = document.createElement("a");
-      
-      document.body.appendChild(downloadLink);
-      
-      if(navigator.msSaveOrOpenBlob){
-          var blob = new Blob(['\ufeff', tableHTML], {
-              type: dataType
-          });
-          navigator.msSaveOrOpenBlob( blob, filename);
-      }else{
-          // Create a link to the file
-          downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
-      
-          // Setting the file name
-          downloadLink.download = filename;
-          
-          //triggering the function
-          downloadLink.click();
-      }
-  }
-</script>
-
-
-

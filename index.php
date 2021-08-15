@@ -61,7 +61,7 @@ require_once("includes/functions.php");
                   </div>
                 </div>
                 <input type="submit" name="submit" id="submit" class="btn btn-success form-control" value="Login" />
-                <p class="text-center"><small><a href="reset-password.php">Forgot Password</a></small></p>
+                <p class="text-center"><small><a href="reset-password-v2.php">Forgot Password</a></small></p>
               </form>
             </div>
           <?php

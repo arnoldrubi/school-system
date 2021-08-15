@@ -73,7 +73,7 @@
           die ("<div class=\"alert alert-danger\" role=\"alert\">Error: Username: ".$username." is already taken</div>");
         }
         else{
-            $query  = "INSERT INTO users (username, password, email, role) VALUES ('{$username}', '{$hashed_password}', '{$email}', '{$role}')";
+            $query  = "INSERT INTO users (username, password, email, role, active) VALUES ('{$username}', '{$hashed_password}', '{$email}', '{$role}', 1)";
             $result = mysqli_query($connection, $query);
 
             if ($result === TRUE) {

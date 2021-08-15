@@ -31,33 +31,7 @@
           <i class="fa fa-certificate"></i>
           Certificate of Grades Request</div>
           <div class="card-body">
-           <form class="form-horizontal" action="cert-of-grades.php" method="post">
-            <h4>Requester's Information</h4>
-            <div class="form-group row">
-              <label class="col-md-2 col-form-label" for="LastName">Last Name</label>  
-              <div class="col-md-4">
-              <input id="LastName" name="lastname" type="text" placeholder="Input Last Name" class="form-control" required>
-              </div>
-
-              <label class="col-md-2 col-form-label" for="FirstName">First Name</label>  
-              <div class="col-md-4">
-              <input id="FirstName" name="firstname" type="text" placeholder="Input First Name" class="form-control" required>
-              </div>
-            </div>
-
-            <div class="form-group row">
-              <label class="col-md-2 col-form-label" for="MiddleName">Middle Name</label>  
-              <div class="col-md-4">
-              <input id="MiddleName" name="middlename" type="text" placeholder="Input Middle Name" class="form-control" required>
-              </div>
-
-              <label class="col-md-2 col-form-label" for="NameExt">Name Extension</label>  
-              <div class="col-md-1">
-                <input id="NameExt" name="nameext" type="text" placeholder="Name Ext." class="form-control">
-              </div>
-            </div>
-
-            <hr>
+           <form id="request-form" class="form-horizontal" action="cert-of-grades.php" method="post">
             <h4>Academic Info</h4>   
             <div class="form-group row">
               <label class="col-md-2 col-form-label" for="Student Number">Student Number</label>  
@@ -77,7 +51,33 @@
                 </div>
               </div>
             </div>
+            <hr>
+            <h4>Requester's Information</h4>
+            <div id="display-student-name">
+              <div class="form-group row">
+                <label class="col-md-2 col-form-label" for="LastName">Last Name</label>  
+                <div class="col-md-4">
+                <input id="LastName" name="lastname" type="text" placeholder="Input Last Name" class="form-control" required>
+                </div>
 
+                <label class="col-md-2 col-form-label" for="FirstName">First Name</label>  
+                <div class="col-md-4">
+                <input id="FirstName" name="firstname" type="text" placeholder="Input First Name" class="form-control" required>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label class="col-md-2 col-form-label" for="MiddleName">Middle Name</label>  
+                <div class="col-md-4">
+                <input id="MiddleName" name="middlename" type="text" placeholder="Input Middle Name" class="form-control" required>
+                </div>
+
+                <label class="col-md-2 col-form-label" for="NameExt">Name Extension</label>  
+                <div class="col-md-1">
+                  <input id="NameExt" name="nameext" type="text" placeholder="Name Ext." class="form-control">
+                </div>
+              </div>
+            </div>
             <div class="row">
               <div class="col-md-12 d-flex justify-content-center">
               <input type="submit" name="submit" value="Process Request" class="btn btn-success" />&nbsp;
@@ -141,6 +141,15 @@
         StudentFirstName: StudentFirstName
       },function(data,status){
         $("#student-list").html(data);
+      });
+    });
+    $("#student-number").keyup(function(){
+      var StudentNumber = $("#student-number").val();
+      //run ajax
+      $.post("scan_student_number.php",{
+        StudentNumber: StudentNumber
+      },function(data,status){
+        $("#display-student-name").html(data);
       });
     });
   });

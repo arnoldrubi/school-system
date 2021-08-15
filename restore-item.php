@@ -12,7 +12,7 @@
     redirect_to("view-courses.php");
   }
 
-  $course_deleted = 1;
+  $course_deleted = 0;
 
     $query  = "UPDATE courses SET course_deleted = '{$course_deleted}' WHERE course_id = {$course_id} LIMIT 1";
     $result = mysqli_query($connection, $query);
@@ -21,7 +21,7 @@
 
   if ($result === TRUE) {
     echo "<script type='text/javascript'>";
-    echo "alert('Course set to inactive!');";
+    echo "alert('Restore course successful!');";
     echo "</script>";
 
     $URL="view-courses.php";
@@ -36,5 +36,12 @@
   if(isset($connection)){ mysqli_close($connection); }
 
 ?>
+
+
+<?php 
+
+  ?>
+
+
 
 

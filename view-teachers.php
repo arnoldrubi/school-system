@@ -51,7 +51,7 @@
               
               
 
-              $query  = "SELECT * FROM teachers ORDER BY teacher_id ASC";
+              $query  = "SELECT * FROM teachers WHERE active = 1 ORDER BY teacher_id ASC";
               $result = mysqli_query($connection, $query);
 
             while($row = mysqli_fetch_assoc($result))
@@ -63,7 +63,7 @@
               echo "<td>".$row['department']."</td>";
               echo "<td class=\"options-td\"><a class=\"btn btn-warning btn-xs\" title=\"Edit\" href=\"edit-teacher.php?teacher_id=".$row['teacher_id']."\""."><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a> ";
               echo "<a class=\"btn btn-success btn-xs a-modal\" title=\"View Teacher Info\" href=\"print-schedule-faculty.php?teacher_id=".$row['teacher_id']."&term=".urlencode(return_current_term($connection,""))."&sy=".urlencode(return_current_sy($connection,""))."\"><i class=\"fa fa-user\" aria-hidden=\"true\"></i></a> ";
-              echo "<a title=\"Delete\" class=\"btn btn-danger btn-xs\" href=\"javascript:confirmDelete('delete-teacher.php?teacher_id=".$row['teacher_id']."')\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a></td>";
+              echo "<a title=\"Set to inactive\" class=\"btn btn-danger btn-xs\" href=\"javascript:confirmDelete('delete-teacher.php?teacher_id=".$row['teacher_id']."')\"><i class=\"fa fa-user-times\" aria-hidden=\"true\"></i></a></td>";
               echo "</tr>";
               }
 

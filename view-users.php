@@ -42,7 +42,7 @@
                 echo "   <th>Options</th>";   
                 echo "  </tr></thead><tbody>";
 
-                $query  = "SELECT * FROM users WHERE user_id NOT IN(1)";
+                $query  = "SELECT * FROM users WHERE user_id NOT IN(1) AND active=1";
                 $result = mysqli_query($connection, $query);
 
               while($row = mysqli_fetch_assoc($result))
@@ -53,7 +53,7 @@
                   echo "<td>".$row['role']."</td>"; 
                 
                   echo "<td class=\"options-td\"><a class=\"btn btn-warning btn-xs a-modal\" title=\"Edit\" href=\"edit-user.php?user_id=".$row['user_id']."\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a> ";
-                  echo "<a title=\"Delete\" class=\"btn btn-danger btn-xs a-modal\" href=\"delete-user.php?user_id=".$row['user_id']."\"><i class=\"fa fa-trash\" aria-hidden=\"true\" onclick=\"return confirm('Are you sure you want to delete?')\"></i></a></td>";
+                  echo "<a title=\"Set to inactive\" class=\"btn btn-danger btn-xs a-modal\" href=\"delete-user.php?user_id=".$row['user_id']."\"><i class=\"fa fa-user-times\" aria-hidden=\"true\" onclick=\"return confirm('Are you sure you want to set to inactive?')\"></i></a></td>";
                   echo "</tr>";
                 }
 

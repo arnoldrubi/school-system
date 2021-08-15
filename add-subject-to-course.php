@@ -54,7 +54,7 @@
   }
 
   if ($result === TRUE) {
-    $redirect_url = "edit-course-subjects.php?course_id=".$course_id."&year=".urlencode($year)."&term=".urlencode($term)."&school_yr=".urlencode($school_yr);
+    $redirect_url = "edit-course-subjects.php?course_id=".$course_id."&year=".urlencode($year)."&term=".urlencode($term)."&school_yr=".urlencode($school_yr)."&subject_added=1";
     redirect_to($redirect_url);
   } else {
     echo "Error updating record: " . $connection->error;

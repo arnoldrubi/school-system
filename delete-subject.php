@@ -23,7 +23,7 @@
   }
 
   else{
-      $query  = "DELETE FROM subjects WHERE subject_id = {$subject_id} LIMIT 1";
+      $query  = "UPDATE subjects SET active=0 WHERE subject_id = {$subject_id} LIMIT 1";
       $result = mysqli_query($connection, $query);
 
 

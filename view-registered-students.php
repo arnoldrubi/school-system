@@ -69,7 +69,7 @@
               echo "<td>".date("m-d-Y",strtotime($row['birth_date']))."</td>";
               echo "<td class=\"options-td\"><a class=\"btn btn-warning btn-xs\" title=\"Edit\" href=\"edit-student.php?stud_reg_id=".$row['stud_reg_id']."\""."><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a> ";
               echo "<a class=\"btn btn-success btn-xs a-modal\" title=\"View Student Info\" href=\"print-student-info.php?stud_reg_id=".$row['stud_reg_id']."\"><i class=\"fa fa-user\" aria-hidden=\"true\"></i></a> ";
-              echo "<a title=\"Set to Inactive\" class=\"btn btn-danger btn-xs a-modal\" href=\"javascript:confirmDelete('delete-student.php?stud_reg_id=".$row['stud_reg_id']."')\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></a></td>";
+              echo "<a title=\"Set to Inactive\" class=\"btn btn-danger btn-xs\" href=\"javascript:confirmDelete('delete-student.php?stud_reg_id=".$row['stud_reg_id']."')\"><i class=\"fa fa-user-times\" aria-hidden=\"true\"></a></td>";
               //echo "<a href=\"delete-student.php?stud_reg_id=".$row['stud_reg_id']."\""." onclick=\"confirm('Are you sure?')\"> Delete Info</a></td>";
               echo "</tr>";
               }

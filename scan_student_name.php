@@ -47,12 +47,24 @@ if (isset($_POST['StudentLastName']) || isset($_POST['StudentFirstName'])) {
 }
 ?>
 
+<!-- add ko dito paglipat ng value ng name daanan ko sa php -->
+
   <script>
   $(document).ready(function() {
     $(".select-student-btn").click(function(){
       $("#student-number").val("");
       let student_number = $(this).attr("id");
       $("#student-number").val(student_number);
+
+      var StudentNumber = $("#student-number").val();
+      //run ajax
+      $.post("scan_student_number.php",{
+        StudentNumber: StudentNumber
+      },function(data,status){
+        $("#display-student-name").html(data);
+      });
+
+
     });
   });
   </script>

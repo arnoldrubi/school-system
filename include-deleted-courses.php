@@ -26,17 +26,19 @@
         echo "<td>".$row['course_code']."</td>";
         if ($row['course_deleted'] == 1) {
         echo "<td>Yes</td>";
-        $text_delete = "Restore Course";
-        $link_delete = "restore-course.php";
+
+        echo "<td class=\"options-td\"><a class=\"btn btn-warning btn-xs a-modal\" title=\"Edit Course\" href=\"edit-course.php?course_id=".$row['course_id']."\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a><a class=\"btn btn-success btn-xs \" title=\"Print Course Subjects\" target=\"_blank\" href=\"print-course-subjects.php?course_id=".urlencode($row['course_id'])."\"><i class=\"fa fa-print\" aria-hidden=\"true\"></i></a>";
+        echo "<a class=\"btn btn-success btn-xs a-modal\" title=\"Restore Course\" href=\"restore-course.php?course_id=".$row['course_id']."\"><i class=\"fa fa-undo\" aria-hidden=\"true\"></i></a></td>";
+        echo "</tr>";
         }
         else{
          echo "<td>No</td>";
          $text_delete = "Delete Course";
          $link_delete = "delete-course.php";
-        }
-        echo "<td class=\"options-td\"><a class=\"btn btn-warning btn-xs a-modal\" title=\"Edit Course\" href=\"edit-course.php?course_id=".$row['course_id']."\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a>";
-        echo "<a class=\"btn btn-danger btn-xs a-modal\" href=\"javascript:confirmDelete('".$link_delete."?course_id=".$row['course_id']."')\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a></td>";
+        echo "<td class=\"options-td\"><a class=\"btn btn-warning btn-xs a-modal\" title=\"Edit Course\" href=\"edit-course.php?course_id=".$row['course_id']."\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a><a class=\"btn btn-success btn-xs \" title=\"Print Course Subjects\" target=\"_blank\" href=\"print-course-subjects.php?course_id=".urlencode($row['course_id'])."\"><i class=\"fa fa-print\" aria-hidden=\"true\"></i></a>";
+        echo "<a class=\"btn btn-danger btn-xs a-modal\" title=\"Delete Course\" href=\"delete-course.php?course_id=".$row['course_id']."\"><i class=\"fa fa-window-close\" aria-hidden=\"true\"></i></a></td>";
         echo "</tr>";
+        }
         }
 
         echo "</tbody>"; 

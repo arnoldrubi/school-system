@@ -176,7 +176,7 @@ global $sidebar_context;
 
 		$query  = "SELECT * ";
 		$query .= "FROM users ";
-		$query .= "WHERE username = '{$safe_username}' ";
+		$query .= "WHERE username = '{$safe_username}' AND active = 1 ";
 		$query .= "LIMIT 1";
 		$admin_set = mysqli_query($connection, $query);
 		confirm_query($admin_set);

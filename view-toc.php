@@ -1,11 +1,7 @@
-<?php require_once("includes/session.php"); ?>
-<?php require_once("includes/functions.php"); ?>
+<?php include 'layout/header.php';?>
 <?php require_once("includes/db_connection.php"); ?>
 
-<?php include 'layout/header.php';?>
-
-
-  <title>Manage Subjects</title>
+  <title>Request for Transfer of Credits</title>
   </head>
 
   <body>
@@ -15,7 +11,6 @@
   <div id="wrapper">
 
   <?php
-  $sidebar_context = "courses";
 
   include 'layout/admin-sidebar.php';?>
 
@@ -25,50 +20,62 @@
           <a href="admin-dashboard.php">Dashboard</a>
         </li>
         <li class="breadcrumb-item">
-          <a href="view-courses.php">View Courses</a>
+         <a href="registrar-services.php">Registrar Services</a>
         </li>
         <li class="breadcrumb-item active">
-          Manage Subjects
+         Dashboard - Transfer of Credits
         </li>
       </ol>
       <div class="card mb-3">
         <div class="card-header">
           <i class="fa fa-table"></i>
-          View Subjects</div>
+          List - Transfer of Credits</div>
           <div class="card-body">
+            <a type="button" href="request-transfer-of-credits.php" class="btn btn-primary">+Add New</a>
+
             <div class="table-responsive" id="dataTable_wrapper">
             <?php
 
               echo "<table class=\"table table-bordered dataTable\" id=\"dataTable\" width=\"100%\" role=\"grid\" aria-describedby=\"dataTable_info\" style=\"width: 100%;\">";
               echo " <thead>";
               echo "  <tr>";
-              echo "   <th>Subject Name</th>";
-              echo "   <th>Subject Code</th>";
-              echo "   <th>Lecture Units</th>";
-              echo "   <th>Lab Units</th>";
-              echo "   <th>Total Units</th>";
-              echo "   <th>Prerequisite</th>";
-              echo "   <th>Type</th>";
+              echo "   <th>Student Number</th>";
+              echo "   <th>Last Name</th>";
+              echo "   <th>First Name</th>";
+              echo "   <th>Middle Name</th>";
+              echo "   <th>Name Ext.</th>";
               echo "   <th>Options</th>";   
               echo "  </tr></thead><tbody>";
               
               
 
-              $query  = "SELECT * FROM subjects WHERE active = 1 ORDER BY subject_id ASC";
+              $query  = "SELECT DISTINCT student_number,stud_reg_id FROM transfer_of_credits";
               $result = mysqli_query($connection, $query);
 
             while($row = mysqli_fetch_assoc($result))
               {
+                $reg_id = $row['stud_reg_id'];
+                $last_name = "";
+                $first_name = "";
+                $middle_name = "";
+                $name_ext = "";
+
+                $query_name = "SELECT * FROM students_reg WHERE stud_reg_id='".$reg_id."'";
+                $result_name = mysqli_query($connection, $query_name);
+                while($row_name = mysqli_fetch_assoc($result_name))
+                  {
+                    $last_name = $row_name['last_name'];
+                    $first_name = $row_name['first_name'];
+                    $middle_name = $row_name['middle_name'];
+                    $name_ext = $row_name['name_ext'];
+                  }
               echo "<tr>";
-              echo "<td>".$row['subject_name']."</td>";
-              echo "<td>".$row['subject_code']."</td>";
-              echo "<td>".$row['lect_units']."</td>";
-              echo "<td>".$row['lab_units']."</td>";
-              echo "<td>".$row['total_units']."</td>";
-              echo "<td>".get_subject_name($row['pre_id'],"",$connection)."</td>";
-              echo "<td>".$row['type']."</td>";
-              echo "<td class=\"options-td\"><a class=\"btn btn-warning btn-xs a-modal\" title=\"Edit\" href=\"edit-subject.php?subject_id=".$row['subject_id']."\""."><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a> ";
-              echo "<a title=\"Set to Inactive\" class=\"btn btn-danger btn-xs a-modal\" href=\"javascript:confirmDelete('delete-subject.php?subject_id=".$row['subject_id']."')\"><i class=\"fa fa-window-close\" aria-hidden=\"true\"></i></a></td>";
+              echo "<td>".$row['student_number']."</td>";
+              echo "<td>".$last_name."</td>";
+              echo "<td>".$first_name."</td>";
+              echo "<td>".$middle_name."</td>";
+              echo "<td>".$name_ext."</td>";
+              echo "<td class=\"options-td\"><a class=\"btn btn-success btn-xs a-modal\" title=\"Manage TOC\" href=\"manage-toc.php?stud_reg_id=".$reg_id."\">Manage TOC</a></td>";
               echo "</tr>";
               }
 

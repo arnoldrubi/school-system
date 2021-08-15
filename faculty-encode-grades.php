@@ -63,6 +63,18 @@
 
       <?php
 
+      if (isset($_GET["grade_posted"]) && !empty($_GET["grade_posted"])) {
+        $grade_posted = $_GET["grade_posted"];
+        if ($grade_posted == 1) {
+          echo "<div class=\"alert alert-success mt-3\" role=\"alert\">";
+          echo "Grades are posted.</div>";   
+        }
+        if($grade_posted == 0){
+          echo "<div class=\"alert alert-warning mt-3\" role=\"alert\">";
+          echo "Cannot post grades. Make sure all fields are not empty. Only students with \"Incomplete\" remarks are allowed to be empty.</div>";        
+        }
+      }
+
         $today = date("Y-m-d");
         $deadline = "";
 
@@ -74,12 +86,6 @@
             $end_of_class = $row['end_class'];
           }
 
-        if ($today > $end_of_class) {
-          echo "<div class=\"alert alert-warning\" role=\"alert\">
-            Posting of grades has reached past the deadline.
-          </div>";
-          $deadline = 1;
-        }
       ?>
       
       <input class="form-control" id="myInput" type="text" placeholder="Quick Search">
@@ -124,14 +130,23 @@
             $lock_grade = "readonly style=\"background: #e9ecef;\"";
             $checkboxDisabled = "disabled";
           }
+
+          if ($row['remarks'] == "Incomplete") {
+            $remarks_value = "checked=\"checked\"";
+            $extra_class_jquery = "incomplete";
+          }
+          else{
+            $remarks_value = "";
+            $extra_class_jquery = "allowed";
+          }
         echo "<tr>";
           echo "<td style=\"display: none;\"><input class=\"student-id-box\" type=\"number\" name=\"stud_reg_id[]\" min=\"1\" style=\"display: none\" max=\"100\" value=\"".$row['stud_reg_id']."\"><input class=\"student-id-box\" type=\"number\" disabled name=\"stud_id[]\" min=\"0\" max=\"5\" value=\"".$row['stud_reg_id']."\"></td>";
           echo "<td><input class=\"student-id-box\" type=\"text\" disabled name=\"stud_id[]\" value=\"".get_student_number($row['stud_reg_id'],$connection)."\"></td>";
           echo "<td>".$row['last_name'].", ".$row['first_name'].", ".substr($row['middle_name'], 0,1).".</td>";
-          echo "<td><input class=\"grade-box\" step=\".25\" type=\"number\" maxlength =\"3\" name=\"prelim[]\" min=\"1\" max=\"5\" ".$lock_grade." value=\"".$row['prelim']."\"></td>";
-          echo "<td><input class=\"grade-box\" step=\".25\" type=\"number\" maxlength =\"3\" name=\"midterm[]\" min=\"1\" max=\"5\" ".$lock_grade." value=\"".$row['midterm']."\"></td>";
-          echo "<td><input class=\"grade-box\" step=\".25\" type=\"number\" maxlength =\"3\" name=\"semis[]\" min=\"1\" max=\"5\" ".$lock_grade." value=\"".$row['semis']."\"></td>";
-          echo "<td><input class=\"grade-box\" step=\".25\" type=\"number\" maxlength =\"3\" name=\"finals[]\" min=\"1\" max=\"5\" ".$lock_grade." value=\"".$row['finals']."\"></td>";
+          echo "<td><input class=\"grade-box ".$extra_class_jquery."\" step=\".25\" type=\"number\" maxlength =\"3\" name=\"prelim[]\" min=\"1\" max=\"5\" ".$lock_grade." value=\"".$row['prelim']."\"></td>";
+          echo "<td><input class=\"grade-box ".$extra_class_jquery."\" step=\".25\" type=\"number\" maxlength =\"3\" name=\"midterm[]\" min=\"1\" max=\"5\" ".$lock_grade." value=\"".$row['midterm']."\"></td>";
+          echo "<td><input class=\"grade-box ".$extra_class_jquery."\" step=\".25\" type=\"number\" maxlength =\"3\" name=\"semis[]\" min=\"1\" max=\"5\" ".$lock_grade." value=\"".$row['semis']."\"></td>";
+          echo "<td><input class=\"grade-box ".$extra_class_jquery."\" step=\".25\" type=\"number\" maxlength =\"3\" name=\"finals[]\" min=\"1\" max=\"5\" ".$lock_grade." value=\"".$row['finals']."\"></td>";
 
           echo "<td><input class=\"final-computed-grade\" step=\".25\" maxlength =\"3\" type=\"number\" name=\"final_grade[]\"  min=\"0.00\" max=\"5.00\" readonly value=\"".$row['final_grade']."\"></td>";
 
@@ -139,13 +154,7 @@
           echo  "<input class=\"remarks form-control\" name=\"remarks[]\" value=\"".$row['remarks']."\" readonly />";
           echo "</td>";
           echo "<td>";
-          if ($row['remarks'] == "Incomplete") {
-            $remarks_value = "checked=\"checked\"";
-          }
-          else{
-            $remarks_value = "";
-          }
-          echo  "<div class=\"form-check\"><input class=\"form-check-input MarkIncomplete\" type=\"checkbox\" ".$remarks_value." ".$checkboxDisabled."><label class=\"form-check-label\ for=\"MarkIncomplete\">Mark as Incomplete</label></div>";
+          echo  "<div class=\"form-check\"><input class=\"form-check-input MarkIncomplete\" type=\"checkbox\" ".$remarks_value." ".$checkboxDisabled."><label class=\"form-check-label\" for=\"MarkIncomplete\">Mark as Incomplete</label></div>";
           echo "</td>";
         echo "</tr>";
         }
@@ -154,159 +163,71 @@
 
         echo "<div class=\"col-md-4\">";
 
-        //query check to make sure the grades are locked before proceeding, if not, the buttons will be set to default
 
-        $grades_set_lock = "";
 
-        $query_check = "SELECT grade_posted FROM student_grades WHERE subject_id ='".$subject_id."' AND sec_id ='".$section."' AND teacher_id = '".$teacher_id."' AND term='".$term."' AND school_yr='".$school_yr."' LIMIT 1";
-        $result_check = mysqli_query($connection, $query_check);
-        while($row_check = mysqli_fetch_assoc($result_check))
-        {
-          $grades_set_lock = $row_check['grade_posted'];
-        }
-          
-        if (isset($_GET["grade_saved"])) {
-          $grade_saved = $_GET["grade_saved"];
-          if ($grade_saved == 1) {
-            if ($deadline == 1) {
-             echo "<input type=\"submit\" name=\"post\" disabled value=\"Post Grades\" class=\"btn btn-success\" />";
-            }
-            else{
-              echo "<input type=\"submit\" name=\"post\" value=\"Post Grades\" class=\"btn btn-success\" />";
-            }          
-          }
-          elseif ($grade_saved == 2) {
-            if ($deadline == 1) {
-             echo "<input type=\"submit\" name=\"edit\" value=\"Edit Grades\" disabled class=\"btn btn-warning\" />"; 
-            }
-            else{
-              echo "<input type=\"submit\" name=\"edit\" value=\"Edit Grades\" class=\"btn btn-warning\" />"; 
-            }     
-          }
-          elseif ($grades_set_lock > 0) {
-            if ($deadline == 1) {
-             echo "<input type=\"submit\" name=\"edit\" value=\"Edit Grades\" disbled class=\"btn btn-warning\" />";      
-            }
-            else{
-             echo "<input type=\"submit\" name=\"edit\" value=\"Edit Grades\" class=\"btn btn-warning\" />";
-            }    
-          }
-          else{
-            if ($deadline == 1) {
-             echo "<input type=\"submit\" name=\"submit\" disabled value=\"Save Grades\" class=\"btn btn-primary\" />";
-            }
-            else{
-              echo "<input type=\"submit\" name=\"submit\" value=\"Save Grades\" class=\"btn btn-primary\" />";
-            }
-          }
+        if ($today > $end_of_class) {
+          echo "<div class=\"alert alert-warning\" role=\"alert\">
+            Posting of grades has reached past the deadline.
+          </div>";
+          $deadline = 1;
         }
         else{
-          if ($grades_set_lock == 1) {
-          echo "<div class=\"alert alert-warning\" role=\"alert\">Grades are now posted. Please contact the registrar if you wish to edit.</div>";     
-          }
-          else{
-            if ($deadline == 1) {
-             echo "<input type=\"submit\" name=\"submit\" disabled value=\"Save Grades\" class=\"btn btn-primary\" />";
-            }
-            else{
-              echo "<input type=\"submit\" name=\"submit\" value=\"Save Grades\" class=\"btn btn-primary\" />";
-            }
-          }
-        }
+            //query check to make sure the grades are locked before proceeding, if not, the buttons will be set to default
 
-        echo "&nbsp;<a class=\"btn btn-secondary\" href=\"faculty-grading-portal.php\">Cancel</a></div>";
-      ?>
+            $grades_set_lock = "";
+
+            $query_check = "SELECT grade_posted FROM student_grades WHERE subject_id ='".$subject_id."' AND sec_id ='".$section."' AND teacher_id = '".$teacher_id."' AND term='".$term."' AND school_yr='".$school_yr."' LIMIT 1";
+            $result_check = mysqli_query($connection, $query_check);
+            while($row_check = mysqli_fetch_assoc($result_check))
+            {
+              $grades_set_lock = $row_check['grade_posted'];
+            }
+
+
+
+          if (isset($_GET["grade_posted"]) && !empty($_GET["grade_posted"])) {
+              if ($grade_posted == 1) {
+               echo "<input type=\"submit\" name=\"submit\" disabled value=\"Save Grades\" class=\"btn btn-primary\" />";  
+               echo "&nbsp;<input id=\"post-grades\" type=\"submit\" disabled name=\"post\" value=\"Post Grades\" class=\"btn btn-success\" />";
+               echo "&nbsp;<input type=\"submit\" name=\"edit\" value=\"Edit Grades\" class=\"btn btn-warning\" />";   
+              }
+              else if($grade_posted == 0){
+                echo "<div class=\"alert alert-warning mt-3\" role=\"alert\">";
+                echo "Cannot post grades. Make sure all fields are not empty. Only students with \"Incomplete\" remarks are allowed to be empty.</div>"; 
+
+               echo "<input type=\"submit\" name=\"submit\"  value=\"Save Grades\" class=\"btn btn-primary\" />";  
+               echo "&nbsp;<input id=\"post-grades\" type=\"submit\" name=\"post\" value=\"Post Grades\" class=\"btn btn-success\" />";
+               echo "&nbsp;<input type=\"submit\" disabled name=\"edit\" value=\"Edit Grades\" class=\"btn btn-warning\" />";  
+
+              }
+
+            }
+          else{
+              if ($grade_posted == 1) {
+               echo "<input type=\"submit\" name=\"submit\" disabled value=\"Save Grades\" class=\"btn btn-primary\" />";  
+               echo "&nbsp;<input id=\"post-grades\" type=\"submit\" disabled name=\"post\" value=\"Post Grades\" class=\"btn btn-success\" />";
+               echo "&nbsp;<input type=\"submit\" name=\"edit\" value=\"Edit Grades\" class=\"btn btn-warning\" />";   
+              }
+              else{
+                echo "<input type=\"submit\" name=\"submit\"  value=\"Save Grades\" class=\"btn btn-primary\" />";  
+                echo "&nbsp;<input id=\"post-grades\" type=\"submit\" name=\"post\" value=\"Post Grades\" class=\"btn btn-success\" />";
+                echo "&nbsp;<input type=\"submit\" disabled name=\"edit\" value=\"Edit Grades\" class=\"btn btn-warning\" />";        
+              }
+       
+          }
+
+        }
 
   
-      <div class="alert alert-success mt-3" role="alert">
-        Make sure you "Post" the grades first before clicking preview to get the latest data on the grades.
-      </div>
-    </form>
-    <h3>Schedule Info</h3>
-      <div class="table-responsive" id="dataTable_wrapper">
-      <?php
-
-        echo "<table class=\"table table-bordered\" id=\"\" width=\"100%\" cellspacing=\"0\" role=\"grid\" aria-describedby=\"dataTable_info\" style=\"width: 100%;\">";
-        echo " <thead>";
-        echo "  <tr>";
-        echo "   <th>Subject Code</th>";
-        echo "   <th class=\"skip-filter\">Subject</th>";
-        echo "   <th>Course</th>";
-        echo "   <th>Year</th>";
-        echo "   <th>Term</th>";
-        echo "   <th>Section</th>";
-        echo "   <th class=\"skip-filter\">Room</th>";
-        echo "   <th class=\"skip-filter\">Teacher</th>";
-        echo "   <th class=\"skip-filter\">Day</th>";        
-        echo "   <th class=\"skip-filter\">Time Start</th>";
-        echo "   <th class=\"skip-filter\">Time End</th>";
-        echo "  </tr></thead><tbody>";
-        
-        $query_get_class  = "SELECT * FROM classes WHERE subject_id='".$subject_id."' AND sec_id='".$section."'";
-        $result_get_class = mysqli_query($connection, $query_get_class);
-
-      while($row_result_get_class = mysqli_fetch_assoc($result_get_class))
-        {
-          $class_id = $row_result_get_class['class_id'];
-        }
-        
-
-        $query  = "SELECT * FROM schedule_block WHERE subject_id='".$subject_id."' AND class_id='".$class_id."' AND year ='".$year."' AND term='".$term."' AND teacher_id='".$teacher_id."' ORDER BY day ASC, time_start ASC";
-        $result = mysqli_query($connection, $query);
-
-      while($row = mysqli_fetch_assoc($result))
-        {
-          $day = number_to_day($row['day']);
-          $teacher_name = get_teacher_name($row['teacher_id'],"",$connection);
-          echo "<tr>";
-
-          //query that gets the name of the subject using the subject ID from the schedule_block table
-          $query2  = "SELECT * FROM subjects WHERE subject_id='".$row['subject_id']."' LIMIT 1";
-          $result2 = mysqli_query($connection, $query2);
-            while($row2 = mysqli_fetch_assoc($result2)){
-              echo "<td>".$row2['subject_code']."</td>"; 
-              echo "<td>".$row2['subject_name']."</td>"; 
-            }
-
-          //query that gets the name of the course using the course ID from the schedule_block table
-          $query3  = "SELECT course_code FROM courses WHERE course_id='".$row['course_id']."' LIMIT 1";
-          $result3 = mysqli_query($connection, $query3);
-          if (mysqli_num_rows($result3) < 1) {
-             echo "<td>&nbsp;</td>";
-          }
-          else{
-            while($row3 = mysqli_fetch_assoc($result3)){
-              echo "<td>".$row3['course_code']."</td>"; 
-            }
-          }
-          echo "<td>".$row['year']."</td>";
-          echo "<td>".$row['term']."</td>";
-
-          $query_get_section  = "SELECT * FROM classes WHERE class_id='".$class_id."'";
-          $result_get_section = mysqli_query($connection, $query_get_section);
-
-        while($row_result_get_section = mysqli_fetch_assoc($result_get_section))
-          {
-            $section_display = $row_result_get_section['sec_id'];
-          }
-          echo "<td>".get_section_name($section_display,"",$connection)."</td>";
-          echo "<td>".$row['room']."</td>";
-          echo "<td>".$teacher_name."</td>";
-          echo "<td>".$day."</td>";
-          echo "<td>".date("g:i A", strtotime($row['time_start']))."</td>";
-          echo "<td>".date("g:i A", strtotime($row['time_end']))."</td>";
-          echo "</tr>";
-        }
-
-        echo "</tbody></table>"; 
+         echo "&nbsp;<a class=\"btn btn-secondary\" href=\"faculty-grading-portal.php\">Cancel</a></div>";
       ?>
-   </div>
+    </form>
   </div>
   <!-- /#wrapper -->
 
   <!-- Scroll to Top Button-->
   <a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
+    <i class="fa fa-angle-up"></i>
   </a>
 
   <!-- Logout Modal-->
@@ -368,6 +289,7 @@ $(document).ready(function(){
       alert ("Error! Values should not be greater than or quals to 0 not lower than or equals to 5.");
       $(this).val(0);
       $(this).focus();
+      // this val clear other boxes as well
     }
     var prelim = parseFloat($(this).closest("tr").find("input[name='prelim[]']").val());
     var midterm = parseFloat($(this).closest("tr").find("input[name='midterm[]']").val());
@@ -380,55 +302,41 @@ $(document).ready(function(){
 
     if (parseFloat(computed_grades) <= 3.50 && computed_grades != "") {
       $(this).closest("tr").find(".remarks").val("Passed");
+      $(this).closest("tr").find(".MarkIncomplete").prop("checked",false);
     }
     else if (parseFloat(computed_grades) > 3.50 && computed_grades != "") {
       $(this).closest("tr").find(".remarks").val("Failed");
+      $(this).closest("tr").find(".MarkIncomplete").prop("checked",false);
     }
     else if($(this).closest("tr").find(".final-computed-grade") == ""){
       $(this).closest("tr").find(".remarks").val("");
     }
-
   });
+
 
   //automatically do some scripts and changes when a student is marked as incomplete
 
   $( ".MarkIncomplete" ).click(function() {
-    if ($(this).closest("tr").find(".remarks").val() == "Incomplete") {
-
-    if ($(this).closest("tr").find(".final-computed-grade").val() <=3 && $(this).closest("tr").find(".final-computed-grade").val() !="") {
-        $(this).closest("tr").find(".remarks").val("Passed");
-      }
-    else if ( $(this).closest("tr").find(".final-computed-grade").val() > 3 && $(this).closest("tr").find(".final-computed-grade").val() != "") {
-      $(this).closest("tr").find(".remarks").val("Failed");
+    if ($(this).closest("tr").find(".remarks").val() !== "Incomplete") {
+      $(this).closest("tr").find(".remarks").val("Incomplete");
+      $(this).closest("tr").find(".grade-box, .final-computed-grade").val("");
+      $(this).closest("tr").find(".allowed").removeClass( "allowed" ).addClass( "incomplete" );
     }
     else{
       $(this).closest("tr").find(".remarks").val("");
+      $(this).closest("tr").find(".grade-box").val("");
+      $(this).closest("tr").find(".incomplete").removeClass( "incomplete" ).addClass( "allowed" );
     }
-  }
-    else if($(this).closest("tr").find(".remarks").val() !== "Incomplete" || $(this).closest("tr").find(".remarks").val() == ""){
-    $(this).closest("tr").find("td .grade-box").removeAttr("required");
-    $(this).closest("tr").find(".remarks").val("Incomplete");
-    }
-});
 
+  });
+
+  $("#post-grades").click(function() {
+    $(".grade-box").each(function(i, obj) {     
+      $(".allowed").prop("required", true);  
+      $(".incomplete").prop("required", false);    
+    });
+  });
 });
 
   
 </script>
-
-  <script type="text/javascript">
-    $(document).ready(function(){
-
-       $("#select-deleted").change(function(){
-        show_deleted = $("#select-deleted").val();
-        $("#datatable").load("include-deleted-courses.php",{
-          show_deleted: show_deleted
-        });
-
-       });
-      }
-    );
-  </script>
-
-
-

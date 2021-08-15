@@ -1,5 +1,5 @@
 function confirmDelete(delUrl) {
-  if (confirm("Are you sure you want to delete")) {
+  if (confirm("Are you sure you want to deactivate?")) {
    document.location = delUrl;
   }
 }
@@ -9,7 +9,7 @@ function confirmAdd(addSubjectlUrl) {
   }
 }
 function confirmRestore(RestoreUrl) {
-  if (confirm("Do you want to restore this coures?")) {
+  if (confirm("Do you want to restore this course?")) {
    document.location = RestoreUrl;
   }
 }

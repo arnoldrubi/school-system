@@ -3,7 +3,6 @@
 <?php require_once("includes/db_connection.php"); ?>
 
 <?php include 'layout/header.php';?>
-x
 
   <title>Grading Portal</title>
   </head>

@@ -209,7 +209,7 @@
                 
                 
 
-                $query  = "SELECT * FROM subjects ORDER BY subject_id ASC";
+                $query  = "SELECT * FROM subjects WHERE active=1 ORDER BY subject_id ASC";
                 $result = mysqli_query($connection, $query);
 
               while($row = mysqli_fetch_assoc($result))

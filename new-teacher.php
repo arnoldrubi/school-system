@@ -122,7 +122,7 @@
               }
               else{
 
-                $query  = "INSERT INTO teachers (last_name, first_name, department) VALUES ('{$last_name}','{$first_name}', '{$department}')";
+                $query  = "INSERT INTO teachers (last_name, first_name, department, active) VALUES ('{$last_name}','{$first_name}', '{$department}', 1)";
                 $result = mysqli_query($connection, $query);
 
                 // created a function that generates the emp_code
@@ -149,7 +149,7 @@
                   die ("<div class=\"alert alert-danger\" role=\"alert\">Error: Username: ".$username." is already taken</div>");
                 }
 
-                $query  = "INSERT INTO users (teacher_id, username, password, email, role) VALUES ('{$teacher_id}','{$username}', '{$hashed_password}', '{$email}', '{$role}')";
+                $query  = "INSERT INTO users (teacher_id, username, password, email, role, active) VALUES ('{$teacher_id}','{$username}', '{$hashed_password}', '{$email}', '{$role}', 1)";
                 $result = mysqli_query($connection, $query);
 
 

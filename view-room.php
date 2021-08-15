@@ -58,7 +58,7 @@
               echo "<td>".$row['room_name']."</td>";
               echo "<td>".$row['description']."</td>";
               echo "<td class=\"options-td\"><a class=\"btn btn-warning btn-xs a-modal\" title=\"Edit\" href=\"edit-room.php?room_id=".$row['room_id']."\""."><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a> ";
-              echo "<a title=\"Delete\" class=\"btn btn-danger btn-xs a-modal\" href=\"javascript:confirmDelete('delete-room.php?room_id=".$row['room_id']."')\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a></td>";
+              echo "<a title=\"Set to Inactive\" class=\"btn btn-danger btn-xs a-modal\" href=\"javascript:confirmDelete('delete-room.php?room_id=".$row['room_id']."')\"><i class=\"fa fa-window-close\" aria-hidden=\"true\"></i></a></td>";
               echo "</tr>";
               }
 

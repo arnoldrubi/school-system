@@ -105,6 +105,23 @@
                       }
                     }
                   echo "</select></div></div>";
+                  echo  "<div class=\"form-group row\">";
+                  echo  "<label class=\"col-md-2 col-form-label\" for=\"pre_id\">Subject Type:</label>";
+                  echo  "<div class=\"col-md-5\">";
+                  echo "<select class=\"form-control\" name=\"subject_type\">";
+
+                  $subject_types = array("GE","Major");
+
+                  for ($i=0; $i < 2 ; $i++) { 
+                    if ($subject_types[$i] == $row['type'] ) {
+                       echo "<option selected value=\"".$subject_types[$i]."\">".$subject_types[$i]."</option>";
+                    }
+                    else{
+                       echo "<option value=\"".$subject_types[$i]."\">".$subject_types[$i]."</option>";
+                    }
+                  }
+
+                  echo "</select></div></div>";
                 }
 
           ?>
@@ -125,6 +142,7 @@
               $lab_units = (int) $_POST["lab_units"];
               $total_units = $lect_units + $lab_units;
               $pre_id = (int) $_POST["pre_id"];
+              $type = mysql_prep($_POST["subject_type"]);
 
               if (!isset($subject_name) || !isset($subject_code) || $subject_name == "" || $subject_code == "") {
                 die ("<div class=\"alert alert-danger\" role=\"alert\">Error: One or more fields are empty.</div>");
@@ -150,7 +168,7 @@
                   }
                 }
 
-                $query  = "UPDATE subjects SET subject_name = '{$subject_name}', subject_code = '{$subject_code}', lect_units = '{$lect_units}', lab_units = '{$lab_units}', total_units = '{$total_units}', pre_id = '{$pre_id}' WHERE subject_id = {$subject_id} LIMIT 1";
+                $query  = "UPDATE subjects SET subject_name = '{$subject_name}', subject_code = '{$subject_code}', lect_units = '{$lect_units}', lab_units = '{$lab_units}', total_units = '{$total_units}', pre_id = '{$pre_id}', type = '{$type}' WHERE subject_id = {$subject_id} LIMIT 1";
                 $result = mysqli_query($connection, $query);
 
                 if ($result === TRUE) {

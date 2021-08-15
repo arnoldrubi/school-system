@@ -36,20 +36,20 @@
             <div class="form-group row">
               <label class="col-md-2 col-form-label" for="subject-name">Subject Name:</label>  
               <div class="col-md-10">
-               <input id="subject-name" name="subject-name" type="text" placeholder="Input Subject Name" class="form-control" required>            
+               <input id="subject-name" name="subject_name" type="text" placeholder="Input Subject Name" class="form-control" required>            
               </div>
             </div>
             <div class="form-group row">
               <label class="col-md-2 col-form-label" for="subject-code">Subject Code:</label>  
               <div class="col-md-10">
-               <input id="subject-code" name="subject-code" type="text" placeholder="Subject Code" class="form-control" required>
+               <input id="subject-code" name="subject_code" type="text" placeholder="Subject Code" class="form-control" required>
                <span class="help-block">Input the code for the subject (example: IT1)</span>  
               </div>
             </div>
             <div class="form-group row">
               <label class="col-md-2 col-form-label" for="subject-name">Lecture Units:</label>  
               <div class="col-md-1">
-               <input id="lect-units" name="lect_units" min="1" max="6" type="number" class="form-control" placeholder="1" required>            
+               <input id="lect-units" name="lect_units" min="0" max="6" type="number" class="form-control" placeholder="1" required>            
               </div>
               <label class="col-md-2 col-form-label" for="subject-code">Lab Units:</label>  
               <div class="col-md-1">
@@ -72,6 +72,16 @@
                </select>        
               </div>
             </div>
+            <div class="form-group row">
+              <label class="col-md-2 col-form-label" for="pre_id">Subject Type:</label>  
+              <div class="col-md-5">
+               <select class="form-control" name="subject_type" required>
+                <option value="">None</option>
+                  <option value="Major">Major</option>
+                  <option value="GE">GE</option>            
+               </select>        
+              </div>
+            </div>
             <div class="row">
               <div class="col-md-12 d-flex justify-content-center">
               <input type="submit" name="submit" value="Create Subject" class="btn btn-success" />&nbsp;
@@ -85,23 +95,27 @@
         if (isset($_POST['submit'])) {
           // character trims are done to make sure the whitespaces at the start and end of string for Subject Name and Code are removed
           // this will help the validation of duplicat values
-          $subject_name = ltrim(rtrim(mysql_prep($_POST["subject-name"])));
-          $subject_code = ltrim(rtrim(strtoupper(mysql_prep($_POST["subject-code"]))));
+          $subject_name = ltrim(rtrim(mysql_prep($_POST["subject_name"])));
+          $subject_code = ltrim(rtrim(strtoupper(mysql_prep($_POST["subject_code"]))));
           $lect_units = (int) $_POST["lect_units"];
           $lab_units = (int) $_POST["lab_units"];
           $total_units = $lab_units + $lect_units;
           $pre_id = (int) $_POST["pre_id"];
+          $subject_type = $_POST["subject_type"];
 
           $row_count = return_duplicate_entry("subjects","subject_name",$subject_name,"",$connection);
 
+          $row_count=mysqli_num_rows($result_duplicate_entry);
+
           if ($row_count > 0) {
+            print_r($query_duplicate_entry);
             die ("<div class=\"alert alert-danger\" role=\"alert\">Error: Subject name: ".$subject_name." already exists.</div>");
           }
 
           $row_count = return_duplicate_entry("subjects","subject_code",$subject_code,"",$connection);
 
           if ($row_count > 0) {
-            die ("<div class=\"alert alert-danger\" role=\"alert\">Error: Subject code: ".$subject_code." already exists.</div>");
+            die ("<div class=\"alert alert-danger\" role=\"alert\">Error: Subject code: ".$subject_code.$row_count." already exists.</div>");
           }
 
           if (!isset($subject_name) || !isset($subject_code) || $subject_name == "" || $subject_code == "") {
@@ -111,7 +125,7 @@
             die ("<div class=\"alert alert-danger\" role=\"alert\">Units value should more than 0.</div>");
           }
           else{
-              $query   = "INSERT INTO subjects (subject_name, subject_code, lect_units, lab_units, total_units,pre_id) VALUES ('{$subject_name}', '{$subject_code}', '{$lect_units}', '{$lab_units}', '{$total_units}', '{$pre_id}')";
+              $query   = "INSERT INTO subjects (subject_name, subject_code, lect_units, lab_units, total_units,pre_id, type, active) VALUES ('{$subject_name}', '{$subject_code}', '{$lect_units}', '{$lab_units}', '{$total_units}', '{$pre_id}', '{$subject_type}', 1)";
               $result = mysqli_query($connection, $query);
 
             if ($result === TRUE) {

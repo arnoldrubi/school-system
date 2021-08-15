@@ -19,6 +19,9 @@
         if (isset($_GET["error"])) {
           $errormsg = urldecode($_GET["error"]);
         }
+        if (isset($_GET["subject_added"])) {
+          $savedmsg = urldecode($_GET["subject_added"]);
+        }
         if ($course_id == NULL) {
           redirect_to("view-courses.php");
        }
@@ -91,6 +94,14 @@
               if (isset($errormsg)) {
                 echo "<div class=\"alert alert-warning alert-dismissible fade show\" role=\"alert\">
                   <strong>Adding of subject failed!</strong> Total units for this course is over the allowed max units.
+                  <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
+                    <span aria-hidden=\"true\">&times;</span>
+                  </button>
+                </div>";
+              }
+              if (isset($savedmsg) && $savedmsg == 1) {
+                echo "<div class=\"alert alert-success alert-dismissible fade show\" role=\"alert\">
+                  <strong>Subject has been added.
                   <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\">
                     <span aria-hidden=\"true\">&times;</span>
                   </button>
@@ -171,7 +182,7 @@
             echo "<script>location.href='$URL'</script>";
           }
           else{
-              $query  = "SELECT * FROM subjects WHERE subject_id NOT IN (".implode( ", ", $subject_items ).") ORDER BY subject_name";
+              $query  = "SELECT * FROM subjects WHERE active=1 AND subject_id NOT IN (".implode( ", ", $subject_items ).") ORDER BY subject_name";
               $result = mysqli_query($connection, $query);
 
             while($row = mysqli_fetch_assoc($result))

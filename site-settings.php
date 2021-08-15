@@ -121,12 +121,18 @@
                 <div class="col-md-2">
                   <select id="current-school-yr" name="active_sy" class="form-control">
                    <?php
-                      $query_sy  = "SELECT * FROM school_yr ORDER BY id DESC LIMIT 1";
+                      $current_sy = return_current_sy($connection, "");
+                      $query_sy  = "SELECT * FROM school_yr ORDER BY id DESC";
                       $result_sy = mysqli_query($connection, $query_sy);
 
                       while($row_sy = mysqli_fetch_assoc($result_sy))
                         {
-                          echo "<option selected>".$row_sy['school_yr']."</option>";
+                          if ($current_sy == $row_sy['school_yr']) {
+                            echo "<option selected>".$row_sy['school_yr']."</option>";
+                          }
+                          else{
+                            echo "<option>".$row_sy['school_yr']."</option>";
+                          }
                         }
 
                    ?>

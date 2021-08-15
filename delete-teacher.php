@@ -22,10 +22,10 @@
     echo "<script>location.href='$URL'</script>";
   }
   else{
-    $query  = "DELETE FROM teachers WHERE teacher_id = {$teacher_id} LIMIT 1";
+    $query  = "UPDATE teachers SET active = 0 WHERE teacher_id = {$teacher_id} LIMIT 1";
     $result = mysqli_query($connection, $query);
 
-    $query  = "DELETE FROM users WHERE teacher_id = {$teacher_id} LIMIT 1";
+    $query  = "UPDATE users SET active = 0 WHERE teacher_id = {$teacher_id} LIMIT 1";
     $result = mysqli_query($connection, $query);
 
 
@@ -33,7 +33,7 @@
 
     if ($result === TRUE) {
       echo "<script type='text/javascript'>";
-      echo "alert('Delete teacher info successful!');";
+      echo "alert('Teacher set to inactive!');";
       echo "</script>";
 
       $URL="view-teachers.php";

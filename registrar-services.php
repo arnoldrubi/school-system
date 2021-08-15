@@ -46,7 +46,7 @@
                 </div>
                 <div class="mr-5">Transfer of Credits</div>
               </div>
-              <a class="card-footer text-white clearfix small z-1" href="request-transfer-of-credits.php">
+              <a class="card-footer text-white clearfix small z-1" href="view-toc.php">
                 <span class="float-left">Transfer of Credits</span>
                 <span class="float-right">
                   <i class="fa fa-angle-right"></i>
