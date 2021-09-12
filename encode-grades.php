@@ -87,8 +87,10 @@
             }
                   
             ?>
-            <form action="<?php echo $form_url;?>" method="post">
+            <form id="grades-form" action="<?php echo $form_url;?>" method="post" onsubmit="return postSubmit()";>
             <?php
+
+            $grade_values = array("N/A", "5.00","3.00","2.75","2.50","2.25","2.00","1.75","1.50","1.25","1.00");
 
               echo "<table id=\"table-grades\" class=\"table table-striped table-bordered dataTable\">";
               echo " <thead>";
@@ -107,7 +109,7 @@
               
               $remarks_value = 0;
 
-              $query = "SELECT student_grades.stud_reg_id, student_grades.prelim, student_grades.midterm, student_grades.semis, student_grades.finals, student_grades.final_grade,student_grades.remarks, student_grades.grade_posted,students_reg.first_name, students_reg.middle_name, students_reg.last_name FROM student_grades INNER JOIN students_reg ON student_grades.stud_reg_id = students_reg.stud_reg_id WHERE student_grades.subject_id ='".$subject_id."' AND student_grades.sec_id ='".$section."' AND term='".$term."' AND school_yr='".$school_yr."' ORDER BY students_reg.last_name";
+              $query = "SELECT student_grades.stud_reg_id, student_grades.prelim, student_grades.midterm, student_grades.semis, student_grades.finals, student_grades.final_grade,student_grades.remarks, student_grades.grade_posted,students_reg.first_name, students_reg.middle_name, students_reg.last_name FROM student_grades INNER JOIN students_reg ON student_grades.stud_reg_id = students_reg.stud_reg_id WHERE student_grades.subject_id ='".$subject_id."' AND student_grades.sec_id ='".$section."' AND student_grades.term='".$term."' AND student_grades.school_yr='".$school_yr."' AND student_grades.teacher_id='".$teacher_id."' ORDER BY students_reg.last_name";
               
               $result = mysqli_query($connection, $query);
 
@@ -128,14 +130,38 @@
                 $remarks_value = "";
                 $extra_class_jquery = "allowed";
               }
-              echo "<tr>";
-                echo "<td><input class=\"student-id-box\" type=\"number\" name=\"stud_reg_id[]\" min=\"1\" style=\"display: none\" max=\"100\" value=\"".$row['stud_reg_id']."\"><input class=\"student-id-box\" type=\"text\" disabled name=\"stud_id[]\" value=\"".get_student_number($row['stud_reg_id'],$connection)."\"></td>";
+                echo "<tr>";
+                echo "<td>";
+                echo"<input class=\"student-id-box\" type=\"number\" name=\"stud_reg_id[]\" min=\"1\" style=\"display: none\" max=\"100\" value=\"".$row['stud_reg_id']."\"><input class=\"student-id-box\" type=\"text\" disabled name=\"stud_id[]\" value=\"".get_student_number($row['stud_reg_id'],$connection)."\"></td>";
                 echo "<td>".$row['last_name'].", ".$row['first_name'].", ".substr($row['middle_name'], 0,1).".</td>";
-                echo "<td><input class=\"grade-box ".$extra_class_jquery."\" step=\".25\" type=\"number\" maxlength =\"3\" name=\"prelim[]\" min=\"1\" max=\"5\" ".$lock_grade." value=\"".$row['prelim']."\"></td>";
-                echo "<td><input class=\"grade-box ".$extra_class_jquery."\" step=\".25\" type=\"number\" maxlength =\"3\" name=\"midterm[]\" min=\"1\" max=\"5\" ".$lock_grade." value=\"".$row['midterm']."\"></td>";
-                echo "<td><input class=\"grade-box ".$extra_class_jquery."\" step=\".25\" type=\"number\" maxlength =\"3\" name=\"semis[]\" min=\"1\" max=\"5\" ".$lock_grade." value=\"".$row['semis']."\"></td>";
-                echo "<td><input class=\"grade-box ".$extra_class_jquery."\" step=\".25\" type=\"number\" maxlength =\"3\" name=\"finals[]\" min=\"1\" max=\"5\" ".$lock_grade." value=\"".$row['finals']."\"></td>";
+                echo "<td>";
+                echo" <select name=\"prelim[]\" class=\"grade-box ".$extra_class_jquery."\" ".$lock_grade." aria-label=\"Default select example\">";
+                
+                loadDropdownValues($grade_values,$row['prelim']);
 
+                echo "</select>";
+                echo "</td>";
+                echo "<td>";
+                echo" <select name=\"midterm[]\" class=\"grade-box ".$extra_class_jquery."\" ".$lock_grade." aria-label=\"Default select example\">";
+                
+                loadDropdownValues($grade_values,$row['midterm']);
+
+                echo "</select>";
+                echo "</td>";
+                echo "<td>";
+                echo" <select name=\"semis[]\" class=\"grade-box ".$extra_class_jquery."\" ".$lock_grade." aria-label=\"Default select example\">";
+                
+                loadDropdownValues($grade_values,$row['semis']);
+
+                echo "</select>";
+                echo "</td>";
+                echo "<td>";
+                echo" <select name=\"finals[]\" class=\"grade-box ".$extra_class_jquery."\" ".$lock_grade." aria-label=\"Default select example\">";
+                
+                loadDropdownValues($grade_values,$row['finals']);
+
+                echo "</select>";
+                echo "</td>";
                 echo "<td><input class=\"final-computed-grade\" step=\".25\" maxlength =\"3\" type=\"number\" name=\"final_grade[]\"  min=\"0.00\" max=\"5.00\" readonly value=\"".$row['final_grade']."\"></td>";
 
                 echo "<td>";
@@ -198,7 +224,7 @@
           ?>
 
             <center>
-                   <?php echo "<a id=\"preview-print\" style=\"color: #fff;\" class=\"btn btn-primary hidden-print\" href=\"preview-print-grades-all.php?subject_id=".$subject_id."&term=".urlencode($term)."&course_id=".urlencode($course_id)."&year=".urlencode($year)."&section=".urlencode($section)."&teacher_id=".urlencode($teacher_id)."\"><i class=\"fa fa-table\" aria-hidden=\"true\"></i> Preview Summary</a>";
+                   <?php echo "<a id=\"preview-print\" style=\"color: #fff;\" class=\"btn btn-primary hidden-print\" href=\"preview-print-grades-all.php?subject_id=".$subject_id."&term=".urlencode($term)."&course_id=".urlencode($course_id)."&year=".urlencode($year)."&section=".urlencode($section)."&teacher_id=".urlencode($teacher_id)."&school_yr=".urlencode($school_yr)."&term=".urlencode($term)."\"><i class=\"fa fa-table\" aria-hidden=\"true\"></i> Preview Summary</a>";
                    ?>
 <!--                    <button id="excel-export" style="color: #fff;"  onclick="exportTableToExcel('table-grades','students-grades')" class="btn btn-success hidden-print"><i class="fa fa-table" aria-hidden="true"></i> Export to Excel</button> -->
             </center><br>     
@@ -272,21 +298,16 @@ $(document).ready(function(){
 
   //bunch of scripts for computing the grades real time
   $(".grade-box").change(function(){
-    if ($(this).val()>5 || $(this).val()<0 ) {
-      alert ("Error! Values should not be greater than or quals to 0 not lower than or equals to 5.");
-      $(this).val(0);
-      $(this).focus();
-    }
-    var prelim = parseFloat($(this).closest("tr").find("input[name='prelim[]']").val());
-    var midterm = parseFloat($(this).closest("tr").find("input[name='midterm[]']").val());
-    var semis = parseFloat($(this).closest("tr").find("input[name='semis[]']").val());
-    var finals = parseFloat($(this).closest("tr").find("input[name='finals[]']").val());
+    var prelim = parseFloat($(this).closest("tr").find("select[name='prelim[]']").val());
+    var midterm = parseFloat($(this).closest("tr").find("select[name='midterm[]']").val());
+    var semis = parseFloat($(this).closest("tr").find("select[name='semis[]']").val());
+    var finals = parseFloat($(this).closest("tr").find("select[name='finals[]']").val());
     var raw_computed_grades = (prelim + midterm + semis + finals) / 4;
     var computed_grades = roundOffGrade(raw_computed_grades,0);
 
     $(this).closest("tr").find(".final-computed-grade").val(computed_grades.toFixed(2));
-
-    if (parseFloat(computed_grades) <= 3.50 && computed_grades != "") {
+// fix the assignment of pass and fail 
+    if (parseFloat(computed_grades) <= 3.50 && parseFloat(computed_grades) >= 1 && computed_grades != "") {
       $(this).closest("tr").find(".remarks").val("Passed");
       $(this).closest("tr").find(".MarkIncomplete").prop("checked",false);
     }
@@ -297,35 +318,55 @@ $(document).ready(function(){
     else if($(this).closest("tr").find(".final-computed-grade") == ""){
       $(this).closest("tr").find(".remarks").val("");
     }
+    else{
+      $(this).closest("tr").find(".remarks").val("");
+    }
 
   });
 
   //automatically do some scripts and changes when a student is marked as incomplete
 
-
- 
-
   $( ".MarkIncomplete" ).click(function() {
     if ($(this).closest("tr").find(".remarks").val() !== "Incomplete") {
       $(this).closest("tr").find(".remarks").val("Incomplete");
-      $(this).closest("tr").find(".grade-box, .final-computed-grade").val("");
+      $(this).closest("tr").find(".grade-box option[value='N/A']").attr('selected', 'selected');
+      $(this).closest("tr").find(".grade-box option[value='N/A']").prop('selected', 'selected');
+      $(this).closest("tr").find(".final-computed-grade").val("");
       $(this).closest("tr").find(".allowed").removeClass( "allowed" ).addClass( "incomplete" );
     }
-    else{
+    else if ($(this).closest("tr").find(".remarks").val() == "Incomplete"){
       $(this).closest("tr").find(".remarks").val("");
-      $(this).closest("tr").find(".grade-box").val("");
+      $(this).closest("tr").find(".grade-box option[value='N/A']").attr('selected', 'selected');
+      $(this).closest("tr").find(".grade-box option[value='N/A']").prop('selected', 'selected');
       $(this).closest("tr").find(".incomplete").removeClass( "incomplete" ).addClass( "allowed" );
     }
-
   });
 
 });
-  $("#post-grades").click(function() {
-    $(".grade-box").each(function(i, obj) {     
-         $(".allowed").prop("required", true);
-         $(".incomplete").prop("required", false);    
-    });
 
+$("#post-grades").click(function(e){
+
+  $(".grade-box").each(function(i, obj) {     
+       // $(".allowed").prop("required", true);
+       // $(".incomplete").prop("required", false);
+       if ($(this).val() == "N/A" && $(this).closest("tr").find(".remarks").val() !== "Incomplete") {
+        e.preventDefault();
+        alert("Grades must be inputted before posting");
+        exit();        
+       }    
   });
+});
+
+  // $("#post-grades").click(function() {
+  //   $(".grade-box").each(function(i, obj) {     
+  //        // $(".allowed").prop("required", true);
+  //        // $(".incomplete").prop("required", false);
+  //        if ($(this).val() == "N/A" && $(this).closest("tr").find(".remarks").val() !== "Incomplete") {
+  //         alert("Grades must be inputted before posting");
+  //         return false;
+  //        }    
+  //   });
+
+  // });
   
 </script>

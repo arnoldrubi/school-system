@@ -70,16 +70,16 @@
                 {
 
                 echo "<tr>";
-                echo "<td>".$row['subject_desc']."</td>";
                 echo "<td>".$row['subject_name']."</td>";
+                echo "<td>".$row['subject_desc']."</td>";
                 echo "<td>".get_subject_name($row['equivalent_subject_id'],"",$connection)."</td>";
                 echo "<td>".get_subject_code($row['equivalent_subject_id'],"",$connection)."</td>";
                 echo "<td>".$row['school_name']."</td>";
                 echo "<td>".$row['year_taken']."</td>";
                 echo "<td>".$row['term_taken']."</td>";
                 echo "<td>".$row['final_grade']."</td>";
-                echo "<td class=\"options-td\"><a class=\"btn btn-warning btn-xs a-modal\" title=\"Edit\" href=\"edit-transfer-of-credits?id=".$row['id']."\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a> ";
-                echo "<a title=\"Delete\" class=\"btn btn-danger btn-xs a-modal\" href=\"delete-toc.php?id=".$row['id']."\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a></td>";
+                echo "<td class=\"options-td\"><a class=\"btn btn-warning btn-xs a-modal\" title=\"Edit\" href=\"edit-transfer-of-credits.php?id=".$row['id']."\"><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></a> ";
+                echo "<a title=\"Delete\" class=\"btn btn-danger btn-xs a-modal\" href=\"javascript:confirmDelete2('delete-toc.php?id=".$row['id']."&stud_reg_id=".$stud_reg_id."')\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a></td>";
                 echo "</tr>";
                 }
 

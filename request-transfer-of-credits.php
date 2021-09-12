@@ -182,7 +182,7 @@
     $final_grade = mysql_prep($_POST["final_grade"]);
     $equivalent_subject_id = (int) $_POST["subject_id"];
 
-    $query   = "INSERT INTO transfer_of_credits (stud_reg_id, student_number, subject_desc, subject_name, school_name, term_taken, year_taken, equivalent_subject_id, final_grade) VALUES ('{$student_reg_id}', '{$student_number}', '{$subject_desc}', '{$subject_name}', '{$school_name}', '{$term_taken}', '{$school_yr_taken}', '{$equivalent_subject_id}', '{$final_grade}')";
+    $query   = "INSERT INTO transfer_of_credits (stud_reg_id, student_number, subject_desc, subject_name, school_name, term_taken, year_taken, equivalent_subject_id, final_grade, units) VALUES ('{$student_reg_id}', '{$student_number}', '{$subject_desc}', '{$subject_name}', '{$school_name}', '{$term_taken}', '{$school_yr_taken}', '{$equivalent_subject_id}', '{$final_grade}','{$units}')";
     $result = mysqli_query($connection, $query);
 
   if ($result === TRUE) {

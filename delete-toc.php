@@ -3,8 +3,9 @@
 
 <?php 
 
-  if (isset($_GET['id'])) {    
+  if (isset($_GET['id']) && isset($_GET['stud_reg_id'])) {    
     $id = $_GET['id'];
+    $stud_reg_id = $_GET['stud_reg_id'];
 
     $query  = "DELETE FROM transfer_of_credits WHERE id=".$id." LIMIT 1";
     $result = mysqli_query($connection, $query);
@@ -16,7 +17,7 @@
       echo "alert('Delete TOC data successful!');";
       echo "</script>";
 
-      $URL="view-toc.php";
+      $URL="manage-toc.php?stud_reg_id=".$stud_reg_id;
       echo "<script>location.href='$URL'</script>";
     } else {
       echo "Error updating record: " . $connection->error;

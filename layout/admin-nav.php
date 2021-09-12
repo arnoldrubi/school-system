@@ -66,7 +66,9 @@
             <?php 
               if ($_SESSION["role"] == "administrator" || $_SESSION["role"] == "registrar") {
                echo "<a class=\"dropdown-item\" href=\"user-account.php\">My Account</a>";
-               echo "<a class=\"dropdown-item\" href=\"view-users.php\">Manage Users</a>";
+               if ($_SESSION["role"] == "administrator") {
+                 echo "<a class=\"dropdown-item\" href=\"view-users.php\">Manage Users</a>";
+               }              
               }
               elseif ($_SESSION["role"] == "faculty") {
                echo "<a class=\"dropdown-item\" href=\"faculty-account.php\">My Account</a>";
@@ -75,6 +77,12 @@
             ?>
             <!-- <a class="dropdown-item" href="#">Activity Log</a> I will put the submitted grades notifications here-->
             <div class="dropdown-divider"></div>
+            
+            <?php
+              if ($_SESSION["role"] == "administrator") {
+                echo "<a class=\"dropdown-item\" href=\"user-logs.php\">Users' Logs</a>";
+              }
+            ?>            
             <a class="dropdown-item" href="logout.php">Logout</a>
           </div>
       </li>

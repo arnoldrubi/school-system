@@ -227,7 +227,7 @@
                     echo "<td>".get_teacher_name($row3['teacher_id'],"",$connection)."</td>";             
                     echo "<td>".get_subject_total_unit($row3['subject_id'],"",$connection)."</td>";
                     echo "<td>".$row3['students_enrolled']."/".$row3['student_limit']."</td>";
-                    echo "<td class=\"subject-wrap options-td\"><a class=\"".get_subject_total_unit($row3['subject_id'],"",$connection)."-".get_subject_code($row3['subject_id'],"",$connection)." add-subject btn btn-success btn-sm\" id=\"".$row3['class_id']."\""." href=\"add-subject-to-irreg.php?regid=".$stud_reg_id."&student_num=".urlencode($student_num)."&classid=".$row3['class_id']."&year=".urlencode($year)."&term=".urlencode($term)."&sy=".urlencode($sy)."&course=".$course."&teacherid=".$row3['teacher_id']."\">Add Subject</a> </td>";
+                    echo "<td class=\"subject-wrap options-td\"><a class=\"".get_subject_total_unit($row3['subject_id'],"",$connection)."-".get_subject_code($row3['subject_id'],"",$connection)." add-subject btn btn-success btn-sm\" id=\"".$row3['class_id']."\""." href=\"add-subject-to-irreg.php?regid=".$stud_reg_id."&student_num=".urlencode($student_num)."&classid=".$row3['class_id']."&subject_id=".$row3['subject_id']."&year=".urlencode($year)."&term=".urlencode($term)."&sy=".urlencode($sy)."&course=".$course."&teacherid=".$row3['teacher_id']."\">Add Subject</a> </td>";
                     echo "</tr>";
                     }
 
@@ -267,7 +267,7 @@
                     echo "<td>".get_teacher_name($row_general_elective['teacher_id'],"",$connection)."</td>";             
                     echo "<td>".get_subject_total_unit($row_general_elective['subject_id'],"",$connection)."</td>";
                     echo "<td>".$row_general_elective['students_enrolled']."/".$row_general_elective['student_limit']."</td>";
-                    echo "<td class=\"subject-wrap options-td\"><a class=\"".get_subject_total_unit($row_general_elective['subject_id'],"",$connection)."-".get_subject_code($row_general_elective['subject_id'],"",$connection)." add-subject btn btn-success btn-sm\" id=\"".$row_general_elective['class_id']."\""." href=\"add-subject-to-irreg.php?regid=".$stud_reg_id."&student_num=".urlencode($student_num)."&classid=".$row_general_elective['class_id']."&year=".urlencode($year)."&term=".urlencode($term)."&sy=".urlencode($sy)."&course=".$course."&teacherid=".$row_general_elective['teacher_id']."\">Add Subject</a> </td>";
+                    echo "<td class=\"subject-wrap options-td\"><a class=\"".get_subject_total_unit($row_general_elective['subject_id'],"",$connection)."-".get_subject_code($row_general_elective['subject_id'],"",$connection)." add-subject btn btn-success btn-sm\" id=\"".$row_general_elective['class_id']."\""." href=\"add-subject-to-irreg.php?regid=".$stud_reg_id."&student_num=".urlencode($student_num)."&classid=".$row_general_elective['class_id']."&subject_id=".$row_general_elective['subject_id']."&year=".urlencode($year)."&term=".urlencode($term)."&sy=".urlencode($sy)."&course=".$course."&teacherid=".$row_general_elective['teacher_id']."\">Add Subject</a> </td>";
                     echo "</tr>";
                     } 
 

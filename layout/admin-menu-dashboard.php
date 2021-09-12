@@ -57,18 +57,19 @@ if ($_SESSION["role"] == "administrator" || $_SESSION["role"] == "registrar") {
   echo "<span class=\"float-left\">Go to Students' Grades</span>";              
   echo "<span class=\"float-right\">";                
   echo "<i class=\"fa fa-angle-right\"></i></span></a></div></div>";
-                
-  echo "<div class=\"col-xl-3 col-sm-6 mb-3\">";        
-  echo "<div class=\"card text-white bg-info o-hidden h-100\">";          
-  echo "<div class=\"card-body\">";            
-  echo "<div class=\"card-body-icon\">";
-  echo "<i class=\"fa fa-users\" aria-hidden=\"true\"></i></div>";        
-  echo "<div class=\"mr-5\">Users</div></div>";          
-  echo "<a class=\"card-footer text-white clearfix small z-1\" href=\"view-users.php\">";            
-  echo "<span class=\"float-left\">Manage Users</span>";              
-  echo "<span class=\"float-right\">";                
-  echo "<i class=\"fa fa-angle-right\"></i></span></a></div></div>";            
-                      
+
+  if ($_SESSION["role"] == "administrator") {         
+    echo "<div class=\"col-xl-3 col-sm-6 mb-3\">";        
+    echo "<div class=\"card text-white bg-info o-hidden h-100\">";          
+    echo "<div class=\"card-body\">";            
+    echo "<div class=\"card-body-icon\">";
+    echo "<i class=\"fa fa-users\" aria-hidden=\"true\"></i></div>";        
+    echo "<div class=\"mr-5\">Users</div></div>";          
+    echo "<a class=\"card-footer text-white clearfix small z-1\" href=\"view-users.php\">";            
+    echo "<span class=\"float-left\">Manage Users</span>";              
+    echo "<span class=\"float-right\">";                
+    echo "<i class=\"fa fa-angle-right\"></i></span></a></div></div>";            
+  }                 
                 
   echo "<div class=\"col-xl-3 col-sm-6 mb-3\">";        
   echo "<div class=\"card text-white bg-secondary o-hidden h-100\">";          
@@ -80,17 +81,22 @@ if ($_SESSION["role"] == "administrator" || $_SESSION["role"] == "registrar") {
   echo "<span class=\"float-left\">Go to Registar Services</span>";              
   echo "<span class=\"float-right\">";                
   echo "<i class=\"fa fa-angle-right\"></i></span></a></div></div>";           
-            
-  echo "<div class=\"col-xl-3 col-sm-6 mb-3\">";        
-  echo "<div class=\"card text-white bg-dark o-hidden h-100\">";          
-  echo "<div class=\"card-body\">";            
-  echo "<div class=\"card-body-icon\">";
-  echo "<i class=\"fa fa-cogs\" aria-hidden=\"true\"></i></div>";        
-  echo "<div class=\"mr-5\">Site Settings</div></div>";          
-  echo "<a class=\"card-footer text-white clearfix small z-1\" href=\"site-settings.php\">";            
-  echo "<span class=\"float-left\">Manage Settings</span>";              
-  echo "<span class=\"float-right\">";                
-  echo "<i class=\"fa fa-angle-right\"></i></span></a></div></div>";       
+  
+  if ($_SESSION["role"] == "administrator") {
+
+    echo "<div class=\"col-xl-3 col-sm-6 mb-3\">";        
+    echo "<div class=\"card text-white bg-dark o-hidden h-100\">";          
+    echo "<div class=\"card-body\">";            
+    echo "<div class=\"card-body-icon\">";
+    echo "<i class=\"fa fa-cogs\" aria-hidden=\"true\"></i></div>";        
+    echo "<div class=\"mr-5\">Site Settings</div></div>";          
+    echo "<a class=\"card-footer text-white clearfix small z-1\" href=\"site-settings.php\">";            
+    echo "<span class=\"float-left\">Manage Settings</span>";              
+    echo "<span class=\"float-right\">";                
+    echo "<i class=\"fa fa-angle-right\"></i></span></a></div></div>";   
+
+  }       
+    
 
 }
 

@@ -3,17 +3,19 @@
 <?php require_once("includes/db_connection.php"); ?>
 
 <?php 
-  if (isset($_GET['regid']) && isset($_GET['classid']) && isset($_GET['year']) && isset($_GET['term']) && isset($_GET['sy']) && isset($_GET['sy']) && isset($_GET['student_num']) ) {
+  if (isset($_GET['regid']) && isset($_GET['classid']) && isset($_GET['subject_id']) && isset($_GET['year']) && isset($_GET['term']) && isset($_GET['sy']) && isset($_GET['sy']) && isset($_GET['student_num']) ) {
     $stud_reg_id = $_GET["regid"];
     $student_num = $_GET["student_num"];
     $class_id = (int) $_GET["classid"];
     $year = urldecode($_GET["year"]);
     $term = urldecode($_GET["term"]);
     $sy = urldecode($_GET["sy"]);
-    $subject_id = get_subject_id_by_class("",$class_id,$connection);
+    $subject_id = $_GET["subject_id"];
     $teacher_id= $_GET["teacherid"];
     $course_id = $_GET["course"];
     $success = 0;
+
+    echo "Hey the orig subject is: ".$subject_id."<br>";
   }
  else{
   redirect_to('irregular-manual-enrollment.php');
@@ -56,7 +58,6 @@ else{
 
   while($row_subject_info = mysqli_fetch_assoc($result_subject_info))
   {
-    $subject_id = get_subject_id_by_class("",$row_subject_info['class_id'],$connection);
     $current_units = $current_units + get_subject_total_unit($subject_id,"",$connection);
   } 
 

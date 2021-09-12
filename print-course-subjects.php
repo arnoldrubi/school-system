@@ -112,8 +112,8 @@
                       $array_units = array();
                       $array_units = get_subject_unit_count($row['subject_id'],"",$connection);
                     echo "<tr>";
-                    echo "<td>".get_subject_name($row['subject_id'],"",$connection)."</td>";
                     echo "<td>".get_subject_code($row['subject_id'],"",$connection)."</td>";
+                    echo "<td>".get_subject_name($row['subject_id'],"",$connection)."</td>";
                     echo "<td>".$array_units[0]."</td>";
                     echo "<td>".$array_units[1]."</td>";
                     echo "<td>".$array_units[2]."</td>";
@@ -158,8 +158,8 @@
                       $array_units = array();
                       $array_units = get_subject_unit_count($row['subject_id'],"",$connection);
                     echo "<tr>";
-                    echo "<td>".get_subject_name($row['subject_id'],"",$connection)."</td>";
                     echo "<td>".get_subject_code($row['subject_id'],"",$connection)."</td>";
+                    echo "<td>".get_subject_name($row['subject_id'],"",$connection)."</td>";
                     echo "<td>".$array_units[0]."</td>";
                     echo "<td>".$array_units[1]."</td>";
                     echo "<td>".$array_units[2]."</td>";
@@ -203,8 +203,8 @@
                       $array_units = array();
                       $array_units = get_subject_unit_count($row['subject_id'],"",$connection);
                     echo "<tr>";
-                    echo "<td>".get_subject_name($row['subject_id'],"",$connection)."</td>";
                     echo "<td>".get_subject_code($row['subject_id'],"",$connection)."</td>";
+                    echo "<td>".get_subject_name($row['subject_id'],"",$connection)."</td>";
                     echo "<td>".$array_units[0]."</td>";
                     echo "<td>".$array_units[1]."</td>";
                     echo "<td>".$array_units[2]."</td>";
@@ -247,8 +247,8 @@
                       $array_units = array();
                       $array_units = get_subject_unit_count($row['subject_id'],"",$connection);
                     echo "<tr>";
-                    echo "<td>".get_subject_name($row['subject_id'],"",$connection)."</td>";
                     echo "<td>".get_subject_code($row['subject_id'],"",$connection)."</td>";
+                    echo "<td>".get_subject_name($row['subject_id'],"",$connection)."</td>";
                     echo "<td>".$array_units[0]."</td>";
                     echo "<td>".$array_units[1]."</td>";
                     echo "<td>".$array_units[2]."</td>";
@@ -291,8 +291,8 @@
                       $array_units = array();
                       $array_units = get_subject_unit_count($row['subject_id'],"",$connection);
                     echo "<tr>";
-                    echo "<td>".get_subject_name($row['subject_id'],"",$connection)."</td>";
                     echo "<td>".get_subject_code($row['subject_id'],"",$connection)."</td>";
+                    echo "<td>".get_subject_name($row['subject_id'],"",$connection)."</td>";
                     echo "<td>".$array_units[0]."</td>";
                     echo "<td>".$array_units[1]."</td>";
                     echo "<td>".$array_units[2]."</td>";
@@ -335,8 +335,8 @@
                       $array_units = array();
                       $array_units = get_subject_unit_count($row['subject_id'],"",$connection);
                     echo "<tr>";
-                    echo "<td>".get_subject_name($row['subject_id'],"",$connection)."</td>";
                     echo "<td>".get_subject_code($row['subject_id'],"",$connection)."</td>";
+                    echo "<td>".get_subject_name($row['subject_id'],"",$connection)."</td>";
                     echo "<td>".$array_units[0]."</td>";
                     echo "<td>".$array_units[1]."</td>";
                     echo "<td>".$array_units[2]."</td>";
@@ -380,8 +380,8 @@
                       $array_units = array();
                       $array_units = get_subject_unit_count($row['subject_id'],"",$connection);
                     echo "<tr>";
-                    echo "<td>".get_subject_name($row['subject_id'],"",$connection)."</td>";
                     echo "<td>".get_subject_code($row['subject_id'],"",$connection)."</td>";
+                    echo "<td>".get_subject_name($row['subject_id'],"",$connection)."</td>";
                     echo "<td>".$array_units[0]."</td>";
                     echo "<td>".$array_units[1]."</td>";
                     echo "<td>".$array_units[2]."</td>";
@@ -424,8 +424,8 @@
                       $array_units = array();
                       $array_units = get_subject_unit_count($row['subject_id'],"",$connection);
                     echo "<tr>";
-                    echo "<td>".get_subject_name($row['subject_id'],"",$connection)."</td>";
                     echo "<td>".get_subject_code($row['subject_id'],"",$connection)."</td>";
+                    echo "<td>".get_subject_name($row['subject_id'],"",$connection)."</td>";
                     echo "<td>".$array_units[0]."</td>";
                     echo "<td>".$array_units[1]."</td>";
                     echo "<td>".$array_units[2]."</td>";

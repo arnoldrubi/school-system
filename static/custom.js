@@ -3,6 +3,11 @@ function confirmDelete(delUrl) {
    document.location = delUrl;
   }
 }
+function confirmDelete2(delUrl) {
+  if (confirm("Are you sure you want to delete?")) {
+   document.location = delUrl;
+  }
+}
 function confirmAdd(addSubjectlUrl) {
   if (confirm("Add this subject?")) {
    document.location = addSubjectlUrl;

@@ -99,7 +99,7 @@
             echo "<td>".$regirreg."</td>";
             echo "<td class=\"options-td\">";
             echo "<a class=\"btn btn-success btn-xs a-modal\" title=\"Print Enrollment Form\" target=\"_blank\" href=\"print-enrollment-form.php?student_reg_id=".urlencode($stud_reg_id)."&irregular=".urlencode($row['irregular'])."\"><i class=\"fa fa-print\" aria-hidden=\"true\"></i></a>";
-            echo "<a class=\"btn btn-danger btn-xs a-modal\" title=\"Delete Enrollment Info\" href=\"javascript:confirmDelete('delete-student-enrollment.php?student_id=".$student_id."&student_reg_id=".$stud_reg_id."&course_id=".$new_course_id."&sy=".urlencode($sy)."&term=".urlencode($term)."&year=".$year."&sec_id=".urlencode($sec_id)."&irregular=".urlencode($row['irregular'])."')\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a></td>";
+            echo "<a class=\"btn btn-danger btn-xs a-modal\" title=\"Delete Enrollment Info\" href=\"javascript:confirmDelete2('delete-student-enrollment.php?student_id=".$student_id."&student_reg_id=".$stud_reg_id."&course_id=".$new_course_id."&sy=".urlencode($sy)."&term=".urlencode($term)."&year=".$year."&sec_id=".urlencode($sec_id)."&irregular=".urlencode($row['irregular'])."')\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i></a></td>";
             echo "</tr>";
             }
 

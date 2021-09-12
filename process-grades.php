@@ -97,7 +97,7 @@ if (isset($_POST['post'])) {
   }
 
   if ($result === TRUE) {
-      redirect_to("encode-grades.php?subject_id=".$subject_id."&term=".urlencode($term)."&school_yr=".urlencode($school_yr)."&course_id=".urlencode($course_id)."&year=".urlencode($year)."&section=".urlencode($section)."&teacher_id=".urlencode($row['teacher_id'])."&grade_posted=1");
+      redirect_to("encode-grades.php?subject_id=".$subject_id."&term=".urlencode($term)."&school_yr=".urlencode($school_yr)."&course_id=".urlencode($course_id)."&year=".urlencode($year)."&section=".urlencode($section)."&teacher_id=".urlencode($teacher_id)."&grade_posted=1");
 
   } else {
       echo "Error updating record: " . $connection->error."<br>";

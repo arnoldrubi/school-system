@@ -8,9 +8,10 @@
   if (isset($_GET['subject_id'])) {
     $subject_id = $_GET["subject_id"];
     $term = $_GET["term"];
+    $school_yr = $_GET["school_yr"];
     $year = $_GET["year"];
     $course_id = $_GET["course_id"];
-    $sec_id = $_GET["section"];
+    $section = $_GET["section"];
     $teacher_id = $_GET["teacher_id"];
   }
   else{
@@ -19,16 +20,6 @@
   if ($subject_id == NULL) {
     redirect_to("admin-dashboard.php");
   }
-
-  $query = "SELECT * FROM subjects WHERE subject_id ='".$subject_id."'";
-
-  $result = mysqli_query($connection, $query);
-
-  while($row = mysqli_fetch_assoc($result))
-        {    
-         $subject_name = $row['subject_name'];
-         $subject_code = $row['subject_code'];
-        }
 ?>
 
 <style type="text/css">
@@ -46,7 +37,7 @@
       echo "<p>".get_subject_code($subject_id,"",$connection)." (".get_subject_name($subject_id,"",$connection).")</p>";
       echo "<p>Teacher: ".get_teacher_name($teacher_id,"",$connection)."</p>";
       echo "<p>".get_course_code($course_id,"",$connection).",".$year.", ".$term."</p>";
-      echo "<p>Section:".get_section_name($sec_id,"",$connection)."</p>";
+      echo "<p>Section:".get_section_name($section,"",$connection)."</p>";
 
     ?>
   </div>
@@ -71,10 +62,9 @@
         echo "  </tr></thead><tbody>";
 
 
-        $query = "SELECT student_grades.stud_reg_id, student_grades.prelim, student_grades.midterm, student_grades.semis, student_grades.finals, student_grades.final_grade,student_grades.remarks, students_reg.first_name, students_reg.middle_name, students_reg.last_name FROM student_grades INNER JOIN students_reg ON student_grades.stud_reg_id = students_reg.stud_reg_id WHERE student_grades.subject_id ='".$subject_id."' AND student_grades.sec_id ='".$sec_id."' AND student_grades.grade_posted=1 ORDER BY students_reg.last_name";
+        $query = "SELECT student_grades.stud_reg_id, student_grades.prelim, student_grades.midterm, student_grades.semis, student_grades.finals, student_grades.final_grade,student_grades.remarks, student_grades.grade_posted, students_reg.first_name, students_reg.middle_name, students_reg.last_name FROM student_grades INNER JOIN students_reg ON student_grades.stud_reg_id = students_reg.stud_reg_id WHERE student_grades.subject_id = ".$subject_id." AND student_grades.sec_id = ".$section." AND student_grades.grade_posted= '1' ORDER BY students_reg.last_name";
 
         $result = mysqli_query($connection, $query);
-
 
       while($row = mysqli_fetch_assoc($result))
         {

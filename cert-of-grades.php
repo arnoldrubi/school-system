@@ -161,8 +161,8 @@ else{
 									while($row_student_credited_subjects = mysqli_fetch_assoc($result_student_credited_subjects))
 									{
 										echo "<tr>";
-										echo "<td>".$row_student_credited_subjects['subject_desc']."</td>";
 										echo "<td>".$row_student_credited_subjects['subject_name']."</td>";
+										echo "<td>".$row_student_credited_subjects['subject_desc']."</td>";
 										echo "<td>".$row_student_credited_subjects['school_name']."</td>";
 										echo "<td>".$row_student_credited_subjects['term_taken']."</td>";
 										echo "<td>".$row_student_credited_subjects['year_taken']."</td>";

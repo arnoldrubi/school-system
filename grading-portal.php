@@ -75,7 +75,7 @@
               
               
 
-              $query  = "SELECT DISTINCT course_id,subject_id, year, term, sec_id, teacher_id, grade_posted FROM student_grades WHERE term='".return_current_term($connection,"")."' AND school_yr='".return_current_sy($connection,"")."'";
+              $query  = "SELECT DISTINCT course_id,subject_id, year, term, sec_id, teacher_id FROM student_grades WHERE term='".return_current_term($connection,"")."' AND school_yr='".return_current_sy($connection,"")."'";
               $result = mysqli_query($connection, $query);
 
             while($row = mysqli_fetch_assoc($result))
@@ -83,7 +83,7 @@
               echo "<tr>";
 
               $subject_id = $row['subject_id'];
-              $grade_posted = $row['grade_posted'];
+              // $grade_posted = $row['grade_posted'];
 
               $query2 = "SELECT subject_name, subject_code FROM subjects WHERE subject_id='".$subject_id."'";
               $result2 = mysqli_query($connection, $query2);
@@ -108,12 +108,12 @@
               else{
               echo "<td>".get_teacher_name($row['teacher_id'],"",$connection)."</td>"; 
              }
-             if ($grade_posted == 1) {
-               echo "<td>Posted</td>";
-             }
-             else{
-               echo "<td>Pending</td>";
-             }
+             // if ($grade_posted == 1) {
+               echo "<td>&nbsp;</td>";
+             // }
+             // else{
+               // echo "<td>Pending</td>";
+             // }
              
               echo "<td class=\"options-td\"><a class=\"btn btn-success btn-xs a-modal\" href=\"encode-grades.php?subject_id=".$subject_id."&term=".urlencode($row['term'])."&school_yr=".urlencode(return_current_sy($connection,""))."&course_id=".urlencode($row['course_id'])."&year=".urlencode($row['year'])."&section=".urlencode($row['sec_id'])."&teacher_id=".urlencode($row['teacher_id'])."\">Encode Grades</a></td>";
               echo "</tr>";

@@ -65,6 +65,14 @@ if (isset($_POST['submit'])) {
 
 // end codes for user token
 
+// insert codes here for the user log
+    $userIPaddress = getIPAddress();
+
+    $query = "INSERT INTO user_logs (user_id, ip_address, time_logged_in) VALUES ('{$_SESSION["user_id"]}', '{$userIPaddress}', '{$timestamp}')";
+    $result = mysqli_query($connection, $query);
+
+// end codes for user log
+
     if ($_SESSION["role"] == "faculty") {
       redirect_to("faculty-dashboard.php");
     }

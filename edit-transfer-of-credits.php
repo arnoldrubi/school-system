@@ -100,7 +100,7 @@
               <label class="col-md-2 col-form-label" for="NameExt">Units</label>  
               <div class="col-md-1">
               <?php
-                echo "<input id=\"units\" name=\"units\" type=\"text\" value=\"".$units."\" class=\"form-control\">";
+                echo "<input id=\"units\" required name=\"units\" type=\"text\" value=\"".$units."\" class=\"form-control\">";
               ?>
               </div>
             </div>
