@@ -1,18 +1,7 @@
-<?php include 'layout/header.php';?>
+<?php require_once("includes/session.php"); ?>
+<?php require_once("includes/functions.php"); ?>
 <?php require_once("includes/db_connection.php"); ?>
-
-<?php 
-      if (isset($_GET['schedule_id'])) {
-          $schedule_id = $_GET["schedule_id"]; //Refactor this validation later
-        }
-        else{
-          $schedule_id = NULL;
-        }
-        if ($schedule_id == NULL) {
-          redirect_to("view-schedule.php");
-       }
-
-?>
+<?php include 'layout/header.php';?>
 
   <title>Edit Schedule</title>
   </head>
@@ -20,6 +9,17 @@
   <body>
 
   <?php include 'layout/admin-nav.php';?>
+
+  <?php 
+    if (isset($_GET['schedule_id'])) {
+      $schedule_id = $_GET["schedule_id"];
+      $term = $_GET["term"];
+      $school_yr = $_GET["school_yr"];  
+    }
+    else{
+      redirect_to("classes.php");
+    }
+  ?>
 
   <div id="wrapper">
 
@@ -36,292 +36,250 @@
         <li class="breadcrumb-item">
           <a href="view-schedule.php">View All Schedule</a>
         </li>
-        <li class="breadcrumb-item active">
-         Edit Schedule Block
+        <li class="breadcrumb-item">
+          <a href="new-group-schedule.php">Scheduling Dashboard</a>
+        </li>
+        <li class="breadcrumb-item">
+         Show Schedule for Class
+        </li>
+        <li class="breadcrumb-item">
+         Edit Schedule
         </li>
       </ol>
       <div class="card mb-3">
         <div class="card-header">
-          <i class="fa fa-pencil-square-o"></i>
-          Edit Schedule</div>
+          <i class="fa fa-plus-square"></i>
+          New Schedule</div>
           <div class="card-body">
-           <form class="form-horizontal" action="" method="post" >
+           <form action="" class="form-horizontal" method="post" >
+            <h4>Basic Course Info</h4>
             <?php
+              echo "<div class=\"form-group row\">";
+              echo "<label class=\"col-md-2 col-form-label\" for=\"Course\">Course</label>";
+              
+             $query  = "SELECT * FROM schedule_block WHERE schedule_id=".$schedule_id." LIMIT 1";
+             $result = mysqli_query($connection, $query);
 
-              $query  = "SELECT * FROM schedule_block WHERE schedule_id = ".$schedule_id;
-              $result = mysqli_query($connection, $query);
-
-              if (mysqli_num_rows($result) < 1) {
-                    echo "<script type='text/javascript'>";
-                    echo "alert('No record exists!');";
-                    echo "</script>";
-
-                    $URL="view-schedule.php";
-                    echo "<script>location.href='$URL'</script>";
-
-              }
-              while($row = mysqli_fetch_assoc($result))
+             while($row = mysqli_fetch_assoc($result))
               {
-                $current_course_id = $row['course_id'];
-                $current_subject_id = $row['subject_id'];
-                $year = $row['year'];
-                $term = $row['term'];
-                $sy = $row['school_yr'];
                 $class_id = $row['class_id'];
+                $section_name = get_section_name(get_section_name_by_class($class_id,"",$connection),"",$connection);
+                $course_id = $row['course_id'];
+                $subject_id = $row['subject_id'];
                 $teacher_id = $row['teacher_id'];
-                $teacher = get_teacher_name($row['teacher_id'],"",$connection);
-              }
-                $course_code = get_course_code($current_course_id,"",$connection);
-
-              $query_class_info  = "SELECT * FROM classes WHERE class_id = ".$class_id;
-              $result_class_info = mysqli_query($connection, $query_class_info);
-
-              while($row_class_info = mysqli_fetch_assoc($result_class_info))
-              {
-                $max_students = $row_class_info['student_limit'];
-                $sec_id = $row_class_info['sec_id'];
-
-                $section = get_section_name($sec_id,"",$connection);
-              }
-
-            ?>
-
-            <div class="form-group row">
-              <label class="col-md-2 col-form-label" for="Course">Course</label>
-              <div class="col-md-4">
-                <input id="course-name" name="course" disabled="" type="text" value="<?php echo $course_code; ?>" class="form-control input-md" required="">
-              </div>
-              <label class="col-md-2 col-form-label" for="School Year">School Year</label>
-              <div class="col-md-4">
-                <?php
-                  echo  "<input id=\"sy\" name=\"sy\" disabled type=\"text\" value=\"".$sy."\"  class=\"form-control input-md\" required=\"\">";
-                ?>
-              </div>
-            </div>
-            <div class="form-group row">
-              <label class="col-md-2 col-form-label" for="Year">Year</label>
-              <div class="col-md-4">
-                <?php
-                  echo  "<input id=\"year\" name=\"year\" disabled type=\"text\" value=\"".$year."\"  class=\"form-control input-md\" required=\"\">";
-                ?>
-              </div>
-              <label class="col-md-2 col-form-label" for="Term">Term</label>
-              <div class="col-md-4">
-                <?php
-                  echo  "<input id=\"term\" name=\"term\" disabled type=\"text\" value=\"".$term."\"  class=\"form-control input-md\" required=\"\">";
-                ?>
-              </div>
-            </div>
-            <hr>
-            <h4>Schedule Info</h4>
-            <?php
-                echo "<div class=\"form-group row\">";
-                echo "<label class=\"col-md-2 col-form-label\" for=\"Subject\">Subject</label> ";
-                echo "<div class=\"col-md-4\">";
-                echo "<select class=\"form-control\" required name=\"subject\">";
-                echo  "<option value=".$current_subject_id." required selected=\"selected\">".get_subject_code($current_subject_id,"",$connection)."</option>";
-               echo "</select></div>";
-
-               echo "<label class=\"col-md-2 col-form-label\" for=\"Room\">Room</label>";
-               echo "<div class=\"col-md-4\">";
-               echo "<select class=\"form-control\" name=\"room\">";
-
-              $query2  = "SELECT room FROM schedule_block WHERE schedule_id = ".$schedule_id;
-              $result2 = mysqli_query($connection, $query2);
-
-              while($row = mysqli_fetch_assoc($result2))
-                {
-                  $current_room = $row['room'];
-                }
-
-                 //this block will load the room name from the database
-              $query  = "SELECT * FROM rooms";
-              $result = mysqli_query($connection, $query);
-
-              while($row = mysqli_fetch_assoc($result))
-                {
-                  if ($current_room == $row['room_name']) {
-                    echo  "<option value\"=".$row['room_id']."\" required selected=\"selected\">".$row['room_name']."</option>";
-                  }else{
-                    echo  "<option value\"=".$row['room_id']."\" required>".$row['room_name']."</option>";
-                  }
-                }
-
-              echo "</select></div></div>";
-
-              ?>
-
-              <div class="form-group row">
-              <label class="col-md-2 col-form-label" for="Teacher">Teacher</label>  
-              <div class="col-md-4">
-               <select class="form-control" name="teacher" required>
-                 <?php
-                    echo  "<option value=\"".$teacher_id."\"". "selected=\"selected\">".$teacher."</option>";
-
-                ?>
-               </select>
-              </div>
-              <label class="col-md-2 col-form-label" for="max-students">Max Students</label>  
-                <div class="col-md-1">
-                  <input class="form-control" id="max-students" required min="1" max="99" type="number" readonly="" value="<?php echo $max_students ?>" name="max_students" placeholder="1">
-                </div>
-              <label class="col-md-1 col-form-label" for="subject-code">Section</label>  
-              <div class="col-md-1">
-                <input id="section" type="text" name="section" class="form-control" <?php echo "value=\"".$section."\""; ?> required readonly="">
-              </div>
-             </div>
-              <h4>Input Time and Day</h4>
-              <div class="form-group row">          
-                <label class="col-md-2 col-form-label" for="time-start">Time Start</label>  
-                <div class="col-md-2">
-                 <input id="time-start" class="form-control" step="1" name="time-start" type="time" min="06:00" max="20:00"
-              <?php
-
-                $query  = "SELECT time_start FROM schedule_block WHERE schedule_id = ".$schedule_id;
-                $result = mysqli_query($connection, $query);
-
-                while($row = mysqli_fetch_assoc($result))
-                  {
-                    echo "value =\"".$row['time_start']."\"";
-                  }          
-              ?>
-              class="form-control input-md" required="">
-                </div>
-                <label class="col-md-2 col-form-label" for="description">Time End</label>  
-                <div class="col-md-2">
-                <input id="time-end" name="time-end" step="1" class="form-control" type="time" min="06:00" max="20:00"
-
-                <?php
-
-                $query  = "SELECT time_end FROM schedule_block WHERE schedule_id = ".$schedule_id;
-                $result = mysqli_query($connection, $query);
-
-                while($row = mysqli_fetch_assoc($result))
-                  {
-                    echo "value =\"".$row['time_end']."\"";
-                  }
+                $year = $row['year'];
                 
-
-              ?>
-
-                class="form-control" required="">
-             </div>
-
-             <label class="col-md-2 col-form-label" for="description">Select Day(s)</label>  
-               <div class="col-md-2">
-
-                  <!-- Multiselect dropdown -->
-                <select name="day" required data-style="bg-white rounded-pill px-4 py-3 shadow-sm " class="form-control">
+                $old_time_start = $row['time_start'];
+                $old_time_end = $row['time_end'];
+                $day = number_to_day($row['day'],"");
+              }
+              $query = "SELECT * FROM classes WHERE class_id=".$class_id." LIMIT 1";
+              $result = mysqli_query($connection, $query);
+              while($row = mysqli_fetch_assoc($result))
+              {
+                $current_limit = $row['student_limit'];
+              }
+              echo "<div class=\"col-md-4\">";
+                  echo  "<select readonly id=\"course-name\" name=\"course_id\" disabled type=\"text\"  class=\"form-control\" required=\"\">";
+                  echo  "<option readonly  value=\"".$course_id."\" >".get_course_code($course_id,"",$connection)."</option>";
+                  echo "</select>";
+            ?>
+                </div>
+               <label class="col-md-2 col-form-label" for="School Year">School Year</label>
                   <?php
-                    $query  = "SELECT * FROM schedule_block WHERE schedule_id = ".$schedule_id;
+                    echo "<div class=\"col-md-4\">";
+                    $sy = return_current_sy($connection,"");
+                    echo  "<input id=\"sy\" name=\"sy\" disabled type=\"text\" value=\"".$sy."\"  class=\"form-control\" required=\"\">";
+                  ?>
+               </div>
+             </div>
+             <div class="form-group row">
+               <label class="col-md-2 col-form-label" for="Year">Year</label>
+                  <?php
+                    echo "<div class=\"col-md-4\">";
+                    echo  "<input id=\"year\" name=\"year\" disabled type=\"text\" value=\"".$year."\"  class=\"form-control\" required=\"\">";
+                  ?>
+               </div>
+               <label class="col-md-2 col-form-label" for="Year">Term</label>
+                  <?php
+                    echo "<div class=\"col-md-4\">";
+                    $term = return_current_term($connection,"");
+                    echo  "<input id=\"term\" name=\"term\" disabled type=\"text\" value=\"".$term."\"  class=\"form-control\" required=\"\">";
+                  ?>
+               </div>
+              </div>
+              <hr>
+              <h4>Enter Schedule Info</h4>
+            <div class="form-group row">
+              <label class="col-md-2 col-form-label" for="Subject">Subject</label>  
+              <div class="col-md-4">
+               <select readonly id="subject" class="form-control" name="subject">
+                 <?php
+                  echo  "<option value=\"".$subject_id."\">".get_subject_code($subject_id,"",$connection)."</option>";
+                ?>
+
+               </select>
+             </div>
+             <label class="col-md-2 col-form-label" for="Room">Room</label>  
+             <div class="col-md-4">
+               <select name="room" class="form-control" required>
+                 <?php
+                 //this block will load the room name from the database
+                    $query  = "SELECT * FROM rooms";
                     $result = mysqli_query($connection, $query);
 
 
                     while($row = mysqli_fetch_assoc($result))
-                    {
-                        $day = $row['day'];
-                        $course = $row['course_id'];
-
-                    }
-                    //Simple looping to get the correct day as selected when editing the text
-                    $weekdays = array('1', '2', '3', '4', '5', '6', '7');
-
-                    for ($i=0; $i < 7 ; $i++) { 
-                      if ($day == $weekdays[$i]) {
-                        echo "<option value=\"".$weekdays[$i]."\" selected=\"selected\">".number_to_day($weekdays[$i])."</option>";
-                      }else{
-                        echo "<option value=\"".$weekdays[$i]."\">".number_to_day($weekdays[$i])."</option>";
+                      {
+                        echo  "<option value\"=".$row['room_id']."\">".$row['room_name']."</option>";
                       }
-                    }
+                ?>
+               </select>
+             </div>
+           </div>
+           <div class="form-group row">
+             <label class="col-md-2 col-form-label" for="Room">Teacher</label>
+             <div class="col-md-4">
+               <select readonly name="teacher" class="form-control" required>
+                 <?php
+                  echo  "<option readonly value=\"".$teacher_id."\">".get_teacher_name($teacher_id,"",$connection)."</option>";
+                ?>
+               </select>
+             </div>
+            <label class="col-md-2 col-form-label" for="subject-code">Max Students</label>  
+              <div class="col-md-1">
+                <input id="max-students" readonly min="1" max="99" <?php echo "value=\"".$current_limit."\""; ?> type="number" name="max_students" class="form-control" required placeholder="1">
+              </div>
+            <label class="col-md-1 col-form-label" for="subject-code">Section</label>  
+              <div class="col-md-1">
+                <input id="section" type="text" name="section" class="form-control" <?php echo "value=\"".$section_name."\""; ?>required placeholder="1" readonly="">
+              </div>
+            </div>
+            <h4>Input Time and Day</h4>
+            <div class="form-group row">        
+              <label class="col-md-2 col-form-label" for="time-start">Time Start</label>  
+              <div class="col-md-2">
+              <?php
+                echo "<input id=\"time-start\" name=\"time-start\" type=\"time\" step=\"1\" min=\"06:00\" max=\"20:00\" value=\"".$old_time_start."\" class=\"form-control input-md\" required=\"\">";
+              ?>
+              </div>
 
-                  ?>
-                </select>
-                </div>
+              <label class="col-md-2 col-form-label" for="description">Time End</label>  
+              <div class="col-md-2">
+              <?php
+                echo "<input id=\"time-end\" name=\"time-end\" type=\"time\" step=\"1\" min=\"06:00\" max=\"20:00\" value=\"".$old_time_end."\" class=\"form-control input-md\" required=\"\">";
+              ?>
+              </div>
+
+
+              <label class="col-md-2 col-form-label" for="description">Select Day(s)</label>  
+              <div class="col-md-2">
+                <select name="day" required class="form-control">
+                <?php
+                  $days = array(1 => "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday");
+
+                  for ($i=1; $i <= count($days); $i++) { 
+                    if ($days[$i] == $day) {
+                      echo "<option value=\"".$i."\" selected>".$day."</option>";
+                    }
+                    else{
+                      echo "<option value=\"".$i."\">".$days[$i]."</option>";
+                    }
+                  }
+                ?>                
+                  </select>
+
+              </div>
             </div>
 
             <div class="row">
               <div class="col-md-12 d-flex justify-content-center">
                   <input type="submit" name="submit" value="Edit Schedule" class="btn btn-success" />&nbsp;
-                  <a class="btn btn-secondary"href="view-schedule.php">Cancel</a>
+                  <?php                 
+                  echo "<a class=\"btn btn-secondary\" href=\"view-class-schedule.php?class_id=".$class_id."&school_yr=".$school_yr."&term=".$term." \">Cancel</a>";
+                  ?>
               </div>
             </div>
-          
+          </form>
+          <?php 
 
-            <?php
+
 
             if (isset($_POST['submit'])) {
-
-              $subject_id = (int) $_POST["subject"];
-              $teacher = mysql_prep($_POST["teacher"]);
               $room = mysql_prep($_POST["room"]);
               $time_start = ($_POST["time-start"]);
               $time_end = ($_POST["time-end"]);
               $day = mysql_prep($_POST['day']);
-              $max_students = (int) $_POST["max_students"];
 
-              // if (is_int($max_students) !== 1) {
-              //   die ("<div class=\"alert alert-danger\" role=\"alert\">Error: Max students value is not an integer.</div>");
-              // }
 
               //series of validations to make sure all forms have values
-              if (!isset($subject_id) || !isset($teacher) || !isset($room) || !isset($time_start) || !isset($time_end) || !isset($day) || !isset($max_students) || $subject_id == null || $teacher == null || $room == null || $time_start == null || $time_end == null || $day == null || $max_students == null) {
+              if (!isset($room) || !isset($time_start) || !isset($time_end) || !isset($day) || $room == null || $time_start == null || $time_end == null || $day == null) {
                die ("<div class=\"alert alert-danger\" role=\"alert\">One or more fields are empty.</div>");
               }
               else{
 
-                $query  = "SELECT * FROM schedule_block WHERE CAST('".$time_start."' AS time) BETWEEN time_start AND time_end AND room='".$room."' AND day='".$day."' AND schedule_id <>'".$schedule_id."'";
-                $result = mysqli_query($connection, $query);
+              $query_counter = "SELECT * FROM schedule_block WHERE class_id='".$class_id."' AND year='".$year."' AND term='".$term."' AND school_yr='".$sy."'";
+              $result_counter = mysqli_query($connection, $query_counter);
 
-                $query2  = "SELECT * FROM schedule_block WHERE CAST('".$time_end."' AS time) BETWEEN time_start AND time_end AND room='".$room."' AND day='".$day."' AND schedule_id <>'".$schedule_id."'";
-                $result2 = mysqli_query($connection, $query2);
+              $query  = "SELECT * FROM schedule_block WHERE CAST('".$time_start."' AS time) BETWEEN time_start AND time_end AND room='".$room."' AND day='".$day."'";
+              $result = mysqli_query($connection, $query);
 
-                if (mysqli_num_rows($result) >= 1 OR mysqli_num_rows($result2) >=1) { // logical check for conflicts in time
+              $query2  = "SELECT * FROM schedule_block WHERE CAST('".$time_end."' AS time) BETWEEN time_start AND time_end AND room='".$room."' AND day='".$day."'";
+              $result2 = mysqli_query($connection, $query2);
+
+              if (mysqli_num_rows($result) >= 1 OR mysqli_num_rows($result2) >=1) { // logical check for conflicts in time, room, and day
+               die ("<div class=\"alert alert-danger\" role=\"alert\">Conflict in schedule! The time, room and day for this schedule is already taken</div>");
+            }
+              $query3  = "SELECT * FROM schedule_block WHERE CAST('".$time_start."' AS time) BETWEEN time_start AND time_end AND teacher_id='".$teacher_id."' AND day='".$day."'";
+              $result3 = mysqli_query($connection, $query3);
+
+              // added another block for checking the old time vs the current inputted time, if they are the same, allow the update script to be executed
+
+              if ($time_start !== $old_time_start && $time_end !== $old_time_end) {
+                $query4  = "SELECT * FROM schedule_block WHERE CAST('".$time_end."' AS time) BETWEEN time_start AND time_end AND teacher_id='".$teacher_id."' AND day='".$day."'";
+                $result4 = mysqli_query($connection, $query4);
+
+                if (mysqli_num_rows($result3) >= 1 OR mysqli_num_rows($result4) >=1) { // logical check for conflicts in time and teacher
 
                  echo "<div class=\"alert alert-warning\" role=\"alert\">";
-                 echo "Conflict in schedule! The time, room and day for this schedule is already taken.";
+                 echo "Conflict in schedule! This teacher is already assigned to the set time range.";
                  echo "</div>";
+                }
               }
+            else{
+                $query  = "UPDATE schedule_block SET day = '{$day}', time_start = '{$time_start}', time_end = '{$time_end}', room = '{$room}' WHERE schedule_id=".$schedule_id;
+                $result = mysqli_query($connection, $query);
 
+                if ($result === TRUE) {
+                  echo "<script type='text/javascript'>";
+                  echo "alert('Schedule successfully updated!');";
+                  echo "</script>";
 
-                  $query  = "UPDATE schedule_block SET subject_id = '{$subject_id}', room = '{$room}', teacher_id = '{$teacher}', time_start = '{$time_start}', time_end = '{$time_end}', day = '{$day}' WHERE schedule_id='".$schedule_id."' LIMIT 1";
-                  $result = mysqli_query($connection, $query);
-
-                  //another query to overwrite the teacher_id if there are other existing schedules
-                  $query_update_teacher  = "UPDATE schedule_block SET teacher_id = '{$teacher}' WHERE subject_id='".$subject_id."' AND course_id='".$current_course_id."' AND term='".$term."' AND year='".$year."' AND section='".$section."' AND school_yr='".$sy."'";
-                  $result_update_teacher = mysqli_query($connection, $query_update_teacher);
-
-                  $query_update_teacher_on_grades  = "UPDATE student_grades SET teacher_id = '{$teacher}' WHERE subject_id='".$subject_id."' AND course_id='".$current_course_id."' AND term='".$term."' AND year='".$year."' AND section='".$section."' AND school_yr='".$sy."'";
-                  $result_update_teacher_on_grades = mysqli_query($connection, $query_update_teacher_on_grades);
-
-
-                  if ($result === TRUE) {
-                    echo "<script type='text/javascript'>";
-                    echo "alert('Schedule successfully edited!');";
-                    echo "</script>";
-
-                    $URL="view-schedule.php";
-                    echo "<script>location.href='$URL'</script>";
-                  } else {
-                    echo "Error updating record: " . $connection->error;
-                  }
+                  $URL="view-class-schedule.php?class_id=".$class_id."&school_yr=".$school_yr."&term=".$term;
+                  echo "<script>location.href='$URL'</script>";
+                } else {
+                  echo "Error updating record: " . $connection->error;
+                }
+              }
+             }//end else field empty
             }
-              if(isset($connection)){ mysqli_close($connection); }
-              //close database connection after an sql command
-            }
-          ?>
-            </form>
+
+            if(isset($connection)){ mysqli_close($connection); }
+            //close database connection after an sql command
+            ?>
           </div>
         </div>
     </div>
  </div> 
   <!-- /#wrapper -->
 
+
+
   <!-- Scroll to Top Button-->
   <a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
+    <i class="fa fa-angle-up"></i>
   </a>
 
 <?php include 'layout/footer.php';?>
-
 
 

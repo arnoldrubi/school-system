@@ -102,7 +102,7 @@
               echo "<td>".$row['sec_name']."</td>";
               echo "<td>".get_teacher_name($row['teacher_id'],"",$connection)."</td>";
               echo "<td>".$row['students_enrolled']."/".$row['student_limit']."</td>";
-              echo "<td class=\"options-td\"><a href=\"new-schedule.php?class_id=".$row['class_id']."\" class=\"btn btn-success btn-sm\">Add New Schedule</a></td>";
+              echo "<td class=\"options-td\"><a href=\"new-schedule.php?class_id=".$row['class_id']."\" class=\"btn btn-success btn-sm\">Add New Schedule</a><a href=\"view-class-schedule.php?class_id=".$row['class_id']."&school_yr=".$school_yr."&term=".$term."\" class=\"btn btn-success ml-1 btn-sm\">View Class Schedule</a></td>";
               echo "</tr>";
               }
 

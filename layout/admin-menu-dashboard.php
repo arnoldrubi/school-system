@@ -4,7 +4,7 @@ if ($_SESSION["role"] == "administrator" || $_SESSION["role"] == "registrar") {
   echo "<h4>Admin Menu</h4>";
   echo "<div class=\"row\">";
   echo "<div class=\"col-xl-3 col-sm-6 mb-3\">";
-  echo "<div class=\"card text-white bg-warning o-hidden h-100\">";         
+  echo "<div class=\"card bg-primary-fcat text-white bg-warning o-hidden h-100\">";         
   echo "<div class=\"card-body\">";            
   echo "<div class=\"card-body-icon\">";              
   echo "<i class=\"fa fa-fw fa-list\"></i>";                
@@ -17,7 +17,7 @@ if ($_SESSION["role"] == "administrator" || $_SESSION["role"] == "registrar") {
   echo "<i class=\"fa fa-angle-right\"></i>";                
   echo "</span></a></div></div>";              
   echo "<div class=\"col-xl-3 col-sm-6 mb-3\">";            
-  echo "<div class=\"card text-white bg-success o-hidden h-100\">";          
+  echo "<div class=\"card bg-primary-fcat text-white bg-success o-hidden h-100\">";          
   echo "<div class=\"card-body\">";        
   echo "<div class=\"card-body-icon\">";        
   echo "<i class=\"fa fa-fw fa-id-card\"></i>";          
@@ -27,7 +27,7 @@ if ($_SESSION["role"] == "administrator" || $_SESSION["role"] == "registrar") {
   echo "<span class=\"float-right\">";            
   echo "<i class=\"fa fa-angle-right\"></i></span></a></div></div>";            
   echo "<div class=\"col-xl-3 col-sm-6 mb-3\">";              
-  echo "<div class=\"card text-white bg-primary o-hidden h-100\">";              
+  echo "<div class=\"card bg-primary-fcat text-white bg-primary o-hidden h-100\">";              
   echo "<div class=\"card-body\">";                                
   echo "<div class=\"card-body-icon\">";            
   echo "<i class=\"fa fa-fw fa-graduation-cap\"></i>";
@@ -37,7 +37,7 @@ if ($_SESSION["role"] == "administrator" || $_SESSION["role"] == "registrar") {
   echo "<span class=\"float-right\">";                            
   echo "<i class=\"fa fa-angle-right\"></i></span></a></div></div>";                
   echo "<div class=\"col-xl-3 col-sm-6 mb-3\">";              
-  echo "<div class=\"card text-white bg-danger o-hidden h-100\">";              
+  echo "<div class=\"card bg-primary-fcat text-white bg-danger o-hidden h-100\">";              
   echo "<div class=\"card-body\">";            
   echo "<div class=\"card-body-icon\">";            
   echo "<i class=\"fa fa-fw fa-calendar\"></i></div>";                              
@@ -48,7 +48,7 @@ if ($_SESSION["role"] == "administrator" || $_SESSION["role"] == "registrar") {
   echo "<div class=\"row\">";  
 
   echo "<div class=\"col-xl-3 col-sm-6 mb-3\">";        
-  echo "<div class=\"card text-white bg-success o-hidden h-100\">";          
+  echo "<div class=\"card bg-primary-fcat text-white bg-success o-hidden h-100\">";          
   echo "<div class=\"card-body\">";            
   echo "<div class=\"card-body-icon\">";
   echo "<i class=\"fa fa-table\" aria-hidden=\"true\"></i></div>";        
@@ -60,7 +60,7 @@ if ($_SESSION["role"] == "administrator" || $_SESSION["role"] == "registrar") {
 
   if ($_SESSION["role"] == "administrator") {         
     echo "<div class=\"col-xl-3 col-sm-6 mb-3\">";        
-    echo "<div class=\"card text-white bg-info o-hidden h-100\">";          
+    echo "<div class=\"card bg-primary-fcat text-white bg-info o-hidden h-100\">";          
     echo "<div class=\"card-body\">";            
     echo "<div class=\"card-body-icon\">";
     echo "<i class=\"fa fa-users\" aria-hidden=\"true\"></i></div>";        
@@ -72,7 +72,7 @@ if ($_SESSION["role"] == "administrator" || $_SESSION["role"] == "registrar") {
   }                 
                 
   echo "<div class=\"col-xl-3 col-sm-6 mb-3\">";        
-  echo "<div class=\"card text-white bg-secondary o-hidden h-100\">";          
+  echo "<div class=\"card bg-primary-fcat text-white bg-secondary o-hidden h-100\">";          
   echo "<div class=\"card-body\">";            
   echo "<div class=\"card-body-icon\">";
   echo "<i class=\"fa fa-list-alt\" aria-hidden=\"true\"></i></div>";        
@@ -85,7 +85,7 @@ if ($_SESSION["role"] == "administrator" || $_SESSION["role"] == "registrar") {
   if ($_SESSION["role"] == "administrator") {
 
     echo "<div class=\"col-xl-3 col-sm-6 mb-3\">";        
-    echo "<div class=\"card text-white bg-dark o-hidden h-100\">";          
+    echo "<div class=\"card bg-primary-fcat text-white bg-dark o-hidden h-100\">";          
     echo "<div class=\"card-body\">";            
     echo "<div class=\"card-body-icon\">";
     echo "<i class=\"fa fa-cogs\" aria-hidden=\"true\"></i></div>";        
@@ -102,7 +102,7 @@ if ($_SESSION["role"] == "administrator" || $_SESSION["role"] == "registrar") {
 
 else{
   echo "<div class=\"row\"><div class=\"col-xl-3 col-sm-6 mb-3\">";        
-  echo "<div class=\"card text-white bg-success o-hidden h-100\">";          
+  echo "<div class=\"card bg-primary-fcat text-white bg-success o-hidden h-100\">";          
   echo "<div class=\"card-body\">";            
   echo "<div class=\"card-body-icon\">";
   echo "<i class=\"fa fa-table\" aria-hidden=\"true\"></i></div>";        

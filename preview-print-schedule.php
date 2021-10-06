@@ -141,7 +141,7 @@
                             $prev_time_end_check = "00:00:00";
                             $prev_room_check = NULL;
                             if ($prev_day_check !== $row_check_schedule_data['day']) {
-                              $day = $day.substr(number_to_day($row_check_schedule_data['day']),0,3)."/";
+                              $day = $day.substr(number_to_day($row_check_schedule_data['day'],""),0,3)."/";
                             }
                             if ($row_check_schedule_data['time_start'] !== $prev_time_start_check && $row_check_schedule_data['time_end'] !== $prev_time_end_check)  {
                               $time = $time." <span class=\"hide-date\">".date("g:i A", strtotime($row_check_schedule_data['time_start']))."-".date("g:i A", strtotime($row_check_schedule_data['time_end']))."</span>";
@@ -155,7 +155,7 @@
                             $room = $row_check_schedule_data['room'];
                           }
                           else{
-                            $day = substr(number_to_day($row_check_schedule_data['day']),0,3);
+                            $day = substr(number_to_day($row_check_schedule_data['day'],""),0,3);
                             $time =  date("g:i A", strtotime($row_check_schedule_data['time_start']))."-".date("g:i A", strtotime($row_check_schedule_data['time_end']));
                             $room = $row_get_schedule_data['room'];
                           }

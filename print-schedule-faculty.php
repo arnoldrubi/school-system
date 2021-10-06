@@ -103,7 +103,7 @@
                         echo "<td>".$units_array[1]."</td>";
                         echo "<td>".$units_array[2]."</td>";
 
-                        $day = substr(number_to_day($row['day']),0,3);
+                        $day = substr(number_to_day($row['day'],""),0,3);
                         $time =  date("g:i A", strtotime($row['time_start']))."-".date("g:i A", strtotime($row['time_end']));
                         $room = $row['room'];
 

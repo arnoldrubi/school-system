@@ -13,6 +13,8 @@
   <?php 
     if (isset($_GET['class_id'])) {
       $class_id = $_GET["class_id"];
+      $term = return_current_term($connection, "");
+      $sy = return_current_sy($connection, "");
     }
     else{
       redirect_to("classes.php");
@@ -230,7 +232,7 @@
                   echo "alert('Schedule successfully created!');";
                   echo "</script>";
 
-                  $URL="view-schedule.php?class_id=".$class_id;
+                  $URL="view-class-schedule.php?class_id=".$class_id."&school_yr=".$sy."&term=".$term;
                   echo "<script>location.href='$URL'</script>";
                 } else {
                   echo "Error updating record: " . $connection->error;

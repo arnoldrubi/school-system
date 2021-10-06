@@ -155,6 +155,28 @@ div#term-sy-indicator {
 .sidebar .nav-item .nav-link:active, .sidebar .nav-item .nav-link:focus, .sidebar .nav-item .nav-link:hover {
   color: rgba(0, 0, 0, 0.9);
 }
+/*overide button colors*/
+.btn-primary,
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary:visited,
+.btn-primary:focus,
+.btn-success,
+.btn-success:hover,
+.btn-success:active,
+.btn-success:visited,
+.btn-success:focus{
+  background-color: #800000;
+  border-color: #AE0000;
+}
+.btn-success.focus, .btn-success:focus {
+  box-shadow: 0 0 0 0.2rem rgb(174 0 0 / 50%);
+  color: #fff;
+}
+.btn-success:not(:disabled):not(.disabled).active, .btn-success:not(:disabled):not(.disabled):active, .show>.btn-success.dropdown-toggle{
+  background-color: #AE0000;
+  border-color: #800000;
+}
 /*additional dashboard items*/
 .dashboard-window { background: #62acec; width: 100%; padding: 20px; color: #FFF; border-radius: 4px; margin-bottom: 1em;}
 .d-w-icon { width: 30%; float: left; margin-right: 5px;}
@@ -167,6 +189,9 @@ div#term-sy-indicator {
 .page-header-title { font-size: 24px; float: left;}
 .task-header-title { font-size: 18px; float: left;}
 .db-header-extra { float: right; padding: 5px;  }
+.card.bg-primary-fcat.text-white,.bg-primary-fcat {
+    background-color: #7a0d2d !important;
+}
 /*sidebar menu animation*/
 @media (min-width: 992px) {
   .animate {

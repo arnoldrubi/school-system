@@ -54,7 +54,7 @@ global $sidebar_context;
 	}
 
 //function to convert the number days to str days
-	function number_to_day($number){
+	function number_to_day($number,$strday){
 		if ($number == "1") {
 			$strday = "Monday";
 		}
@@ -76,7 +76,6 @@ global $sidebar_context;
 		elseif($number == "7"){
 			$strday = "Sunday";
 		}
-
 		return $strday;
 	}
 

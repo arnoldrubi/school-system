@@ -30,7 +30,7 @@
   $total_students_enrolled =mysqli_num_rows($result_total_students);
 
 
-  $query_total_teachers = "SELECT * FROM teachers" ;
+  $query_total_teachers = "SELECT * FROM teachers WHERE active = 1" ;
   $result_total_teachers = mysqli_query($connection, $query_total_teachers);
 
   $total_teachers =mysqli_num_rows($result_total_teachers);
@@ -51,7 +51,7 @@
   <div class="row">
 
     <div class="col-md-3">
-      <div class="dashboard-window clearfix" style="background: #62acec; border-left: 5px solid #5798d1;">
+      <div class="dashboard-window clearfix bg-primary-fcat" style="background: #62acec; border-left: 5px solid #019002;">
         <div class="d-w-icon">
           <span class="glyphicon glyphicon-send giant-white-icon"></span>
         </div>
@@ -61,7 +61,7 @@
       </div>
 
       <div class="col-md-3">
-      <div class="dashboard-window clearfix" style="background: #5cb85c; border-left: 5px solid #4f9f4f;">
+      <div class="dashboard-window clearfix bg-primary-fcat" style="background: #5cb85c; border-left: 5px solid #019002;">
         <div class="d-w-icon">
           <span class="glyphicon glyphicon-wrench giant-white-icon"></span>
         </div>
@@ -71,7 +71,7 @@
       </div>
 
       <div class="col-md-3">
-      <div class="dashboard-window clearfix" style="background: #f0ad4e; border-left: 5px solid #d89b45;">
+      <div class="dashboard-window clearfix bg-primary-fcat" style="background: #f0ad4e; border-left: 5px solid #019002;">
         <div class="d-w-icon">
           <span class="glyphicon glyphicon-folder-close giant-white-icon"></span>
         </div>
@@ -81,7 +81,7 @@
       </div>
 
       <div class="col-md-3">
-      <div class="dashboard-window clearfix" style="background: #d9534f; border-left: 5px solid #b94643;">
+      <div class="dashboard-window clearfix bg-primary-fcat" style="background: #d9534f; border-left: 5px solid #019002;">
         <div class="d-w-icon">
           <span class="glyphicon glyphicon-user giant-white-icon"></span>
         </div>
@@ -96,32 +96,6 @@
     <?php include 'layout/admin-menu-dashboard.php';?>
 
     </div>
-<!--     <hr>
-    <h4>Overview</h4>
-    
-    <div class="row">
-      <div class="col-lg-8">
-        <div class="card mb-3">
-          <div class="card-header">
-            <i class="fas fa-chart-bar"></i>
-            Enrollment Per Course</div>
-          <div class="card-body">
-            <canvas id="myBarChart" width="100%" height="50"></canvas>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-4">
-        <div class="card mb-3">
-          <div class="card-header">
-            <i class="fas fa-chart-pie"></i>
-            Enrollment Data</div>
-          <div class="card-body">
-            <canvas id="myPieChart" width="100%" height="100"></canvas>
-          </div>
-        </div>
-      </div>
-    </div> -->
-
   </div>
   <!-- /#wrapper -->
 

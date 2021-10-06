@@ -95,7 +95,7 @@
 
             while($row = mysqli_fetch_assoc($result))
               {
-                $day = number_to_day($row['day']);
+                $day = number_to_day($row['day'],"");
                 $teacher_name = get_teacher_name($row['teacher_id'],"",$connection);
                 echo "<tr>";
                 echo "<td>".get_subject_code($row['subject_id'],"",$connection)."</td>"; 
