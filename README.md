@@ -1,4 +1,4 @@
-##Academic Information Management System (AIMS)
+## Academic Information Management System (AIMS)
 
 About AIMS
 Academic Information Management System is the result of the research of Jeannette Eikawa. Designed and developed by Arnold Rubi for academic purpose.
